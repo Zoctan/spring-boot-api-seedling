@@ -35,17 +35,17 @@ public class Swagger2Config {
         final Contact contact = new Contact(
                 "Zoctan",
                 "Zoctan.github.io",
-                "752481828@.com"
+                "752481828@qq.com"
         );
 
         return new ApiInfoBuilder()
                 .title("APIs doc")
                 .description("RESTful APIs")
-                .termsOfServiceUrl("https://xx.com/")
+                .termsOfServiceUrl("https://github.com/Zoctan/spring-boot-api-fast")
                 .contact(contact)
                 .version("1.0")
-                .license("xx License")
-                .licenseUrl("https://xx-license.org/")
+                .license("Apache License 2.0")
+                .licenseUrl("https://github.com/Zoctan/spring-boot-api-fast/blob/master/LICENSE")
                 .build();
     }
 
