@@ -1,4 +1,4 @@
-import com.zoctan.fast.Application;
+import com.zoctan.seedling.Application;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
