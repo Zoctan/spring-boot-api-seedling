@@ -18,7 +18,7 @@ import static com.zoctan.fast.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     // JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/fast";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/fastdev";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
@@ -46,11 +46,11 @@ public class CodeGenerator {
 
     public static void main(final String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        System.out.println("可能已存在相关文件，是否覆盖？y/n");
+        System.out.print("可能已存在相关文件，是否覆盖？y/n:");
         if (scanner.next().equals("y")) {
             overwrite = true;
         }
-        genCode("xx");
+        genCode("表名");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 

@@ -44,11 +44,15 @@ public class RedisUtil {
     /**
      * 根据key 获取过期时间
      *
-     * @param key 键 不能为null
+     * @param key 键
      * @return 时间(秒) 返回0代表为永久有效
      */
     public long getExpire(final String key) {
-        return this.redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        try {
+            return this.redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        } catch (final Exception e) {
+            return -1;
+        }
     }
 
     /**
@@ -62,8 +66,8 @@ public class RedisUtil {
             return this.redisTemplate.hasKey(key);
         } catch (final Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     /**

@@ -21,8 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
     @Bean
+    @Override
     public UserDetailsServiceImpl userDetailsService() {
         return new UserDetailsServiceImpl();
     }
@@ -60,9 +60,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/v2/**"
                 ).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated().and()
-                // 任意访问注销
-                .logout().permitAll();
+                .anyRequest().authenticated().and();
 
         http    // 基于定制JWT安全过滤器
                 .addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -76,8 +74,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter()
-            throws Exception {
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         return new JwtAuthenticationFilter();
     }
 

@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -122,5 +123,16 @@ public class UserController {
         } else {
             return ResultGenerator.genFailedResult("password error");
         }
+    }
+
+    /**
+     * @AuthenticationPrincipal 该注解可以获得当前用户
+     * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/reference/htmlsingle/#mvc-authentication-principal
+     */
+    @ApiOperation(value = "用户注销")
+    @GetMapping("/logout")
+    public Result logout(@AuthenticationPrincipal final UserDetails userDetails) {
+        this.jwtUtil.invalidRedisStore(userDetails.getUsername());
+        return ResultGenerator.genOkResult();
     }
 }
