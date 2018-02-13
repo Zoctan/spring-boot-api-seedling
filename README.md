@@ -1,4 +1,4 @@
-# Spring Boot Api Seedling
+# Spring Boot API Seedling
 
 ## 简介
 
