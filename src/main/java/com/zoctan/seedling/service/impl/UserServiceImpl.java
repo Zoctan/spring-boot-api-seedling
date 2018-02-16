@@ -2,8 +2,12 @@ package com.zoctan.seedling.service.impl;
 
 import com.zoctan.seedling.core.exception.ServiceException;
 import com.zoctan.seedling.core.service.AbstractService;
+import com.zoctan.seedling.mapper.RoleMapper;
 import com.zoctan.seedling.mapper.UserMapper;
+import com.zoctan.seedling.mapper.UserRoleMapper;
+import com.zoctan.seedling.model.Role;
 import com.zoctan.seedling.model.User;
+import com.zoctan.seedling.model.UserRole;
 import com.zoctan.seedling.service.UserService;
 import com.zoctan.seedling.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +31,25 @@ import java.util.Map;
 public class UserServiceImpl extends AbstractService<User> implements UserService {
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private RoleMapper roleMapper;
+    @Resource
+    private UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(final PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
+    }
+
+    private void saveRole(final long id, final String roleName) {
+        final Condition condition = new Condition(Role.class);
+        condition.createCriteria().andCondition("name = ", roleName);
+        final Role role = this.roleMapper.selectByCondition(condition).get(0);
+        this.userRoleMapper.insert(
+                new UserRole()
+                        .setUserId(id)
+                        .setRoleId(role.getId()));
     }
 
     /**
@@ -46,6 +64,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             user.setRegisterTime(DateUtil.getNowTimestamp());
             this.userMapper.insertSelective(user);
+            log.info("User<{}> id : {}", user.getUsername(), user.getId());
+            this.saveRole(user.getId(), "USER");
         }
     }
 

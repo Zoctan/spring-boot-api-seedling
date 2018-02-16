@@ -57,8 +57,10 @@ public class UserController {
             final String msg = bindingResult.getFieldError().getDefaultMessage();
             return ResultGenerator.genFailedResult(msg);
         } else {
+            // 保存后密码加密了，而登录需要没加密的密码
+            final String password = user.getPassword();
             this.userService.save(user);
-            return ResultGenerator.genOkResult();
+            return this.login(user.getUsername(), password);
         }
     }
 

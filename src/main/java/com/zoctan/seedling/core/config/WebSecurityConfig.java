@@ -58,7 +58,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**",
                         "/v2/**"
                 ).permitAll()
-                // 运行登录和注册
+                // 允许登录和注册
                 .antMatchers(
                         HttpMethod.POST,
                         "/user/login",
