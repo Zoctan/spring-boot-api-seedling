@@ -7,6 +7,7 @@ import com.zoctan.seedling.service.impl.UserDetailsServiceImpl;
 import com.zoctan.seedling.util.RSAUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,12 +53,16 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 允许匿名请求
                 .antMatchers(
-                        "/user/login",
-                        "/user/register",
                         "/swagger-ui.html**",
                         "/swagger-resources**",
                         "/webjars/**",
                         "/v2/**"
+                ).permitAll()
+                // 运行登录和注册
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/user/login",
+                        "/user"
                 ).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated().and();

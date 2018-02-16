@@ -121,7 +121,7 @@ public class UserController {
             this.userService.updateLoginTime(username);
             return ResultGenerator.genOkResult(this.jwtUtil.sign(username, userDetails.getAuthorities()));
         } else {
-            return ResultGenerator.genFailedResult("password error");
+            return ResultGenerator.genFailedResult("密码错误");
         }
     }
 

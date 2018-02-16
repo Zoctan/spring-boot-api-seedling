@@ -1,5 +1,6 @@
 package com.zoctan.seedling.service.impl;
 
+import com.zoctan.seedling.core.exception.ServiceException;
 import com.zoctan.seedling.core.service.AbstractService;
 import com.zoctan.seedling.mapper.UserMapper;
 import com.zoctan.seedling.model.User;
@@ -38,9 +39,14 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
      */
     @Override
     public void save(final User user) {
-        user.setPassword(this.passwordEncoder.encode(user.getPassword().trim()));
-        user.setRegisterTime(DateUtil.getNowTimestamp());
-        this.userMapper.insert(user);
+        final User u = this.findByUsername(user.getUsername());
+        if (u != null) {
+            throw new ServiceException("用户名已存在");
+        } else {
+            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            user.setRegisterTime(DateUtil.getNowTimestamp());
+            this.userMapper.insertSelective(user);
+        }
     }
 
     /**
