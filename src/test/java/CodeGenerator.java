@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.zoctan.seedling.core.ProjectConstant.*;
+import static com.zoctan.wyuoj.api.core.ProjectConstant.*;
 
 /**
  * 代码生成器，根据数据表名称生成对应的Model、MyMapper、Service、Controller简化开发。
  */
 public class CodeGenerator {
     // JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/seedling_dev";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/wyuoj_dev" + "?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
@@ -50,7 +50,15 @@ public class CodeGenerator {
         if (scanner.next().equals("y")) {
             overwrite = true;
         }
-        genCode("表名");
+        genCode("contest");
+        genCode("contest_result");
+        genCode("notice");
+        genCode("problem");
+        genCode("problem_post");
+        genCode("user_code");
+        genCode("user_problem_code");
+        genCode("user_problem_collection");
+        genCode("user_problem_note");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 

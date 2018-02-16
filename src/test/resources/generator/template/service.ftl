@@ -1,7 +1,7 @@
 package ${basePackage}.service;
 
 import ${basePackage}.model.${modelNameUpperCamel};
-import ${basePackage}.core.Service;
+import ${basePackage}.core.service.Service;
 
 /**
  * Created by ${author} on ${date}.
