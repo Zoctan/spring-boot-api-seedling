@@ -19,7 +19,7 @@
 
 ## 快速开始
 
-```markdown
+```
 # 克隆项目
 git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 
@@ -29,8 +29,6 @@ test/resources 目录下有数据库文件 seedDev.sql
 
 # 根据表名生成代码
 输入表名，运行 CodeGenerator.main() 方法，生成基础代码（观看[种子项目的快速演示视频](http://v.youku.com/v_show/id_XMjg1NjYwNDgxNg==.html?spm=a2h3j.8428770.3416059.1)）
-
-# 由于 User 表修改较多，建议该表直接导入数据库，不要生成基础代码
 
 # last
 对开发环境配置文件 application-dev.properties 进行配置，启动项目，Have Fun Too：)
