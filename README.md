@@ -19,20 +19,18 @@
 
 ## 快速开始
 
-```
-# 克隆项目
+\# 克隆项目
 git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 
-# 配置代码生成器
+\ 配置代码生成器
 对 test/java 包内的代码生成器 CodeGenerator 进行配置
 test/resources 目录下有数据库文件 seedDev.sql
 
-# 根据表名生成代码
+\# 根据表名生成代码
 输入表名，运行 CodeGenerator.main() 方法，生成基础代码（观看[种子项目的快速演示视频](http://v.youku.com/v_show/id_XMjg1NjYwNDgxNg==.html?spm=a2h3j.8428770.3416059.1)）
 
-# last
+\# last
 对开发环境配置文件 application-dev.properties 进行配置，启动项目，Have Fun Too：)
-```
 
 ## 技术选型&文档
 
