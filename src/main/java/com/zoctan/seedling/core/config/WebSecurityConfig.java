@@ -2,9 +2,7 @@ package com.zoctan.seedling.core.config;
 
 import com.zoctan.seedling.core.jwt.JwtAuthenticationEntryPoint;
 import com.zoctan.seedling.core.jwt.JwtAuthenticationFilter;
-import com.zoctan.seedling.core.jwt.JwtUtil;
 import com.zoctan.seedling.service.impl.UserDetailsServiceImpl;
-import com.zoctan.seedling.util.RSAUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,14 +16,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.annotation.Resource;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Resource
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Resource
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     @Override
     public UserDetailsServiceImpl userDetailsService() {
         return new UserDetailsServiceImpl();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -48,7 +58,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 无状态Session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // 异常处理
-                .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint()).and()
+                .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and()
                 // 对所有的请求都做权限校验
                 .authorizeRequests()
                 // 允许匿名请求
@@ -68,33 +78,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated().and();
 
         http    // 基于定制JWT安全过滤器
-                .addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 禁用页面缓存
         http.headers().cacheControl();
-    }
-
-    @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        return new JwtAuthenticationFilter();
-    }
-
-    @Bean
-    public RSAUtil rsaUtil() {
-        return new RSAUtil();
-    }
-
-    @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

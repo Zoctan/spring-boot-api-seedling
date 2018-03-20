@@ -3,7 +3,6 @@ package com.zoctan.seedling.core.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zoctan.seedling.core.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,8 +23,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
-@Configuration
 @Slf4j
+@Configuration
 public class RedisConfig extends CachingConfigurerSupport {
     // cache缓存过期时间xx秒
     @Value("${cache.expiration}")
@@ -145,10 +144,5 @@ public class RedisConfig extends CachingConfigurerSupport {
                 super.handleCacheClearError(exception, cache);
             }
         };
-    }
-
-    @Bean
-    public RedisUtil redisUtil() {
-        return new RedisUtil();
     }
 }

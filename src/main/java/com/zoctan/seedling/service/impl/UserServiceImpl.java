@@ -11,7 +11,6 @@ import com.zoctan.seedling.model.UserRole;
 import com.zoctan.seedling.service.UserService;
 import com.zoctan.seedling.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +34,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     private RoleMapper roleMapper;
     @Resource
     private UserRoleMapper userRoleMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(final PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     private void saveRole(final long id, final String roleName) {
         final Condition condition = new Condition(Role.class);

@@ -5,13 +5,14 @@ import com.zoctan.seedling.util.RSAUtil;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -21,7 +22,13 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
 public class JwtUtil {
+    @Resource
+    private RedisUtil redisUtil;
+    @Resource
+    private RSAUtil rsaUtil;
+
     @Value("${jwt.authorities-key}")
     private String AUTHORITIES_KEY;
     // RSA私钥
@@ -39,10 +46,6 @@ public class JwtUtil {
     // 有效期
     @Value("${jwt.expiration-time}")
     private long EXPIRATION_TIME;
-    @Autowired
-    private RedisUtil redisUtil;
-    @Autowired
-    private RSAUtil rsaUtil;
 
     private Claims getClaims(final String token) {
         final Jws<Claims> jws = this.parseToken(token);
@@ -175,7 +178,6 @@ public class JwtUtil {
                         // 设置失效时间
                         .setExpiration(date)
                         // 私钥加密生成签名
-                        // 用的是512位的私钥，RS512提醒key太短……这里有点奇怪
                         .signWith(SignatureAlgorithm.RS256, privateKey)
                         .compact();
         // 保存用户token

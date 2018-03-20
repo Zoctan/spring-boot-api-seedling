@@ -26,7 +26,7 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 \# 配置代码生成器
 
 对 test/java 包内的代码生成器 CodeGenerator 进行配置
-test/resources 目录下有数据库文件 seedDev.sql
+test/resources 目录下有数据库文件 seedling_dev.sql
 
 \# 根据表名生成代码
 
@@ -45,3 +45,7 @@ test/resources 目录下有数据库文件 seedDev.sql
 5. MyBatis PageHelper分页插件（[官方中文文档](https://pagehelper.github.io/)）
 6. Druid Spring Boot Starter（[官方中文文档](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter/)）
 7. Fastjson（[官方中文文档](https://github.com/alibaba/fastjson/wiki/Quick-Start-CN) | [W3CShool使用指南](https://www.w3cschool.cn/fastjson/fastjson-quickstart.html)）
+
+## 相关项目
+
+- [前端Vue + 后端Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
