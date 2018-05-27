@@ -15,7 +15,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by ${author} on ${date}.
+* @author ${author}
+* @date ${date}
 */
 @RestController
 @RequestMapping("${baseRequestMapping}")
@@ -30,7 +31,7 @@ public class ${modelNameUpperCamel}Controller {
     }
 
     @PostMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam Long id) {
         ${modelNameLowerCamel}Service.deleteById(id);
         return ResultGenerator.genOkResult();
     }
@@ -42,7 +43,7 @@ public class ${modelNameUpperCamel}Controller {
     }
 
     @PostMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam Long id) {
         ${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
         return ResultGenerator.genOkResult(${modelNameLowerCamel});
     }

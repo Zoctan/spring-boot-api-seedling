@@ -1,10 +1,11 @@
 package com.zoctan.seedling.core.jwt;
 
-import com.zoctan.seedling.core.redis.RedisUtil;
+import com.zoctan.seedling.util.RedisUtil;
 import com.zoctan.seedling.util.RSAUtil;
 import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,9 +22,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Slf4j
+/**
+ * Json web token 工具
+ * 验证、生成token
+ *
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 @Component
 public class JwtUtil {
+    private final static Logger log = LoggerFactory.getLogger(JwtUtil.class);
     @Resource
     private RedisUtil redisUtil;
     @Resource
@@ -31,19 +39,29 @@ public class JwtUtil {
 
     @Value("${jwt.authorities-key}")
     private String AUTHORITIES_KEY;
-    // RSA私钥
+    /**
+     * RSA私钥
+     */
     @Value("${jwt.private-key}")
     private String PRIVATE_KEY;
-    // RSA公钥
+    /**
+     * RSA公钥
+     */
     @Value("${jwt.public-key}")
     private String PUBLIC_KEY;
-    // token前缀
+    /**
+     * token前缀
+     */
     @Value("${jwt.token-prefix}")
     private String TOKEN_PREFIX;
-    // 存放token的Header Key
+    /**
+     * 存放token的Header Key
+     */
     @Value("${jwt.header}")
     private String HEADER;
-    // 有效期
+    /**
+     * 有效期
+     */
     @Value("${jwt.expiration-time}")
     private long EXPIRATION_TIME;
 
@@ -93,16 +111,12 @@ public class JwtUtil {
      *
      * @param username 用户名
      */
-    @SuppressWarnings("unchecked")
     public void invalidRedisStore(final String username) {
         // 将token设置为无效
         final String token = (String) this.redisUtil.get(username);
         this.redisUtil.set(token, false);
-        // 清除用户token
-        this.redisUtil.delete(username);
         // 清除用户的权限信息
         this.redisUtil.delete(username + this.HEADER);
-        log.info("User<{}> logout and redis delete all info", username);
     }
 
     /**
@@ -120,26 +134,16 @@ public class JwtUtil {
      * 返回用户认证
      */
     public UsernamePasswordAuthenticationToken getAuthentication(final String username, final String token) {
-        // 尝试从缓存得到授权信息
-        UsernamePasswordAuthenticationToken authenticationToken =
-                (UsernamePasswordAuthenticationToken) this.redisUtil.get(username + this.HEADER);
-        log.info("redis => get user<{}> AuthenticationToken : {}", username, authenticationToken);
-        if (authenticationToken == null) {
-            // 解析token的payload
-            final Claims claims = this.getClaims(token);
+        // 解析token的payload
+        final Claims claims = this.getClaims(token);
 
-            // 获取用户角色字符串
-            // 将元素转换为GrantedAuthority接口集合
-            final Collection<? extends GrantedAuthority> authorities =
-                    // 因为JwtAuthenticationFilter拦截器已经检查过token有效，所以可以忽略get空指针提示
-                    Arrays.stream(claims.get(this.AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-            final User principal = new User(username, "", authorities);
-            authenticationToken = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-            // 将用户的权限信息缓存
-            this.redisUtil.set(username + this.HEADER, authenticationToken, this.EXPIRATION_TIME);
-            log.info("redis => first set user<{}> AuthenticationToken : {}", username, authenticationToken);
-        }
-        return authenticationToken;
+        // 获取用户角色字符串
+        // 将元素转换为GrantedAuthority接口集合
+        final Collection<? extends GrantedAuthority> authorities =
+                // 因为JwtAuthenticationFilter拦截器已经检查过token有效，所以可以忽略get空指针提示
+                Arrays.stream(claims.get(this.AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        final User principal = new User(username, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
 
     /**
@@ -151,7 +155,6 @@ public class JwtUtil {
             isValidate = (boolean) this.redisUtil.get(token);
         } catch (final NullPointerException e) {
             // 可能redis部署出现了问题，或者清空了缓存导致token键不存在
-            log.error(e.getMessage());
         }
         // 能正确解析token，并且redis中缓存的token也是有效的
         return this.parseToken(token) != null && isValidate;
@@ -163,7 +166,7 @@ public class JwtUtil {
     private String createToken(final String username, final Collection<? extends GrantedAuthority> grantedAuthorities) {
         // 获取用户的角色字符串，如 USER,ADMIN
         final String authorities = grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-        JwtUtil.log.info("User<{}> : authorities => {}", username, authorities);
+        log.info("User<{}> : authorities => {}", username, authorities);
 
         final Date date = new Date(System.currentTimeMillis() + this.EXPIRATION_TIME * 1000);
         // 加载私钥
@@ -205,19 +208,19 @@ public class JwtUtil {
                     .parseClaimsJws(token.replace(this.TOKEN_PREFIX, ""));
         } catch (final SignatureException e) {
             // 签名异常
-            log.info("Invalid JWT signature");
+            log.error("Invalid JWT signature");
         } catch (final MalformedJwtException e) {
             // JWT格式错误
-            log.info("Invalid JWT token");
+            log.error("Invalid JWT token");
         } catch (final ExpiredJwtException e) {
             // JWT过期
-            log.info("Expired JWT token");
+            log.error("Expired JWT token");
         } catch (final UnsupportedJwtException e) {
             // 不支持该JWT
-            log.info("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (final IllegalArgumentException e) {
             // 参数错误异常
-            log.info("JWT token compact of handler are invalid");
+            log.error("JWT token compact of handler are invalid");
         }
         return null;
     }

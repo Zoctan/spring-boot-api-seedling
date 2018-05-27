@@ -8,9 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 /**
- * ID工具类
+ * ID工具
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
-public class IdUtil {
+class IdUtil {
     private static final SimpleDateFormat timeSdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     public static String uuid() {

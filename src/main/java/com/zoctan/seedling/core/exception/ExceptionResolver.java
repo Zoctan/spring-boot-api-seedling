@@ -23,6 +23,9 @@ import java.util.Set;
 
 /**
  * 统一异常处理
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @RestControllerAdvice
 public class ExceptionResolver {

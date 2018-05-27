@@ -9,6 +9,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * jasypt 用于加密配置文件
  * https://github.com/ulisesbocchio/jasypt-spring-boot
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)

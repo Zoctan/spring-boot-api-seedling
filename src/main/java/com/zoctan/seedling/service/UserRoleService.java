@@ -4,7 +4,8 @@ import com.zoctan.seedling.core.service.Service;
 import com.zoctan.seedling.model.UserRole;
 
 /**
- * Created by Zoctan on 2018/02/09.
+ * @author Zoctan
+ * @date 2018/5/27
  */
 public interface UserRoleService extends Service<UserRole> {
 

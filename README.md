@@ -14,7 +14,6 @@
 - Swagger2：API 文档展示
 - Spring Security + JWT：对调用方签名认证
 - Jasypt：加密配置
-- Lombok：注解（IDE 需要安装 lombok 插件[idea](https://github.com/mplushnikov/lombok-intellij-plugin/)）
 - 其他略
 
 ## 快速开始
@@ -49,3 +48,7 @@ test/resources 目录下有数据库文件 seedling_dev.sql
 ## 相关项目
 
 - [前端Vue + 后端Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
+
+## 更新记录
+
+2018-05-27 更新 Spring Boot 等版本

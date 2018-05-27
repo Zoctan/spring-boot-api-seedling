@@ -1,6 +1,7 @@
 package com.zoctan.seedling.core.jwt;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,11 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 验证请求的Token
+ * 身份认证过滤器
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
-@Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final static Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     @Resource
     private JwtUtil jwtUtil;
 

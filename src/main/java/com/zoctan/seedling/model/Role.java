@@ -1,10 +1,11 @@
 package com.zoctan.seedling.model;
 
-import lombok.Data;
-
 import javax.persistence.*;
 
-@Data
+/**
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 @Table(name = "role")
 public class Role {
     /**
@@ -20,4 +21,20 @@ public class Role {
      */
     @Column(name = "name")
     private String name;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
 }

@@ -6,6 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 public class PasswordEncryptor {

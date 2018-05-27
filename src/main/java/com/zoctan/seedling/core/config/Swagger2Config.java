@@ -16,6 +16,9 @@ import static com.zoctan.seedling.core.ProjectConstant.BASE_PACKAGE;
 /**
  * Swagger2 在线API文档
  * http://springfox.github.io/springfox/docs/current/#getting-started
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @Configuration
 @EnableSwagger2

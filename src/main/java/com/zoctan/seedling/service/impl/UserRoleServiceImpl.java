@@ -10,10 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 /**
- * Created by Zoctan on 2018/02/09.
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserRoleServiceImpl extends AbstractService<UserRole> implements UserRoleService {
     @Resource
     private UserRoleMapper userRoleMapper;

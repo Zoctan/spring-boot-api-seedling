@@ -20,13 +20,12 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Created by Zoctan on 2018/02/04.
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @Service
-@Transactional
-@Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl extends AbstractService<User> implements UserService {
     @Resource
     private UserMapper userMapper;

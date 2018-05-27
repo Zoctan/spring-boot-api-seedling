@@ -12,8 +12,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,14 +29,15 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Created by Zoctan on 2018/02/04.
+ * @author Zoctan
+ * @date 2018/5/27
  */
 @Api(value = "用户接口")
 @RestController
 @RequestMapping("/user")
 @Validated
-@Slf4j
 public class UserController {
+    private final static Logger log = LoggerFactory.getLogger(UserController.class);
     @Resource
     private UserService userService;
     @Resource

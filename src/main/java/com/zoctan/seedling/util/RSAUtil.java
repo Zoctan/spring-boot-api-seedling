@@ -1,8 +1,10 @@
 package com.zoctan.seedling.util;
 
 
-import lombok.extern.slf4j.Slf4j;
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import java.io.DataInputStream;
@@ -12,10 +14,16 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-@Slf4j
+/**
+ * RSA 工具
+ *
+ * @author Zoctan
+ * @date 2018/5/27
+ */
+@Component
 public class RSAUtil {
-    private final String PROJECT_PATH = System.getProperty("user.dir");
-    private final String RESOURCES_PATH = "/src/main/resources/rsa/";
+    private final static Logger log = LoggerFactory.getLogger(RSAUtil.class);
+
     private final String algorithm = "RSA";
 
     /**
@@ -62,7 +70,7 @@ public class RSAUtil {
     }
 
     private byte[] replaceAndBase64Decode(final String file, final String headReplace, final String tailReplace) throws Exception {
-        final File f = new File(this.PROJECT_PATH + this.RESOURCES_PATH + file);
+        final File f = new File(file);
         final FileInputStream fis = new FileInputStream(f);
         final DataInputStream dis = new DataInputStream(fis);
         final byte[] keyBytes = new byte[(int) f.length()];
@@ -73,9 +81,7 @@ public class RSAUtil {
         String publicKeyPEM = temp.replace(headReplace, "");
         publicKeyPEM = publicKeyPEM.replace(tailReplace, "");
 
-
-        final BASE64Decoder b64 = new BASE64Decoder();
-        return b64.decodeBuffer(publicKeyPEM);
+        return Base64.decodeBase64(publicKeyPEM);
     }
 
     /**
@@ -89,8 +95,8 @@ public class RSAUtil {
             final byte[] decoded = this.replaceAndBase64Decode(
                     pem,
                     "-----BEGIN PUBLIC KEY-----\n",
-                    "-----END PUBLIC KEY-----");
-
+                    "-----END PUBLIC KEY-----"
+            );
             final X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
             final KeyFactory keyFactory = KeyFactory.getInstance(this.algorithm);
             return keyFactory.generatePublic(spec);
@@ -111,8 +117,8 @@ public class RSAUtil {
             final byte[] decoded = this.replaceAndBase64Decode(
                     pem,
                     "-----BEGIN PRIVATE KEY-----\n",
-                    "-----END PRIVATE KEY-----");
-
+                    "-----END PRIVATE KEY-----"
+            );
             final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
             final KeyFactory keyFactory = KeyFactory.getInstance(this.algorithm);
             return keyFactory.generatePrivate(spec);

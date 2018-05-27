@@ -7,6 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 public class UserControllerTest extends BaseControllerTest {
 
     private final String resource = "/user";

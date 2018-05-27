@@ -12,6 +12,10 @@ import java.util.TimeZone;
 
 import static com.zoctan.seedling.core.ProjectConstant.MAPPER_PACKAGE;
 
+/**
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 @EnableEncryptableProperties
 @SpringBootApplication
 @EnableCaching

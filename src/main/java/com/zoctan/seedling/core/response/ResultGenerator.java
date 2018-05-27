@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 响应结果生成工具
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
 public class ResultGenerator {
     private static final String DEFAULT_OK_MESSAGE = "OK";

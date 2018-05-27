@@ -5,7 +5,8 @@ import com.zoctan.seedling.model.User;
 
 
 /**
- * Created by Zoctan on 2018/02/04.
+ * @author Zoctan
+ * @date 2018/5/27
  */
 public interface UserService extends Service<User> {
     @Override

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * 统一API响应结果封装
+ * @author Zoctan
+ * @date 2018/5/27
  */
 public class Result {
     private int status;

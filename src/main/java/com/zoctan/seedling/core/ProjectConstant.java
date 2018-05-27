@@ -2,6 +2,9 @@ package com.zoctan.seedling.core;
 
 /**
  * 项目常量
+ *
+ * @author Zoctan
+ * @date 2018/5/27
  */
 public final class ProjectConstant {
     // 项目基础包名称

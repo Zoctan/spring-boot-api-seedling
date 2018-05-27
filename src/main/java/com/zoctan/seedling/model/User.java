@@ -1,16 +1,18 @@
 package com.zoctan.seedling.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.Data;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Data
+/**
+ * @author Zoctan
+ * @date 2018/5/27
+ */
 @Table(name = "user")
 public class User {
     /**
@@ -62,4 +64,60 @@ public class User {
      */
     @Transient
     private List<Role> roleList;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    public Timestamp getRegisterTime() {
+        return this.registerTime;
+    }
+
+    public void setRegisterTime(final Timestamp registerTime) {
+        this.registerTime = registerTime;
+    }
+
+    public Timestamp getLastLoginTime() {
+        return this.lastLoginTime;
+    }
+
+    public void setLastLoginTime(final Timestamp lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public List<Role> getRoleList() {
+        return this.roleList;
+    }
+
+    public void setRoleList(final List<Role> roleList) {
+        this.roleList = roleList;
+    }
 }
