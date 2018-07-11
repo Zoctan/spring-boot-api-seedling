@@ -4,6 +4,9 @@ package com.zoctan.seedling.util;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -16,13 +19,25 @@ import java.security.spec.X509EncodedKeySpec;
 
 /**
  * RSA 工具
+ * 用openssl生成512位RSA：
+ * 生成私钥：
+ * openssl genrsa -out key.pem 512
+ * 从私钥中导出公钥：
+ * openssl rsa -in key.pem -pubout -out public-key.pem
+ * 公钥加密：
+ * openssl rsautl -encrypt -in xx.file -inkey public-key.pem -pubin -out xx.en
+ * 私钥解密：
+ * openssl rsautl -decrypt -in xx.en -inkey key.pem -out xx.de
+ * 要在Java内调用还要进行pkcs8编码：
+ * openssl pkcs8 -topk8 -inform PEM -in key.pem -outform PEM -out private-key.pem -nocrypt
+ * 最后将公私玥放在/resources/rsa/：private-key.pem public-key.pem
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Component
-public class RSAUtil {
-    private final static Logger log = LoggerFactory.getLogger(RSAUtil.class);
+public class RSAUtils {
+    private final static Logger log = LoggerFactory.getLogger(RSAUtils.class);
 
     private final String algorithm = "RSA";
 
@@ -70,7 +85,9 @@ public class RSAUtil {
     }
 
     private byte[] replaceAndBase64Decode(final String file, final String headReplace, final String tailReplace) throws Exception {
-        final File f = new File(file);
+        final ResourceLoader loader = new DefaultResourceLoader();
+        final Resource resource = loader.getResource(file);
+        final File f = resource.getFile();
         final FileInputStream fis = new FileInputStream(f);
         final DataInputStream dis = new DataInputStream(fis);
         final byte[] keyBytes = new byte[(int) f.length()];
@@ -87,7 +104,7 @@ public class RSAUtil {
     /**
      * 加载pem格式的公钥
      *
-     * @param pem 公钥文件名
+     * @param pem 公钥文件路径
      * @return 公钥
      */
     public PublicKey loadPemPublicKey(final String pem) {
@@ -109,7 +126,7 @@ public class RSAUtil {
     /**
      * 加载pem格式PKCS8编码的私钥
      *
-     * @param pem 私钥文件名
+     * @param pem 私钥文件路径
      * @return 私钥
      */
     public PrivateKey loadPemPrivateKey(final String pem) {
@@ -128,17 +145,3 @@ public class RSAUtil {
         }
     }
 }
-/*
-用openssl生成512位RSA：
-生成私钥：
-openssl genrsa -out key.pem 512
-从私钥中导出公钥：
-openssl rsa -in key.pem -pubout -out public-key.pem
-公钥加密：
-openssl rsautl -encrypt -in xx.file -inkey public-key.pem -pubin -out xx.en
-私钥解密：
-openssl rsautl -decrypt -in xx.en -inkey key.pem -out xx.de
-要在Java内调用还要进行pkcs8编码：
-openssl pkcs8 -topk8 -inform PEM -in key.pem -outform PEM -out private-key.pem -nocrypt
-最后将公私玥放在/resources/rsa/：private-key.pem public-key.pem
- */

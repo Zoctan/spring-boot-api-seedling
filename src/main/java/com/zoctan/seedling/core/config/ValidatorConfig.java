@@ -14,7 +14,7 @@ import javax.validation.ValidatorFactory;
  * https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#section-constraint-violation-methods
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Configuration
 public class ValidatorConfig {

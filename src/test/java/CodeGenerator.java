@@ -14,14 +14,15 @@ import java.util.*;
 import static com.zoctan.seedling.core.ProjectConstant.*;
 
 /**
- * 代码生成器，根据数据表名称生成对应的Model、MyMapper、Service、Controller简化开发。
+ * 代码生成器
+ * 根据数据表名称生成对应的Model、Mapper、Service、Controller简化开发
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 public class CodeGenerator {
     // JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/wyuoj_dev" + "?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/seedling_dev" + "?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
@@ -45,23 +46,14 @@ public class CodeGenerator {
     // @date
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
     private static final boolean isRestful = true;
-    private static boolean overwrite = false;
 
     public static void main(final String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        System.out.print("可能已存在相关文件，是否覆盖？y/n:");
-        if (scanner.next().equals("y")) {
-            overwrite = true;
+        System.out.print("可能已存在相关文件，请尽可能确保无误。y/n:");
+        if (!scanner.next().equals("y")) {
+            return;
         }
-        genCode("contest");
-        genCode("contest_result");
-        genCode("notice");
-        genCode("problem");
-        genCode("problem_post");
-        genCode("user_code");
-        genCode("user_problem_code");
-        genCode("user_problem_collection");
-        genCode("user_problem_note");
+        genCode("");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 
@@ -141,7 +133,7 @@ public class CodeGenerator {
             config.addContext(context);
             config.validate();
 
-            final DefaultShellCallback callback = new DefaultShellCallback(overwrite);
+            final DefaultShellCallback callback = new DefaultShellCallback(true);
             warnings = new ArrayList<>();
             generator = new MyBatisGenerator(config, callback, warnings);
             generator.generate(null);

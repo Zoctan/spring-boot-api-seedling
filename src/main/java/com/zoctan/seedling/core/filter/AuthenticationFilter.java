@@ -1,7 +1,10 @@
-package com.zoctan.seedling.core.jwt;
+package com.zoctan.seedling.core.filter;
 
+import com.zoctan.seedling.core.jwt.JwtUtil;
+import com.zoctan.seedling.util.IpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -19,34 +22,35 @@ import java.io.IOException;
  * 身份认证过滤器
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final static Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+public class AuthenticationFilter extends OncePerRequestFilter {
+    private final static Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     @Resource
     private JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
+    protected void doFilterInternal(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain filterChain)
             throws ServletException, IOException {
         final String token = this.jwtUtil.getTokenFromRequest(request);
         if (token != null) {
-            final String username = this.jwtUtil.getUsername(token);
-            log.info("JwtFilter => user<{}> token : {}", username, token);
+            final String name = this.jwtUtil.getName(token);
+            log.debug("account<{}> token => {}", name, token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (this.jwtUtil.validateToken(token)) {
-                    final UsernamePasswordAuthenticationToken authentication = this.jwtUtil.getAuthentication(username, token);
+                    final UsernamePasswordAuthenticationToken authentication = this.jwtUtil.getAuthentication(name, token);
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                    // 向安全上下文中注入已认证的账户
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.info("JwtFilter => user<{}> is authorized, set security context", username);
+                    log.debug("account<{}> is authorized, set security context", name);
                 }
             }
         } else {
-            log.info("Anonymous request URL<{}>", request.getRequestURL());
+            log.debug("Anonymous<{}> request URL<{}>", IpUtils.getIpAddress(request), request.getRequestURL());
         }
         filterChain.doFilter(request, response);
     }

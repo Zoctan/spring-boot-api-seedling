@@ -1,21 +1,21 @@
 package com.zoctan.seedling.core.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
+import com.zoctan.seedling.core.cache.MyRedisCacheManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
+ * Redis配置
+ *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Configuration
 public class RedisConfig {
@@ -31,25 +31,31 @@ public class RedisConfig {
         return new JedisConnectionFactory(poolConfig);
     }
 
+    /**
+     * 配置 RedisTemplate，配置 key 和 value 的序列化类
+     * key 序列化使用 StringRedisSerializer, 不配置的话，key 会出现乱码
+     */
     @Bean
     public RedisTemplate redisTemplate(@Qualifier(value = "jedisConnectionFactory") final JedisConnectionFactory factory) {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(factory);
 
-        final Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        final ObjectMapper om = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
-
-        final StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        // 设置key的序列化器为字符串Serializer
+        final StringRedisSerializer stringSerializer = MyRedisCacheManager.STRING_SERIALIZER;
 
         redisTemplate.setKeySerializer(stringSerializer);
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-
         redisTemplate.setHashKeySerializer(stringSerializer);
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
+        // 设置value的序列化器为fastjson Serializer
+        final GenericFastJsonRedisSerializer fastSerializer = MyRedisCacheManager.FASTJSON_SERIALIZER;
+
+        redisTemplate.setValueSerializer(fastSerializer);
+        redisTemplate.setHashValueSerializer(fastSerializer);
+
+        // 如果 KeySerializer 或者 ValueSerializer 没有配置
+        // 则对应的 KeySerializer、ValueSerializer 才使用fastjson Serializer
+        redisTemplate.setDefaultSerializer(fastSerializer);
+
+        redisTemplate.setConnectionFactory(factory);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }

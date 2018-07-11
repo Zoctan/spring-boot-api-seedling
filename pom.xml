@@ -4,36 +4,50 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.zoctan</groupId>
-    <artifactId>spring-boot-api-fast</artifactId>
-    <version>1.0</version>
+    <artifactId>spring-boot-api-seeding</artifactId>
+    <version>1.1</version>
     <packaging>jar</packaging>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <!-- Inherit defaults from Spring Boot -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
+        <version>2.0.0.RELEASE</version>
     </parent>
+
+    <properties>
+        <!-- 打包配置 -->
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 依赖版本 -->
+        <swagger2.version>2.8.0</swagger2.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <jedis.version>2.9.0</jedis.version>
+        <commons-codec.version>1.11</commons-codec.version>
+        <commons-lang3.version>3.7</commons-lang3.version>
+        <guava.version>25.1-jre</guava.version>
+        <mybatis.version>1.3.2</mybatis.version>
+        <mybatis-generator.version>1.3.6</mybatis-generator.version>
+        <mapper.version>2.0.3</mapper.version>
+        <pagehelper.version>1.2.5</pagehelper.version>
+        <fastjson.version>1.2.47</fastjson.version>
+        <druid.version>1.1.10</druid.version>
+        <jasypt.version>2.0.0</jasypt.version>
+        <freemarker.version>2.3.28</freemarker.version>
+    </properties>
+
     <dependencies>
         <!-- swagger2 -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.8.0</version>
+            <version>${swagger2.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.8.0</version>
+            <version>${swagger2.version}</version>
         </dependency>
         <!-- spring security + json web token -->
         <dependency>
@@ -43,13 +57,15 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.0</version>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <!-- MySQL JDBC驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <!-- Spring Boot依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -59,10 +75,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- 热部署 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <!-- optional=true，依赖不会传递，该项目依赖devtools，之后依赖该项目的子项目要使用devtools，需重新引入 -->
+            <optional>true</optional>
         </dependency>
 
         <!-- redis -->
@@ -80,58 +102,37 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
+            <version>${jedis.version}</version>
         </dependency>
+
         <!-- 常用库依赖 -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>23.0</version>
-        </dependency>
-        <!-- MySQL JDBC驱动 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <!-- MyBatis及插件依赖 -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <!--mapper-->
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-spring-boot-starter</artifactId>
-            <version>1.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.3</version>
+            <version>${guava.version}</version>
         </dependency>
 
-        <!-- 阿里 FastJson 依赖 -->
+        <!-- FastJson -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <version>${fastjson.version}</version>
         </dependency>
-        <!-- 阿里 Druid Spring Boot Starter 依赖 -->
+        <!-- Druid 数据库连接池 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.9</version>
+            <version>${druid.version}</version>
         </dependency>
 
         <!-- jasypt 用于加密配置文件 -->
@@ -139,24 +140,43 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>2.0.0</version>
+            <version>${jasypt.version}</version>
+        </dependency>
+
+        <!-- pagehelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper.version}</version>
+        </dependency>
+        <!-- MyBatis及插件依赖 -->
+        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <!-- mapper -->
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <version>${mapper.version}</version>
         </dependency>
         <!-- 代码生成器依赖 -->
+        <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.23</version>
-            <scope>test</scope>
+            <version>${freemarker.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
-            <version>1.3.6</version>
-            <scope>test</scope>
+            <version>${mybatis-generator.version}</version>
         </dependency>
-        <!-- 单元测试框架
-        https://junit.org/junit5/docs/current/user-guide/
-         -->
+
+        <!-- 单元测试框架-->
+        <!-- https://junit.org/junit5/docs/current/user-guide/-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -167,18 +187,17 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot 打包工具 -->
+            <!-- 打包插件 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- 指定JDK编译版本 -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${java.version}</source>
+                    <!-- 指定JDK编译版本 -->
                     <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,24 +1,25 @@
 package com.zoctan.seedling.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
+@ApiModel(value = "角色实体")
 @Table(name = "role")
-public class Role {
-    /**
-     * 角色Id
-     */
+public class Role implements Serializable {
+    @ApiModelProperty(value = "角色Id", readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    /**
-     * 角色名称
-     */
+    @ApiModelProperty(value = "角色名称")
     @Column(name = "name")
     private String name;
 

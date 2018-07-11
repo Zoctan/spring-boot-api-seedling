@@ -9,11 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
-public class UserControllerTest extends BaseControllerTest {
+public class AccountControllerTest extends BaseControllerTest {
 
-    private final String resource = "/user";
+    private final String resource = "/account";
 
     /**
      * MockMvc 测试 SpringSecurity
@@ -25,7 +25,7 @@ public class UserControllerTest extends BaseControllerTest {
     public void login() throws Exception {
         this.mockMvc.perform(
                 post(this.url + this.resource + "/login")
-                        .param("username", "admin")
+                        .param("name", "admin")
                         .param("password", "admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))

@@ -1,30 +1,39 @@
 package com.zoctan.seedling.core.config;
 
+import com.zoctan.seedling.core.cache.MyRedisCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 
 /**
+ * Redis缓存配置
+ *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Configuration
+// 只有 application.properties 中有 spring.redis.host 时才配置
+@ConditionalOnProperty(name = "spring.redis.host")
+@EnableConfigurationProperties(RedisProperties.class)
+// 支持 @Cacheable、@CachePut、@CacheEvict 等缓存注解
+@EnableCaching(proxyTargetClass = true)
 public class RedisCacheConfig extends CachingConfigurerSupport {
     private final static Logger log = LoggerFactory.getLogger(RedisCacheConfig.class);
 
@@ -34,34 +43,45 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Bean
     @Override
     public CacheManager cacheManager() {
-        //初始化一个RedisCacheWriter
+        // 初始化一个RedisCacheWriter
         final RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(this.jedisConnectionFactory);
-        final RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig();
-        //初始化RedisCacheManager
-        return new RedisCacheManager(redisCacheWriter, defaultCacheConfig);
+        // 设置默认过期时间：30分钟
+        final RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30))
+                // .disableCachingNullValues()
+                // 使用注解时的序列化、反序列化
+                .serializeKeysWith(MyRedisCacheManager.STRING_PAIR)
+                .serializeValuesWith(MyRedisCacheManager.FASTJSON_PAIR);
+        // 初始化RedisCacheManager
+        return new MyRedisCacheManager(redisCacheWriter, defaultCacheConfig);
     }
 
+    /**
+     * 如果 @Cacheable、@CachePut、@CacheEvict 等注解没有配置 key，则使用这个自定义 key 生成器
+     * <p>
+     * 自定义缓存的 key 时，难以保证 key 的唯一性
+     * 此时最好指定方法名，比如：@Cacheable(value="", key="{#root.methodName, #id}")
+     */
     @Bean
     @Override
     public KeyGenerator keyGenerator() {
-        return (target, method, objects) -> {
-            String[] value = new String[1];
-            final Cacheable cacheable = method.getAnnotation(Cacheable.class);
-            if (cacheable != null) {
-                value = cacheable.value();
+        return (o, method, objects) -> {
+            final StringBuilder sb = new StringBuilder(32);
+            sb.append(o.getClass().getSimpleName());
+            sb.append(".");
+            sb.append(method.getName());
+            if (objects.length > 0) {
+                sb.append("#");
             }
-            final CachePut cachePut = method.getAnnotation(CachePut.class);
-            if (cachePut != null) {
-                value = cachePut.value();
-            }
-            final CacheEvict cacheEvict = method.getAnnotation(CacheEvict.class);
-            if (cacheEvict != null) {
-                value = cacheEvict.value();
-            }
-            final StringBuilder sb = new StringBuilder();
-            sb.append(value[0]);
-            for (final Object obj : objects) {
-                sb.append(":").append(obj.toString());
+            String sp = "";
+            for (final Object object : objects) {
+                sb.append(sp);
+                if (object == null) {
+                    sb.append("NULL");
+                } else {
+                    sb.append(object.toString());
+                }
+                sp = ".";
             }
             return sb.toString();
         };
@@ -75,31 +95,35 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     public CacheErrorHandler errorHandler() {
         return new SimpleCacheErrorHandler() {
             @Override
-            public void handleCacheGetError(final RuntimeException exception, final Cache cache, final Object key) {
-                log.error("cache : {} , key : {}", cache, key);
-                log.error("handleCacheGetError", exception);
-                super.handleCacheGetError(exception, cache, key);
+            public void handleCacheGetError(final RuntimeException e, final Cache cache, final Object key) {
+                log.error("cache => {}", cache);
+                log.error("key => {}", key);
+                log.error("handleCacheGetError => ", e.getMessage());
+                super.handleCacheGetError(e, cache, key);
             }
 
             @Override
-            public void handleCachePutError(final RuntimeException exception, final Cache cache, final Object key, final Object value) {
-                log.error("cache : {} , key : {} , value : {} ", cache, key, value);
-                log.error("handleCachePutError", exception);
-                super.handleCachePutError(exception, cache, key, value);
+            public void handleCachePutError(final RuntimeException e, final Cache cache, final Object key, final Object value) {
+                log.error("cache => {}", cache);
+                log.error("key => {}", key);
+                log.error("value => {}", value);
+                log.error("handleCachePutError => ", e.getMessage());
+                super.handleCachePutError(e, cache, key, value);
             }
 
             @Override
-            public void handleCacheEvictError(final RuntimeException exception, final Cache cache, final Object key) {
-                log.error("cache : {} , key : {}", cache, key);
-                log.error("handleCacheEvictError", exception);
-                super.handleCacheEvictError(exception, cache, key);
+            public void handleCacheEvictError(final RuntimeException e, final Cache cache, final Object key) {
+                log.error("cache => {}", cache);
+                log.error("key => {}", key);
+                log.error("handleCacheEvictError => ", e.getMessage());
+                super.handleCacheEvictError(e, cache, key);
             }
 
             @Override
-            public void handleCacheClearError(final RuntimeException exception, final Cache cache) {
-                log.error("cache : {} ", cache);
-                log.error("handleCacheClearError", exception);
-                super.handleCacheClearError(exception, cache);
+            public void handleCacheClearError(final RuntimeException e, final Cache cache) {
+                log.error("cache => {}", cache);
+                log.error("handleCacheClearError => ", e.getMessage());
+                super.handleCacheClearError(e, cache);
             }
         };
     }

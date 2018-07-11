@@ -15,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)

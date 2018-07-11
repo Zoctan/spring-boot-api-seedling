@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -16,10 +16,10 @@ import java.util.List;
  * Spring MVC 配置
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig extends WebMvcConfigurationSupport {
     /**
      * 使用阿里 FastJson 作为JSON MessageConverter
      */
@@ -30,8 +30,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         config.setSerializerFeatures(
                 // 保留空的字段
                 //SerializerFeature.WriteMapNullValue,
-                // String null -> ""
-                SerializerFeature.WriteNullStringAsEmpty,
                 // Number null -> 0
                 SerializerFeature.WriteNullNumberAsZero
         );
@@ -58,7 +56,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         // solved swagger2
-        registry.addResourceHandler("/swagger-ui.html**").addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/swagger-ui.html**")
+                .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }

@@ -13,8 +13,10 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * 角色控制器
+ *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @RestController
 @RequestMapping("/role")
@@ -52,7 +54,7 @@ public class RoleController {
                        @RequestParam(defaultValue = "0") final Integer size) {
         PageHelper.startPage(page, size);
         final List<Role> list = this.roleService.findAll();
-        final PageInfo pageInfo = new PageInfo(list);
+        final PageInfo<Role> pageInfo = new PageInfo<>(list);
         return ResultGenerator.genOkResult(pageInfo);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)

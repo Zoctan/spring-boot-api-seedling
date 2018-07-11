@@ -1,7 +1,7 @@
 package com.zoctan.seedling.core.config;
 
-import com.zoctan.seedling.core.jwt.JwtAuthenticationEntryPoint;
-import com.zoctan.seedling.core.jwt.JwtAuthenticationFilter;
+import com.zoctan.seedling.core.filter.AuthenticationFilter;
+import com.zoctan.seedling.core.filter.MyAuthenticationEntryPoint;
 import com.zoctan.seedling.service.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,16 +22,16 @@ import javax.annotation.Resource;
  * 安全设置
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private MyAuthenticationEntryPoint myAuthenticationEntryPoint;
     @Resource
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private AuthenticationFilter authenticationFilter;
 
     @Bean
     @Override
@@ -48,7 +48,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final AuthenticationManagerBuilder auth)
             throws Exception {
         auth
-                // 自定义获取用户信息
+                // 自定义获取账户信息
                 .userDetailsService(this.userDetailsService())
                 // 设置密码加密
                 .passwordEncoder(this.passwordEncoder());
@@ -62,9 +62,13 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 关闭csrf验证
                 .csrf().disable()
                 // 无状态Session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 // 异常处理
-                .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and()
+                .exceptionHandling()
+                // 因为RESTFul没有登录界面所以只能显示未登录
+                .authenticationEntryPoint(this.myAuthenticationEntryPoint)
+                .and()
                 // 对所有的请求都做权限校验
                 .authorizeRequests()
                 // 允许匿名请求
@@ -77,14 +81,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 允许登录和注册
                 .antMatchers(
                         HttpMethod.POST,
-                        "/user/login",
-                        "/user"
+                        "/account/login",
+                        "/account"
                 ).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated().and();
+                .anyRequest().authenticated();
 
-        http    // 基于定制JWT安全过滤器
-                .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http    // 身份过滤器
+                .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 禁用页面缓存
         http.headers().cacheControl();
     }

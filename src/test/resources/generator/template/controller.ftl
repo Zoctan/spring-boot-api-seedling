@@ -26,25 +26,25 @@ public class ${modelNameUpperCamel}Controller {
 
     @PostMapping("/add")
     public Result add(${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
+${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
         return ResultGenerator.genOkResult();
     }
 
     @PostMapping("/delete")
     public Result delete(@RequestParam Long id) {
-        ${modelNameLowerCamel}Service.deleteById(id);
+${modelNameLowerCamel}Service.deleteById(id);
         return ResultGenerator.genOkResult();
     }
 
     @PostMapping("/update")
     public Result update(${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}Service.update(${modelNameLowerCamel});
+${modelNameLowerCamel}Service.update(${modelNameLowerCamel});
         return ResultGenerator.genOkResult();
     }
 
     @PostMapping("/detail")
     public Result detail(@RequestParam Long id) {
-        ${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
+${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
         return ResultGenerator.genOkResult(${modelNameLowerCamel});
     }
 
@@ -53,7 +53,7 @@ public class ${modelNameUpperCamel}Controller {
                        @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<${modelNameUpperCamel}> list = ${modelNameLowerCamel}Service.findAll();
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo<${modelNameUpperCamel}> pageInfo = new PageInfo<>(list);
         return ResultGenerator.genOkResult(pageInfo);
     }
 }

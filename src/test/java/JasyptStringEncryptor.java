@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * https://github.com/ulisesbocchio/jasypt-spring-boot
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -22,10 +22,10 @@ public class JasyptStringEncryptor {
 
     @Test
     public void encode() throws Exception {
-        final String username = this.stringEncryptor.encrypt("root");
+        final String name = this.stringEncryptor.encrypt("root");
         final String password = this.stringEncryptor.encrypt("root");
 
-        System.err.println("username = " + username);
+        System.err.println("name = " + name);
         System.err.println("password = " + password);
     }
 }

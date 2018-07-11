@@ -1,4 +1,4 @@
-package com.zoctan.seedling.core.jwt;
+package com.zoctan.seedling.core.filter;
 
 import com.zoctan.seedling.core.response.ResultGenerator;
 import org.springframework.http.MediaType;
@@ -13,17 +13,14 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Json web token 入口点
+ * 认证入口点
+ * 因为RESTFul没有登录界面所以只能显示未登录
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
-
-    /**
-     * 当访问的资源没有权限时被调用
-     */
+public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
     @Override
     public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException)
             throws IOException {

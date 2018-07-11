@@ -2,7 +2,7 @@
 
 ## 简介
 
-本项目与[种子项目](https://github.com/lihengming/spring-boot-api-project-seed)定位一致：快速构建中小型 API、RESTful API 项目，摆脱重复劳动，专注于业务代码的编写，减少加班。
+本项目与[种子项目](https://github.com/lihengming/spring-boot-api-project-seed)定位一致：快速构建中小型 API、RESTFul API 项目，摆脱重复劳动，专注于业务代码的编写，减少加班。
 
 种子项目本身很简洁，已经能满足很多基本需求，在此感谢种子作者。
 
@@ -37,18 +37,19 @@ test/resources 目录下有数据库文件 seedling_dev.sql
 
 ## 技术选型&文档
 
-1. Lombok（[官方英文文档](https://projectlombok.org/features/all)）
-2. Spring Boot（[种子项目作者的学习&使用指南](https://www.jianshu.com/p/1a9fd8936bd8) | [基础教程](http://blog.didispace.com/Spring-Boot%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/)）
-3. MyBatis（[官方中文文档](http://www.mybatis.org/mybatis-3/zh/index.html)）
-4. MyBatisb通用Mapper插件（[官方中文文档](https://mapperhelper.github.io/docs/)）
-5. MyBatis PageHelper分页插件（[官方中文文档](https://pagehelper.github.io/)）
-6. Druid Spring Boot Starter（[官方中文文档](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter/)）
-7. Fastjson（[官方中文文档](https://github.com/alibaba/fastjson/wiki/Quick-Start-CN) | [W3CShool使用指南](https://www.w3cschool.cn/fastjson/fastjson-quickstart.html)）
+1. Spring Boot（[种子项目作者的学习&使用指南](https://www.jianshu.com/p/1a9fd8936bd8) | [基础教程](http://blog.didispace.com/Spring-Boot%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/)）
+2. MyBatis（[官方中文文档](http://www.mybatis.org/mybatis-3/zh/index.html)）
+3. MyBatis通用Mapper插件（[官方中文文档](https://mapperhelper.github.io/docs/)）
+4. MyBatis PageHelper分页插件（[官方中文文档](https://pagehelper.github.io/)）
+5. Druid Spring Boot Starter（[官方中文文档](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter/)）
+6. FastJson（[官方中文文档](https://github.com/alibaba/fastjson/wiki/Quick-Start-CN) | [W3CSchool使用指南](https://www.w3cschool.cn/fastjson/fastjson-quickstart.html)）
 
 ## 相关项目
 
 - [前端Vue + 后端Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
 
 ## 更新记录
+
+2018-07-11 添加了可自定义缓存过期时间的注解，修改了数据表user为account，还有其他细节。
 
 2018-05-27 更新 Spring Boot 等版本
