@@ -8,4 +8,5 @@ import com.zoctan.seedling.model.Role;
  * @date 2018/05/27
  */
 public interface RoleService extends Service<Role> {
+
 }

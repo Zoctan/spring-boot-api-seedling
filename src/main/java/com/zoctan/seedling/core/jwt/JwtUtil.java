@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -91,9 +92,10 @@ public class JwtUtil {
      * 从请求头或请求参数中获取token
      */
     public String getTokenFromRequest(final HttpServletRequest httpRequest) {
-        final String token = httpRequest.getHeader(this.jwtSetting.getHeader());
+        final String header = this.jwtSetting.getHeader();
+        final String token = httpRequest.getHeader(header);
         if (StringUtils.isEmpty(token)) {
-            return httpRequest.getParameter(this.jwtSetting.getHeader());
+            return httpRequest.getParameter(header);
         }
         return token;
     }
@@ -139,9 +141,11 @@ public class JwtUtil {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         log.debug("Account<{}> : authorities => {}", name, authorities);
-
+        
         // 过期时间
-        final Date expiration = new Date(System.currentTimeMillis() + this.jwtSetting.getExpirationTime() * 1000);
+        final long expirationTime = this.jwtSetting.getExpirationTime();
+        // 当前时间 + 有效时长
+        final Date expiration = new Date(System.currentTimeMillis() + Duration.ofMinutes(expirationTime).toMillis());
         // 加载私钥
         final PrivateKey privateKey = this.rsaUtils.loadPemPrivateKey(this.jwtSetting.getPrivateKey());
         // 创建token
@@ -155,15 +159,18 @@ public class JwtUtil {
                         .setExpiration(expiration)
                         // 私钥加密生成签名
                         .signWith(SignatureAlgorithm.RS256, privateKey)
+                        // 使用LZ77算法与哈夫曼编码结合的压缩算法进行压缩
+                        // 如果希望claim中的属性能被前端读取，建议不压缩
+                        .compressWith(CompressionCodecs.DEFLATE)
                         .compact();
         // 保存账户token
         // 因为账户注销后JWT本身只要没过期就仍然有效，所以只能通过redis缓存来校验有无效
         // 校验时只要redis中的token无效即可（JWT本身可以校验有无过期，而redis过期即被删除了）
         // true 有效
-        this.redisUtils.set(token, true, this.jwtSetting.getExpirationTime());
+        this.redisUtils.set(token, true, expirationTime);
         // redis过期时间和JWT的一致
-        this.redisUtils.set(name, token, this.jwtSetting.getExpirationTime());
-        log.debug("redis => put account<{}> token : {}", name, token);
+        this.redisUtils.set(name, token, expirationTime);
+        log.debug("redis => set account<{}> token : {}", name, token);
         return token;
     }
 

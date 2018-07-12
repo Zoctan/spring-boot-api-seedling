@@ -11,6 +11,7 @@ import com.zoctan.seedling.model.Role;
 import com.zoctan.seedling.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,29 +37,35 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
     @Resource
     private PasswordEncoder passwordEncoder;
 
-    private void saveRole(final long id, final String roleName) {
+    private int saveRole(final long id, final String roleName) {
         final Condition condition = new Condition(Role.class);
         condition.createCriteria().andCondition("name = ", roleName);
         final Role role = this.roleMapper.selectByCondition(condition).get(0);
-        this.accountRoleMapper.insert(
-                new AccountRole()
-                        .setAccountId(id)
-                        .setRoleId(role.getId()));
+        return this.accountRoleMapper.insert(new AccountRole().setAccountId(id).setRoleId(role.getId()));
     }
 
     /**
      * 重写save方法，密码加密后再存
      */
     @Override
-    public void save(final Account account) {
+    public int save(final Account account) {
         final Account a = this.findByName(account.getName());
         if (a != null) {
             throw new ServiceException("账户名已存在");
         } else {
-            account.setPassword(this.passwordEncoder.encode(account.getPassword()));
-            this.accountMapper.insertSelective(account);
-            log.debug("Account<{}> id => {}", account.getName(), account.getId());
-            this.saveRole(account.getId(), "USER");
+            // 这里new一个accountToDB
+            // 如果直接对account修改某些属性值，调用方再获取account的属性时会出现脏数据
+            // 因为这里的account是一个引用而不是值
+            // 比如这里调用了save后还需要login获取token
+            // 直接在这里对account的密码加密的话，login就会获得加密过的密码，导致验证错误
+            final Account accountToDB = new Account();
+            // 将属性值一一复制
+            BeanUtils.copyProperties(account, accountToDB);
+
+            accountToDB.setPassword(this.passwordEncoder.encode(account.getPassword()));
+            this.accountMapper.insertSelective(accountToDB);
+            log.debug("Account<{}> id => {}", accountToDB.getName(), accountToDB.getId());
+            return this.saveRole(accountToDB.getId(), "USER");
         }
     }
 
@@ -66,13 +73,13 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
      * 重写update方法
      */
     @Override
-    public void update(final Account account) {
+    public int update(final Account account) {
         // 如果修改了密码
         if (account.getPassword() != null) {
             // 密码修改后需要加密
             account.setPassword(this.passwordEncoder.encode(account.getPassword().trim()));
         }
-        this.accountMapper.updateByPrimaryKeySelective(account);
+        return this.accountMapper.updateByPrimaryKeySelective(account);
     }
 
     private Account findByParam(final String column, final Object param) {

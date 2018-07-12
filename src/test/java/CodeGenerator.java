@@ -164,24 +164,27 @@ public class CodeGenerator {
             data.put("modelNameLowerCamel", tableNameConvertLowerCamel(tableName));
             data.put("basePackage", BASE_PACKAGE);
 
-            final File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            cfg.getTemplate("service.ftl").process(data,
-                    new FileWriter(file));
+            final File file = createFileDir(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
+            cfg.getTemplate("service.ftl").process(data, new FileWriter(file));
             System.out.println(modelNameUpperCamel + "Service.java 生成成功");
 
-            final File file1 = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE_IMPL + modelNameUpperCamel + "ServiceImpl.java");
-            if (!file1.getParentFile().exists()) {
-                file1.getParentFile().mkdirs();
-            }
-            cfg.getTemplate("service-impl.ftl").process(data,
-                    new FileWriter(file1));
+            final File file1 = createFileDir(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE_IMPL + modelNameUpperCamel + "ServiceImpl.java");
+            cfg.getTemplate("service-impl.ftl").process(data, new FileWriter(file1));
             System.out.println(modelNameUpperCamel + "ServiceImpl.java 生成成功");
         } catch (final Exception e) {
             throw new RuntimeException("生成Service失败", e);
         }
+    }
+
+    private static File createFileDir(final String name) throws RuntimeException {
+        final File file = new File(name);
+        if (!file.getParentFile().exists()) {
+            final boolean createSuccess = file.getParentFile().mkdirs();
+            if (!createSuccess) {
+                throw new RuntimeException("文件夹创建失败");
+            }
+        }
+        return file;
     }
 
     private static void genController(final String tableName, final String modelName) {
@@ -197,10 +200,7 @@ public class CodeGenerator {
             data.put("modelNameLowerCamel", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, modelNameUpperCamel));
             data.put("basePackage", BASE_PACKAGE);
 
-            final File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + modelNameUpperCamel + "Controller.java");
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
+            final File file = createFileDir(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + modelNameUpperCamel + "Controller.java");
 
             if (isRestful) {
                 cfg.getTemplate("controller-restful.ftl").process(data, new FileWriter(file));

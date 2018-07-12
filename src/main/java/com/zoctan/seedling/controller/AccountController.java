@@ -54,10 +54,8 @@ public class AccountController {
             final String msg = bindingResult.getFieldError().getDefaultMessage();
             return ResultGenerator.genFailedResult(msg);
         } else {
-            // 保存后密码加密了，而登录需要没加密的密码
-            final String password = account.getPassword();
             this.accountService.save(account);
-            return this.login(account.getName(), password);
+            return this.login(account.getName(), account.getPassword());
         }
     }
 
@@ -90,8 +88,9 @@ public class AccountController {
     @ApiOperation(value = "获取账户列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "页号", dataType = "Integer"),
-            @ApiImplicitParam(name = "size", value = "页数", dataType = "Integer")
+            @ApiImplicitParam(name = "size", value = "页大小", dataType = "Integer")
     })
+    // 只有在结果不为空和正确返回结果时才缓存
     @Cacheable(value = "account.list", unless = "#result == null or #result.code != 200")
     @CacheExpire(expire = 60)
     @GetMapping

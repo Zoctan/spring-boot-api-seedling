@@ -16,39 +16,44 @@ public interface Service<T> {
      * 持久化
      *
      * @param model 实体
+     * @return 影响行数
      */
-    void save(T model);
+    int save(T model);
 
     /**
      * 批量持久化
      *
      * @param models 实体列表
+     * @return 影响行数
      */
-    void save(List<T> models);
+    int save(List<T> models);
 
     /**
      * 通过主鍵刪除
      *
      * @param id id
+     * @return 影响行数
      */
-    void deleteById(Object id);
+    int deleteById(Object id);
 
     /**
      * 通过实体中某个成员变量名称（非数据表中column的名称）刪除
      *
      * @param fieldName 字段名
      * @param value     字段值
+     * @return 影响行数
      * @throws TooManyResultsException 多条结果异常
      */
-    void deleteBy(String fieldName, Object value) throws TooManyResultsException;
+    int deleteBy(String fieldName, Object value) throws TooManyResultsException;
 
     /**
      * 批量刪除
      * ids -> “1,2,3,4”
      *
      * @param ids ids
+     * @return 影响行数
      */
-    void deleteByIds(String ids);
+    int deleteByIds(String ids);
 
     //
 
@@ -56,23 +61,26 @@ public interface Service<T> {
      * 根据条件刪除
      *
      * @param condition 条件
+     * @return 影响行数
      */
-    void deleteByCondition(Condition condition);
+    int deleteByCondition(Condition condition);
 
     /**
      * 按组件更新
      *
      * @param model 实体
+     * @return 影响行数
      */
-    void update(T model);
+    int update(T model);
 
     /**
      * 按条件更新
      *
      * @param model     实体
      * @param condition 条件
+     * @return 影响行数
      */
-    void updateByCondition(T model, Condition condition);
+    int updateByCondition(T model, Condition condition);
 
     /**
      * 通过ID查找

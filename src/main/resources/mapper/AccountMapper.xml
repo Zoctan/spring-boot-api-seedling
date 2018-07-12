@@ -22,8 +22,8 @@
         LEFT JOIN account_role ar ON a.id = ar.account_id
         LEFT JOIN role r ON ar.role_id = r.id
         <where>
-            <if test="id != null">a.id = #{id};</if>
-            <if test="name != null">a.name = #{name};</if>
+            <if test="id != null">a.id = #{id}</if>
+            <if test="name != null">a.name = #{name}</if>
         </where>
     </select>
 

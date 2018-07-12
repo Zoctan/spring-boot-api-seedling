@@ -53,10 +53,10 @@ test/resources 目录下有数据库文件 seedling_dev.sql
 
 ## 相关项目
 
-- [前端Vue + 后端Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
+- [前端 Vue + 后端 Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
 
 ## 更新记录
 
 2018-07-11 添加了可自定义缓存过期时间的注解，修改了数据表 user 为 account，还有其他细节。
 
-2018-05-27 更新 SpringBoot 等版本
+2018-05-27 更新 SpringBoot 等版本。

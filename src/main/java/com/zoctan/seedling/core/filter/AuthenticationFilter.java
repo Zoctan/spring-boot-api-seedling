@@ -44,7 +44,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // 向安全上下文中注入已认证的账户
+                    // 向Security上下文中注入已认证的账户
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     log.debug("account<{}> is authorized, set security context", name);
                 }

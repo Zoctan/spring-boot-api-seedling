@@ -18,62 +18,65 @@ import java.util.List;
  * @date 2018/5/27
  */
 public abstract class AbstractService<T> implements Service<T> {
-    // 当前泛型真实类型的Class
+    /**
+     * 当前泛型的实体Class
+     */
     private final Class<T> modelClass;
     @Autowired
     protected MyMapper<T> mapper;
 
     public AbstractService() {
         final ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        //noinspection unchecked
         this.modelClass = (Class<T>) pt.getActualTypeArguments()[0];
     }
 
     @Override
-    public void save(final T model) {
-        this.mapper.insertSelective(model);
+    public int save(final T model) {
+        return this.mapper.insertSelective(model);
     }
 
     @Override
-    public void save(final List<T> models) {
-        this.mapper.insertList(models);
+    public int save(final List<T> models) {
+        return this.mapper.insertList(models);
     }
 
     @Override
-    public void deleteById(final Object id) {
-        this.mapper.deleteByPrimaryKey(id);
+    public int deleteById(final Object id) {
+        return this.mapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public void deleteBy(final String fieldName, final Object value) throws TooManyResultsException {
+    public int deleteBy(final String fieldName, final Object value) throws TooManyResultsException {
         try {
             final T model = this.modelClass.newInstance();
             final Field field = this.modelClass.getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(model, value);
-            this.mapper.delete(model);
+            return this.mapper.delete(model);
         } catch (final ReflectiveOperationException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void deleteByIds(final String ids) {
-        this.mapper.deleteByIds(ids);
+    public int deleteByIds(final String ids) {
+        return this.mapper.deleteByIds(ids);
     }
 
     @Override
-    public void deleteByCondition(final Condition condition) {
-        this.mapper.deleteByCondition(condition);
+    public int deleteByCondition(final Condition condition) {
+        return this.mapper.deleteByCondition(condition);
     }
 
     @Override
-    public void update(final T model) {
-        this.mapper.updateByPrimaryKeySelective(model);
+    public int update(final T model) {
+        return this.mapper.updateByPrimaryKeySelective(model);
     }
 
     @Override
-    public void updateByCondition(final T model, final Condition condition) {
-        this.mapper.updateByConditionSelective(model, condition);
+    public int updateByCondition(final T model, final Condition condition) {
+        return this.mapper.updateByConditionSelective(model, condition);
     }
 
     @Override

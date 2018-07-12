@@ -44,10 +44,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
         // solved swagger2
-        registry.addRedirectViewController("/v2/api-docs", "/v2/api-docs?group=restful-api");
-        registry.addRedirectViewController("/swagger-resources/configuration/ui", "/swagger-resources/configuration/ui");
-        registry.addRedirectViewController("/swagger-resources/configuration/security", "/swagger-resources/configuration/security");
-        registry.addRedirectViewController("/swagger-resources", "/swagger-resources");
+        registry.addRedirectViewController("/v2/api-docs",
+                "/v2/api-docs?group=restful-api");
+        registry.addRedirectViewController("/swagger-resources/configuration/ui",
+                "/swagger-resources/configuration/ui");
+        registry.addRedirectViewController("/swagger-resources/configuration/security",
+                "/swagger-resources/configuration/security");
+        registry.addRedirectViewController("/swagger-resources",
+                "/swagger-resources");
     }
 
     /**

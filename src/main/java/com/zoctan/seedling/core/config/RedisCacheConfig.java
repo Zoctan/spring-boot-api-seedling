@@ -20,13 +20,12 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import javax.annotation.Resource;
-import java.time.Duration;
 
 /**
  * Redis缓存配置
  *
  * @author Zoctan
- * @date 2018/05/27
+ * @date 2018/07/11
  */
 @Configuration
 // 只有 application.properties 中有 spring.redis.host 时才配置
@@ -45,11 +44,10 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager() {
         // 初始化一个RedisCacheWriter
         final RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(this.jedisConnectionFactory);
-        // 设置默认过期时间：30分钟
         final RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30))
+                // 不缓存null值
                 // .disableCachingNullValues()
-                // 使用注解时的序列化、反序列化
+                // 使用注解时的序列化、反序列化对
                 .serializeKeysWith(MyRedisCacheManager.STRING_PAIR)
                 .serializeValuesWith(MyRedisCacheManager.FASTJSON_PAIR);
         // 初始化RedisCacheManager
@@ -65,30 +63,38 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Bean
     @Override
     public KeyGenerator keyGenerator() {
-        return (o, method, objects) -> {
+        // 比如 User 类 list(Integer page, Integer size) 方法
+        // A用户请求：list(1, 2)
+        // redis缓存的key：User.list#1,2
+        return (target, method, params) -> {
+            final String dot = ".";
             final StringBuilder sb = new StringBuilder(32);
-            sb.append(o.getClass().getSimpleName());
-            sb.append(".");
+            // 类名
+            sb.append(target.getClass().getSimpleName());
+            sb.append(dot);
+            // 方法名
             sb.append(method.getName());
-            if (objects.length > 0) {
+            // 如果存在参数
+            if (0 < params.length) {
                 sb.append("#");
-            }
-            String sp = "";
-            for (final Object object : objects) {
-                sb.append(sp);
-                if (object == null) {
-                    sb.append("NULL");
-                } else {
-                    sb.append(object.toString());
+                // 带上参数
+                String comma = "";
+                for (final Object param : params) {
+                    sb.append(comma);
+                    if (param == null) {
+                        sb.append("NULL");
+                    } else {
+                        sb.append(param.toString());
+                    }
+                    comma = ",";
                 }
-                sp = ".";
             }
             return sb.toString();
         };
     }
 
     /**
-     * 错误处理
+     * 错误处理，主要是打印日志
      */
     @Bean
     @Override

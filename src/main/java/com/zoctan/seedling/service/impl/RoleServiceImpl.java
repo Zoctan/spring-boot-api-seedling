@@ -18,4 +18,5 @@ import javax.annotation.Resource;
 public class RoleServiceImpl extends AbstractService<Role> implements RoleService {
     @Resource
     private RoleMapper roleMapper;
+    
 }
