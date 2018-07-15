@@ -4,7 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zoctan.seedling.core.response.Result;
 import com.zoctan.seedling.core.response.ResultGenerator;
-import com.zoctan.seedling.model.Role;
+import com.zoctan.seedling.dto.RoleDTO;
+import com.zoctan.seedling.entity.RoleDO;
 import com.zoctan.seedling.service.RoleService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,8 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping
-    public Result add(@RequestBody final Role role) {
+    public Result add(@RequestBody final RoleDTO roleDTO) {
+        final RoleDO role = roleDTO.convertToRoleDO();
         this.roleService.save(role);
         return ResultGenerator.genOkResult();
     }
@@ -38,14 +40,15 @@ public class RoleController {
     }
 
     @PutMapping
-    public Result update(@RequestBody final Role role) {
+    public Result update(@RequestBody final RoleDTO roleDTO) {
+        final RoleDO role = roleDTO.convertToRoleDO();
         this.roleService.update(role);
         return ResultGenerator.genOkResult();
     }
 
     @GetMapping("/{id}")
     public Result detail(@PathVariable final Long id) {
-        final Role role = this.roleService.findById(id);
+        final RoleDO role = this.roleService.findById(id);
         return ResultGenerator.genOkResult(role);
     }
 
@@ -53,8 +56,8 @@ public class RoleController {
     public Result list(@RequestParam(defaultValue = "0") final Integer page,
                        @RequestParam(defaultValue = "0") final Integer size) {
         PageHelper.startPage(page, size);
-        final List<Role> list = this.roleService.findAll();
-        final PageInfo<Role> pageInfo = new PageInfo<>(list);
+        final List<RoleDO> list = this.roleService.findAll();
+        final PageInfo<RoleDO> pageInfo = new PageInfo<>(list);
         return ResultGenerator.genOkResult(pageInfo);
     }
 }

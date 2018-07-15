@@ -4,18 +4,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Json web token配置
+ * Json web token 配置
  *
  * @author Zoctan
  * @date 2018/06/09
  */
 @Component
 @ConfigurationProperties(prefix = "jwt")
-public class JWTSetting {
+public class JwtProperties {
     /**
      * claim authorities key
      */
-    private String authoritiesKey;
+    private String claimKeyAuth;
     /**
      * RSA 私钥
      */
@@ -36,14 +36,6 @@ public class JWTSetting {
      * 有效期
      */
     private long expirationTime;
-
-    public String getAuthoritiesKey() {
-        return this.authoritiesKey;
-    }
-
-    public void setAuthoritiesKey(final String authoritiesKey) {
-        this.authoritiesKey = authoritiesKey;
-    }
 
     public String getPrivateKey() {
         return this.privateKey;
@@ -83,5 +75,13 @@ public class JWTSetting {
 
     public void setExpirationTime(final long expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public String getClaimKeyAuth() {
+        return this.claimKeyAuth;
+    }
+
+    public void setClaimKeyAuth(final String claimKeyAuth) {
+        this.claimKeyAuth = claimKeyAuth;
     }
 }

@@ -12,20 +12,20 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
- * 基于通用MyBatis Mapper插件的Service接口的实现
+ * 基于通用 MyBatis Mapper 插件的 Service 接口的实现
  *
  * @author Zoctan
- * @date 2018/5/27
+ * @date 2018/05/27
  */
 public abstract class AbstractService<T> implements Service<T> {
     /**
-     * 当前泛型的实体Class
+     * 当前泛型的实体 Class
      */
     private final Class<T> modelClass;
     @Autowired
     protected MyMapper<T> mapper;
 
-    public AbstractService() {
+    protected AbstractService() {
         final ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         //noinspection unchecked
         this.modelClass = (Class<T>) pt.getActualTypeArguments()[0];

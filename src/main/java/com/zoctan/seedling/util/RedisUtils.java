@@ -46,7 +46,7 @@ public class RedisUtils {
     }
 
     /**
-     * 根据key 获取过期时间
+     * 根据 key 获取过期时间
      *
      * @param key 键
      * @return 时间(秒) 返回0代表为永久有效
@@ -317,7 +317,7 @@ public class RedisUtils {
     //============================set=============================
 
     /**
-     * 根据key获取Set中的所有值
+     * 根据 key 获取 Set 中的所有值
      *
      * @param key 键
      * @return Set<Object>
@@ -332,11 +332,11 @@ public class RedisUtils {
     }
 
     /**
-     * 根据value从一个set中查询,是否存在
+     * 根据 value 从一个 set 中查询,是否存在
      *
      * @param key   键
      * @param value 值
-     * @return true 存在 false不存在
+     * @return true 存在, false 不存在
      */
     public Boolean sHasKey(final String key, final Object value) {
         try {
@@ -541,7 +541,7 @@ public class RedisUtils {
     }
 
     /**
-     * 根据索引修改list中的某条数据
+     * 根据索引修改 list 中的某条数据
      *
      * @param key   键
      * @param index 索引

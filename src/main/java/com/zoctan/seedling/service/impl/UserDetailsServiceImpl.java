@@ -1,7 +1,7 @@
 package com.zoctan.seedling.service.impl;
 
-import com.zoctan.seedling.model.Account;
-import com.zoctan.seedling.model.Role;
+import com.zoctan.seedling.entity.AccountWithRoleDO;
+import com.zoctan.seedling.entity.RoleDO;
 import com.zoctan.seedling.service.AccountService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,13 +26,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String name) throws UsernameNotFoundException {
-        final Account account = this.accountService.findByName(name);
+        final AccountWithRoleDO account = this.accountService.findByNameWithRole(name);
         if (account == null) {
-            throw new UsernameNotFoundException("name not existed");
+            throw new UsernameNotFoundException("账户名不存在");
         }
         final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (final Role role : account.getRoleList()) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        for (final RoleDO roleDO : account.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(roleDO.getName()));
         }
         return new org.springframework.security.core.userdetails.User(
                 account.getName(),

@@ -1,5 +1,6 @@
 package com.zoctan.seedling.core.filter;
 
+import com.zoctan.seedling.core.response.ResultCode;
 import com.zoctan.seedling.core.response.ResultGenerator;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 认证入口点
- * 因为RESTFul没有登录界面所以只能显示未登录
+ * 因为 RESTFul 没有登录界面所以只显示未登录提示
  *
  * @author Zoctan
  * @date 2018/05/27
@@ -27,7 +28,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint, Ser
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("Content-type", MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-        response.getWriter().println(ResultGenerator.genUnauthorizedResult().toString());
+        response.getWriter().println(ResultGenerator.genFailedResult(ResultCode.UNAUTHORIZED).toString());
         response.getWriter().close();
     }
 }

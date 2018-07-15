@@ -16,13 +16,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface CacheExpire {
     /**
-     * 过期时间，默认60s
+     * 过期时间，默认 60s
      */
     @AliasFor("expire")
     long value() default 60L;
 
     /**
-     * 过期时间，默认60s
+     * 过期时间，默认 60s
      */
     @AliasFor("value")
     long expire() default 60L;

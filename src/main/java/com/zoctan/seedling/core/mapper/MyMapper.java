@@ -6,7 +6,7 @@ import tk.mybatis.mapper.common.IdsMapper;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 
 /**
- * 定制版MyBatis Mapper插件接口，如需其他接口参考官方文档自行添加
+ * 定制版 MyBatis Mapper 插件接口，如需其他接口参考官方文档自行添加
  *
  * @author Zoctan
  * @date 2018/05/27

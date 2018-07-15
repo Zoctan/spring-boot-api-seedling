@@ -27,12 +27,10 @@ import javax.annotation.Resource;
  * @author Zoctan
  * @date 2018/07/11
  */
-@Configuration
-// 只有 application.properties 中有 spring.redis.host 时才配置
 @ConditionalOnProperty(name = "spring.redis.host")
 @EnableConfigurationProperties(RedisProperties.class)
-// 支持 @Cacheable、@CachePut、@CacheEvict 等缓存注解
 @EnableCaching(proxyTargetClass = true)
+@Configuration
 public class RedisCacheConfig extends CachingConfigurerSupport {
     private final static Logger log = LoggerFactory.getLogger(RedisCacheConfig.class);
 
@@ -42,10 +40,10 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Bean
     @Override
     public CacheManager cacheManager() {
-        // 初始化一个RedisCacheWriter
+        // 初始化一个 RedisCacheWriter
         final RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(this.jedisConnectionFactory);
         final RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                // 不缓存null值
+                // 不缓存 null 值
                 // .disableCachingNullValues()
                 // 使用注解时的序列化、反序列化对
                 .serializeKeysWith(MyRedisCacheManager.STRING_PAIR)
@@ -64,8 +62,8 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Override
     public KeyGenerator keyGenerator() {
         // 比如 User 类 list(Integer page, Integer size) 方法
-        // A用户请求：list(1, 2)
-        // redis缓存的key：User.list#1,2
+        // 用户 A 请求：list(1, 2)
+        // redis 缓存的 key：User.list#1,2
         return (target, method, params) -> {
             final String dot = ".";
             final StringBuilder sb = new StringBuilder(32);

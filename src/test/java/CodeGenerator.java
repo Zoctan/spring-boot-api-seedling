@@ -11,16 +11,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.zoctan.seedling.core.ProjectConstant.*;
+import static com.zoctan.seedling.core.constant.ProjectConstant.*;
 
 /**
  * 代码生成器
- * 根据数据表名称生成对应的Model、Mapper、Service、Controller简化开发
+ * 根据数据表名称生成对应的 Entity、Mapper、Service、Controller 简化开发
  *
  * @author Zoctan
  * @date 2018/05/27
  */
-public class CodeGenerator {
+class CodeGenerator {
     // JDBC配置，请修改为你项目的实际配置
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/seedling_dev" + "?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String JDBC_USERNAME = "root";
@@ -104,7 +104,7 @@ public class CodeGenerator {
 
         final JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         javaModelGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
-        javaModelGeneratorConfiguration.setTargetPackage(MODEL_PACKAGE);
+        javaModelGeneratorConfiguration.setTargetPackage(ENTITY_PACKAGE);
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         final SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();

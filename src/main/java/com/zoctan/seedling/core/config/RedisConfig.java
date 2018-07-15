@@ -39,20 +39,20 @@ public class RedisConfig {
     public RedisTemplate redisTemplate(@Qualifier(value = "jedisConnectionFactory") final JedisConnectionFactory factory) {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
-        // 设置key的序列化器为字符串Serializer
+        // 设置 key 的序列化器为字符串 serializer
         final StringRedisSerializer stringSerializer = MyRedisCacheManager.STRING_SERIALIZER;
 
         redisTemplate.setKeySerializer(stringSerializer);
         redisTemplate.setHashKeySerializer(stringSerializer);
 
-        // 设置value的序列化器为fastjson Serializer
+        // 设置 value 的序列化器为 fastjson serializer
         final GenericFastJsonRedisSerializer fastSerializer = MyRedisCacheManager.FASTJSON_SERIALIZER;
 
         redisTemplate.setValueSerializer(fastSerializer);
         redisTemplate.setHashValueSerializer(fastSerializer);
 
         // 如果 KeySerializer 或者 ValueSerializer 没有配置
-        // 则对应的 KeySerializer、ValueSerializer 才使用fastjson Serializer
+        // 则对应的 KeySerializer、ValueSerializer 才使用 fastjson serializer
         redisTemplate.setDefaultSerializer(fastSerializer);
 
         redisTemplate.setConnectionFactory(factory);

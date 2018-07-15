@@ -6,13 +6,13 @@ import com.zoctan.seedling.core.cache.CacheExpire;
 import com.zoctan.seedling.core.jwt.JwtUtil;
 import com.zoctan.seedling.core.response.Result;
 import com.zoctan.seedling.core.response.ResultGenerator;
-import com.zoctan.seedling.model.Account;
+import com.zoctan.seedling.dto.AccountDTO;
+import com.zoctan.seedling.dto.AccountLoginDTO;
+import com.zoctan.seedling.entity.AccountDO;
+import com.zoctan.seedling.entity.AccountWithRoleDO;
 import com.zoctan.seedling.service.AccountService;
 import com.zoctan.seedling.service.impl.UserDetailsServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,13 +24,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.util.List;
 
 /**
  * @author Zoctan
- * @date 2018/05/27
+ * @date 2018/07/15
  */
 @Api(value = "账户接口")
 @RestController
@@ -45,34 +44,68 @@ public class AccountController {
     @Resource
     private JwtUtil jwtUtil;
 
-    @ApiOperation(value = "账户注册", notes = "根据传过来的account信息来注册账户")
-    @ApiImplicitParam(name = "account", value = "账户实体", required = true, dataType = "Account")
+    @ApiOperation(value = "账户注册", notes = "根据账户信息注册")
     @PostMapping
-    public Result register(@Valid @RequestBody final Account account,
+    public Result register(@Valid
+                           @ApiParam(required = true)
+                           @RequestBody final AccountDTO accountDTO,
                            final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            final String msg = bindingResult.getFieldError().getDefaultMessage();
+            final String msg = bindingResult.getFieldError() == null ? "不符合字段规则" : bindingResult.getFieldError().getDefaultMessage();
             return ResultGenerator.genFailedResult(msg);
-        } else {
-            this.accountService.save(account);
-            return this.login(account.getName(), account.getPassword());
         }
+        // 账户持久化
+        final AccountDO accountDO = accountDTO.convertToAccountDO();
+        this.accountService.save(accountDO);
+        // 签发 token
+        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(accountDTO.getName());
+        return ResultGenerator.genOkResult(this.jwtUtil.sign(accountDTO.getName(), userDetails.getAuthorities()));
+    }
+
+    @ApiOperation(value = "账户登录")
+    @PostMapping("/login")
+    public Result login(@Valid
+                        @ApiParam(required = true)
+                        @RequestBody final AccountLoginDTO accountLoginDTO,
+                        final BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            final String msg = bindingResult.getFieldError() == null ? "不符合字段规则" : bindingResult.getFieldError().getDefaultMessage();
+            return ResultGenerator.genFailedResult(msg);
+        }
+        final String name = accountLoginDTO.getName();
+        final String password = accountLoginDTO.getPassword();
+        // 验证账户
+        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(name);
+        if (!this.accountService.verifyPassword(password, userDetails.getPassword())) {
+            return ResultGenerator.genFailedResult("密码错误");
+        }
+        // 更新登录时间
+        this.accountService.updateLoginTimeByName(name);
+        return ResultGenerator.genOkResult(this.jwtUtil.sign(name, userDetails.getAuthorities()));
+    }
+
+    @ApiOperation(value = "账户注销")
+    @GetMapping("/logout")
+    public Result logout(final Principal principal) {
+        this.jwtUtil.invalidRedisToken(principal.getName());
+        return ResultGenerator.genOkResult();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @ApiOperation(value = "删除账户", notes = "根据url的id来指定删除对象")
-    @ApiImplicitParam(name = "id", value = "账户Id", required = true, dataType = "Long")
+    @ApiOperation(value = "删除账户", notes = "根据 URL 上的 id 删除指定对象", authorizations = @Authorization(value = "ADMIN"))
+    @ApiImplicitParam(name = "id", value = "账户Id", required = true, dataType = "Long", paramType = "query")
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable final Long id) {
         this.accountService.deleteById(id);
         return ResultGenerator.genOkResult();
     }
 
-    @ApiOperation(value = "更新账户信息", notes = "根据传过来的account信息来更新账户详细信息")
-    @ApiImplicitParam(name = "account", value = "账户实体", required = true, dataType = "Account")
+    @ApiOperation(value = "更新账户信息", notes = "根据账户信息更新")
     @PutMapping
-    public Result update(@RequestBody final Account account) {
-        this.accountService.update(account);
+    public Result update(@ApiParam(required = true)
+                         @RequestBody final AccountDTO accountDTO) {
+        final AccountDO accountDO = accountDTO.convertToAccountDO();
+        this.accountService.updateById(accountDO);
         return ResultGenerator.genOkResult();
     }
 
@@ -80,17 +113,15 @@ public class AccountController {
     @ApiImplicitParam(name = "id", value = "账户Id", required = true, dataType = "Long")
     @GetMapping("/{id}")
     public Result detail(@PathVariable final Long id) {
-        final Account account = this.accountService.findById(id);
-        // {"data":{"email":"admin@qq.com","id":1,"lastLoginTime":1517461200000,"registerTime":1514782800000,"roleList":[{"id":0,"name":"admin"},{"id":0,"name":"test"}],"name":"admin"},"message":"OK","status":200}
+        final AccountWithRoleDO account = this.accountService.findByIdWithRole(id);
         return ResultGenerator.genOkResult(account);
     }
 
     @ApiOperation(value = "获取账户列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "页号", dataType = "Integer"),
-            @ApiImplicitParam(name = "size", value = "页大小", dataType = "Integer")
+            @ApiImplicitParam(name = "page", value = "页号", dataType = "Integer", example = "1"),
+            @ApiImplicitParam(name = "size", value = "页大小", dataType = "Integer", example = "10")
     })
-    // 只有在结果不为空和正确返回结果时才缓存
     @Cacheable(value = "account.list", unless = "#result == null or #result.code != 200")
     @CacheExpire(expire = 60)
     @GetMapping
@@ -98,39 +129,8 @@ public class AccountController {
                        @RequestParam(defaultValue = "0") final Integer size) {
         log.debug("no cache => find in database");
         PageHelper.startPage(page, size);
-        final List<Account> list = this.accountService.findAll();
-        final PageInfo<Account> pageInfo = new PageInfo<>(list);
-        // {"data":{"endRow":2,"firstPage":0,"hasNextPage":false,"hasPreviousPage":false,"isFirstPage":false,"isLastPage":true,"lastPage":0,"list":[{"email":"admin@qq.com","id":1,"lastLoginTime":1517461200000,"registerTime":1514782800000,"roleList":null,"name":"admin"},{"email":"user@qq.com","id":2,"lastLoginTime":1517461200000,"registerTime":1514782800000,"roleList":null,"username":"user"}],"navigateFirstPage":0,"navigateLastPage":0,"navigatePages":8,"navigatepageNums":[],"nextPage":0,"orderBy":"","pageNum":0,"pageSize":0,"pages":0,"prePage":0,"size":2,"startRow":1,"total":2},"message":"OK","status":200}
+        final List<AccountDO> list = this.accountService.findAll();
+        final PageInfo<AccountDO> pageInfo = new PageInfo<>(list);
         return ResultGenerator.genOkResult(pageInfo);
-    }
-
-    @ApiOperation(value = "账户登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "账户名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "账户密码", required = true, dataType = "String")
-    })
-    @PostMapping("/login")
-    public Result login(@NotEmpty(message = "账户名不能为空")
-                        @RequestParam("name") final String name,
-                        @NotEmpty(message = "密码不能为空")
-                        @RequestParam("password") final String password) {
-        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(name);
-        if (this.accountService.verifyPassword(password, userDetails.getPassword())) {
-            // 更新登录时间
-            this.accountService.updateLoginTimeByName(name);
-            return ResultGenerator.genOkResult(this.jwtUtil.sign(name, userDetails.getAuthorities()));
-        } else {
-            return ResultGenerator.genFailedResult("密码错误");
-        }
-    }
-
-    /**
-     * SpringSecurity注入Principal，可以获得当前账户
-     */
-    @ApiOperation(value = "账户注销")
-    @GetMapping("/logout")
-    public Result logout(final Principal account) {
-        this.jwtUtil.invalidRedisToken(account.getName());
-        return ResultGenerator.genOkResult();
     }
 }

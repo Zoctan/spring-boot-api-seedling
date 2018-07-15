@@ -1,7 +1,7 @@
 package com.zoctan.seedling.core.exception;
 
 /**
- * Service异常
+ * Service 异常
  *
  * @author Zoctan
  * @date 2018/05/27

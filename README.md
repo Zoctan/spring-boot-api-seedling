@@ -1,12 +1,16 @@
 # Spring Boot API Seedling
 
+![GitHub package version](https://img.shields.io/github/package-json/v/badges/shields.svg?style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=flat-square&label=Stars)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
+
 ## 简介
 
-本项目与[种子项目](https://github.com/lihengming/spring-boot-api-project-seed)定位一致：快速构建中小型 API、RESTFul API 项目，摆脱重复劳动，专注于业务代码的编写，减少加班。
+本项目修改自：[spring-boot-api-project-seed](https://github.com/lihengming/spring-boot-api-project-seed)
 
-种子项目本身很简洁，已经能满足很多基本需求，在此感谢种子作者。
+原项目本身很简洁，已经能满足很多基本需求，在此感谢种子作者。
 
-我根据自己的需求继续添加了一些小功能，比如 API 的签名认证、调用文档等，所以就有了该 Seedling 项目。
+我根据自己的需求继续添加了一些小功能，比如 API 的签名认证、调用文档、一些小工具等，所以就有了该 Seedling 项目。
 
 添加的内容包括：
 - Spring Cache：缓存
@@ -15,6 +19,10 @@
 - Spring Security + JWT：对调用方签名认证
 - Jasypt：加密配置
 - 其他略
+
+代码规范参考阿里巴巴 Java 开发手册，对应的 Idea 安装了 Alibaba Java Coding Guidelines 插件。
+
+目前仍在更新中，希望小伙伴们能提 issue。
 
 ## 版本
 
@@ -32,7 +40,7 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 \# 配置代码生成器
 
 对 test/java 包内的代码生成器 CodeGenerator 进行配置
-test/resources 目录下有数据库文件 seedling_dev.sql
+导入 test/resources/sql 目录下的开发环境 dev 的数据库文件 *.sql
 
 \# 根据表名生成代码
 

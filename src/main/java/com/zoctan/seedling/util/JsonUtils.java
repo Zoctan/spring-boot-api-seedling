@@ -2,11 +2,8 @@ package com.zoctan.seedling.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
-import com.zoctan.seedling.model.Account;
-import com.zoctan.seedling.model.Role;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Json工具
@@ -15,16 +12,6 @@ import java.util.Collections;
  * @date 2018/07/11
  */
 public class JsonUtils {
-    public static void main(final String[] args) {
-        final Account account = new Account();
-        account.setName("hello");
-        account.setPassword("123456");
-        account.setId(123L);
-        account.setRoleList(Collections.singletonList(new Role()));
-        System.out.println(JsonUtils.keepFields(account, "password", "id", "roleList"));
-        System.out.println(JsonUtils.deleteFields(account, "password", "id", "roleList"));
-    }
-
     private JsonUtils() {
 
     }

@@ -1,6 +1,6 @@
 package com.zoctan.seedling;
 
-import com.zoctan.seedling.util.RSAUtils;
+import com.zoctan.seedling.util.RsaUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,11 +10,13 @@ import java.security.PublicKey;
 import java.util.Base64;
 
 /**
+ * RSA工具测试
+ *
  * @author Zoctan
  * @date 2018/05/27
  */
-public class RSASignTest {
-    private final RSAUtils rsaUtil = new RSAUtils();
+public class RsaSignTest {
+    private final RsaUtils rsaUtil = new RsaUtils();
 
     /**
      * 加载公私钥pem格式文件测试

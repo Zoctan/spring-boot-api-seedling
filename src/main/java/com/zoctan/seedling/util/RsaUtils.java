@@ -36,8 +36,8 @@ import java.security.spec.X509EncodedKeySpec;
  * @date 2018/05/27
  */
 @Component
-public class RSAUtils {
-    private final static Logger log = LoggerFactory.getLogger(RSAUtils.class);
+public class RsaUtils {
+    private final static Logger log = LoggerFactory.getLogger(RsaUtils.class);
 
     private final String algorithm = "RSA";
 

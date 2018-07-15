@@ -6,7 +6,7 @@ import tk.mybatis.mapper.entity.Condition;
 import java.util.List;
 
 /**
- * Service层基础接口，其他Service接口 请继承该接口
+ * Service 层基础接口，其他 Service 接口 请继承该接口
  *
  * @author Zoctan
  * @date 2018/05/27
@@ -37,7 +37,7 @@ public interface Service<T> {
     int deleteById(Object id);
 
     /**
-     * 通过实体中某个成员变量名称（非数据表中column的名称）刪除
+     * 通过实体中某个成员变量名称（非数据表中 column 的名称）刪除
      *
      * @param fieldName 字段名
      * @param value     字段值
@@ -83,7 +83,7 @@ public interface Service<T> {
     int updateByCondition(T model, Condition condition);
 
     /**
-     * 通过ID查找
+     * 通过 id 查找
      *
      * @param id id
      * @return 实体
@@ -92,7 +92,7 @@ public interface Service<T> {
 
     /**
      * 通过实体中某个成员变量名称查找
-     * value需符合unique约束
+     * value 需符合 unique 约束
      *
      * @param fieldName 字段名
      * @param value     字段值
@@ -102,7 +102,7 @@ public interface Service<T> {
     T findBy(String fieldName, Object value) throws TooManyResultsException;
 
     /**
-     * 通过多个ID查找
+     * 通过多个 id 查找
      * ids -> “1,2,3,4”
      *
      * @param ids ids

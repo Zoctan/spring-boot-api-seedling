@@ -11,7 +11,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import static com.zoctan.seedling.core.ProjectConstant.CONTROLLER_PACKAGE;
+import static com.zoctan.seedling.core.constant.ProjectConstant.CONTROLLER_PACKAGE;
 
 /**
  * Swagger2 在线API文档
@@ -29,6 +29,7 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(this.buildApiInfo())
                 .select()
+                // 扫描 controller 包
                 .apis(RequestHandlerSelectors.basePackage(CONTROLLER_PACKAGE))
                 .paths(PathSelectors.any())
                 .build();
@@ -51,5 +52,4 @@ public class Swagger2Config {
                 .licenseUrl("https://github.com/Zoctan/spring-boot-api-seedling/blob/master/LICENSE")
                 .build();
     }
-
 }
