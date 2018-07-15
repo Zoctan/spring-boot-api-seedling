@@ -1,9 +1,5 @@
 # Spring Boot API Seedling
 
-![GitHub package version](https://img.shields.io/github/package-json/v/badges/shields.svg?style=flat-square)
-![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=flat-square&label=Stars)
-![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
-
 ## 简介
 
 本项目修改自：[spring-boot-api-project-seed](https://github.com/lihengming/spring-boot-api-project-seed)
@@ -20,7 +16,7 @@
 - Jasypt：加密配置
 - 其他略
 
-代码规范参考阿里巴巴 Java 开发手册，对应的 Idea 安装了 Alibaba Java Coding Guidelines 插件。
+代码规范参考阿里巴巴 Java 开发手册，Idea 安装 Alibaba Java Coding Guidelines 插件。
 
 目前仍在更新中，希望小伙伴们能提 issue。
 
@@ -64,6 +60,8 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 - [前端 Vue + 后端 Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
 
 ## 更新记录
+
+2018-07-15 增加 DTO 层，避免 DO 层污染，若干小修改。
 
 2018-07-11 添加了可自定义缓存过期时间的注解，修改了数据表 user 为 account，还有其他细节。
 
