@@ -33,7 +33,7 @@ ${modelNameLowerCamel}Service.deleteById(id);
         return ResultGenerator.genOkResult();
     }
 
-    @PutMapping
+    @PatchMapping
     public Result update(@RequestBody ${modelNameUpperCamel} ${modelNameLowerCamel}) {
 ${modelNameLowerCamel}Service.update(${modelNameLowerCamel});
         return ResultGenerator.genOkResult();

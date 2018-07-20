@@ -138,11 +138,11 @@ class CodeGenerator {
             generator = new MyBatisGenerator(config, callback, warnings);
             generator.generate(null);
         } catch (final Exception e) {
-            throw new RuntimeException("生成Model和Mapper失败", e);
+            throw new RuntimeException("生成 Model 和 Mapper 失败", e);
         }
 
         if (generator.getGeneratedJavaFiles().isEmpty() || generator.getGeneratedXmlFiles().isEmpty()) {
-            throw new RuntimeException("生成Model和Mapper失败：" + warnings);
+            throw new RuntimeException("生成 Model 和 Mapper 失败：" + warnings);
         }
         if (StringUtils.isEmpty(modelName)) {
             modelName = tableNameConvertUpperCamel(tableName);
