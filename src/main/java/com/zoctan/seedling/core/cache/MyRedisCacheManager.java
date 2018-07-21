@@ -141,7 +141,7 @@ public class MyRedisCacheManager extends RedisCacheManager implements Applicatio
                 continue;
             }
             final long expire = cacheExpire.expire();
-            log.debug("cacheName: {}, expire: {}", cacheName, expire);
+            log.debug("cache name<{}> expire: {}", cacheName, expire);
             if (expire >= 0) {
                 // 缓存配置
                 final RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
@@ -166,22 +166,22 @@ public class MyRedisCacheManager extends RedisCacheManager implements Applicatio
 
         @Override
         public String getName() {
-            log.debug("name: {}", this.cache.getName());
+            log.debug("get name: {}", this.cache.getName());
             try {
                 return this.cache.getName();
             } catch (final Exception e) {
-                log.error("getName => {}", e.getMessage());
+                log.error("get name => {}", e.getMessage());
                 return null;
             }
         }
 
         @Override
         public Object getNativeCache() {
-            log.debug("nativeCache: {}", this.cache.getNativeCache());
+            log.debug("native cache: {}", this.cache.getNativeCache());
             try {
                 return this.cache.getNativeCache();
             } catch (final Exception e) {
-                log.error("getNativeCache => {}", e.getMessage());
+                log.error("get native cache => {}", e.getMessage());
                 return null;
             }
         }
@@ -231,11 +231,11 @@ public class MyRedisCacheManager extends RedisCacheManager implements Applicatio
 
         @Override
         public ValueWrapper putIfAbsent(@NonNull final Object o, final Object o1) {
-            log.debug("putIfAbsent => o: {}, o1: {}", o, o1);
+            log.debug("put if absent => o: {}, o1: {}", o, o1);
             try {
                 return this.cache.putIfAbsent(o, o1);
             } catch (final Exception e) {
-                log.error("putIfAbsent => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
+                log.error("put if absent => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
                 return null;
             }
         }

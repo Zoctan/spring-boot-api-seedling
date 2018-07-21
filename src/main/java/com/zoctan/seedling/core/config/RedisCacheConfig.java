@@ -100,33 +100,33 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         return new SimpleCacheErrorHandler() {
             @Override
             public void handleCacheGetError(final RuntimeException e, final Cache cache, final Object key) {
-                log.error("cache => {}", cache);
-                log.error("key => {}", key);
-                log.error("handleCacheGetError => ", e.getMessage());
+                log.error("==> cache: {}", cache);
+                log.error("==>   key: {}", key);
+                log.error("==> error: {}", e.getMessage());
                 super.handleCacheGetError(e, cache, key);
             }
 
             @Override
             public void handleCachePutError(final RuntimeException e, final Cache cache, final Object key, final Object value) {
-                log.error("cache => {}", cache);
-                log.error("key => {}", key);
-                log.error("value => {}", value);
-                log.error("handleCachePutError => ", e.getMessage());
+                log.error("==> cache: {}", cache);
+                log.error("==>   key: {}", key);
+                log.error("==> value: {}", value);
+                log.error("==> error: {}", e.getMessage());
                 super.handleCachePutError(e, cache, key, value);
             }
 
             @Override
             public void handleCacheEvictError(final RuntimeException e, final Cache cache, final Object key) {
-                log.error("cache => {}", cache);
-                log.error("key => {}", key);
-                log.error("handleCacheEvictError => ", e.getMessage());
+                log.error("==> cache: {}", cache);
+                log.error("==>   key: {}", key);
+                log.error("==> error: {}", e.getMessage());
                 super.handleCacheEvictError(e, cache, key);
             }
 
             @Override
             public void handleCacheClearError(final RuntimeException e, final Cache cache) {
-                log.error("cache => {}", cache);
-                log.error("handleCacheClearError => ", e.getMessage());
+                log.error("==> cache: {}", cache);
+                log.error("==> error: {}", e.getMessage());
                 super.handleCacheClearError(e, cache);
             }
         };

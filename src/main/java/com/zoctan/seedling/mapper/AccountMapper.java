@@ -24,6 +24,7 @@ public interface AccountMapper extends MyMapper<AccountDO> {
      * 按账户名更新最后登陆时间
      *
      * @param name 账户名
+     * @return 影响行数
      */
     int updateLoginTimeByName(@Param("name") String name);
 }

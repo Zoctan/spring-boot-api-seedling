@@ -1,5 +1,6 @@
 package com.zoctan.seedling.core.service;
 
+import com.zoctan.seedling.core.exception.ResourcesNotFoundException;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -12,21 +13,54 @@ import java.util.List;
  * @date 2018/05/27
  */
 public interface Service<T> {
+
+    /**
+     * 确保实体存在
+     *
+     * @param id 实体id
+     * @throws ResourcesNotFoundException 不存在实体异常
+     */
+    void assertById(Object id) throws ResourcesNotFoundException;
+
+    /**
+     * 确保实体存在
+     *
+     * @param entity 实体
+     * @throws ResourcesNotFoundException 不存在实体异常
+     */
+    void assertBy(T entity) throws ResourcesNotFoundException;
+
+    /**
+     * 确保实体存在
+     *
+     * @param ids ids
+     * @throws ResourcesNotFoundException 不存在实体异常
+     */
+    void assertByIds(String ids) throws ResourcesNotFoundException;
+
+    /**
+     * 确保实体存在
+     *
+     * @param condition 条件
+     * @throws ResourcesNotFoundException 不存在实体异常
+     */
+    void assertByCondition(Condition condition) throws ResourcesNotFoundException;
+
     /**
      * 持久化
      *
-     * @param model 实体
+     * @param entity 实体
      * @return 影响行数
      */
-    int save(T model);
+    int save(T entity);
 
     /**
      * 批量持久化
      *
-     * @param models 实体列表
+     * @param entities 实体列表
      * @return 影响行数
      */
-    int save(List<T> models);
+    int save(List<T> entities);
 
     /**
      * 通过主鍵刪除
@@ -68,19 +102,19 @@ public interface Service<T> {
     /**
      * 按组件更新
      *
-     * @param model 实体
+     * @param entity 实体
      * @return 影响行数
      */
-    int update(T model);
+    int update(T entity);
 
     /**
      * 按条件更新
      *
-     * @param model     实体
+     * @param entity    实体
      * @param condition 条件
      * @return 影响行数
      */
-    int updateByCondition(T model, Condition condition);
+    int updateByCondition(T entity, Condition condition);
 
     /**
      * 通过 id 查找

@@ -29,6 +29,10 @@ public class IpUtils {
 
     }
 
+    public static String getIpAddress() {
+        return getIpAddress(ContextUtils.getRequest());
+    }
+
     /**
      * 获取请求中的 ip 地址
      *

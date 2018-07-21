@@ -47,6 +47,11 @@ public class AccountDO {
     @Column(name = "login_time")
     private Timestamp loginTime;
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     public Long getId() {
         return this.id;
     }

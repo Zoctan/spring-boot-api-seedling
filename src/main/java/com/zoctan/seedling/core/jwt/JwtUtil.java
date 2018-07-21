@@ -1,7 +1,7 @@
 package com.zoctan.seedling.core.jwt;
 
+import com.zoctan.seedling.core.rsa.RsaUtils;
 import com.zoctan.seedling.util.RedisUtils;
-import com.zoctan.seedling.util.RsaUtils;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +36,7 @@ public class JwtUtil {
     @Resource
     private RsaUtils rsaUtils;
     @Resource
-    private JwtProperties jwtProperties;
+    private JwtConfigurationProperties jwtProperties;
 
     private Claims getClaims(final String token) {
         final Jws<Claims> jws = this.parseToken(token);
@@ -63,12 +61,12 @@ public class JwtUtil {
         // 函数式创建 token，避免重复书写
         final Supplier<String> createToken = () -> this.createToken(name, grantedAuthorities);
         // 看看缓存有没有账户token
-        final String token = (String) this.redisUtils.get(name);
+        final String token = (String) this.redisUtils.getValue(name);
         // 没有登录过
         if (token == null) {
             return createToken.get();
         }
-        final Boolean isValidate = (boolean) this.redisUtils.get(token);
+        final Boolean isValidate = (boolean) this.redisUtils.getValue(token);
         // 有 token，仍有效，将 token 置为无效，并重新签发（防止 token 被利用）
         if (isValidate) {
             this.invalidRedisToken(name);
@@ -84,8 +82,8 @@ public class JwtUtil {
      */
     public void invalidRedisToken(final String name) {
         // 将 token 设置为无效
-        final String token = (String) this.redisUtils.get(name);
-        this.redisUtils.set(token, false);
+        final String token = (String) this.redisUtils.getValue(name);
+        this.redisUtils.setValue(token, false);
     }
 
     /**
@@ -124,7 +122,7 @@ public class JwtUtil {
     public boolean validateToken(final String token) {
         boolean isValidate = true;
         try {
-            isValidate = (boolean) this.redisUtils.get(token);
+            isValidate = (boolean) this.redisUtils.getValue(token);
         } catch (final NullPointerException e) {
             // 可能 redis 部署出现了问题
             // 或者清空了缓存导致 token 键不存在
@@ -142,25 +140,23 @@ public class JwtUtil {
         final String authorities = grantedAuthorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        log.debug("Account<{}> : authorities => {}", name, authorities);
+        log.debug("==> Account<{}> authorities: {}", name, authorities);
 
         // 过期时间
-        final long expirationTime = this.jwtProperties.getExpirationTime();
+        final long expireTime = this.jwtProperties.getExpireTime();
         // 当前时间 + 有效时长
-        final Date expiration = new Date(System.currentTimeMillis() + Duration.ofMinutes(expirationTime).toMillis());
-        // 加载私钥
-        final PrivateKey privateKey = this.rsaUtils.loadPemPrivateKey(this.jwtProperties.getPrivateKey());
-        // 创建 token
-        final String token = this.jwtProperties.getTokenPrefix() + " " +
+        final Date expireDate = new Date(System.currentTimeMillis() + Duration.ofMinutes(expireTime).toMillis());
+        // 创建 token，比如 "Bearer abc1234"
+        final String token = this.jwtProperties.getTokenType() + " " +
                 Jwts.builder()
                         // 设置账户名
                         .setSubject(name)
                         // 添加权限属性
                         .claim(this.jwtProperties.getClaimKeyAuth(), authorities)
                         // 设置失效时间
-                        .setExpiration(expiration)
+                        .setExpiration(expireDate)
                         // 私钥加密生成签名
-                        .signWith(SignatureAlgorithm.RS256, privateKey)
+                        .signWith(SignatureAlgorithm.RS256, this.rsaUtils.loadPrivateKey())
                         // 使用LZ77算法与哈夫曼编码结合的压缩算法进行压缩
                         .compressWith(CompressionCodecs.DEFLATE)
                         .compact();
@@ -168,10 +164,10 @@ public class JwtUtil {
         // 因为账户注销后 JWT 本身只要没过期就仍然有效，所以只能通过 redis 缓存来校验有无效
         // 校验时只要 redis 中的 token 无效即可（JWT 本身可以校验有无过期，而 redis 过期即被删除了）
         // true 有效
-        this.redisUtils.set(token, true, expirationTime);
+        this.redisUtils.setValue(token, true, expireTime);
         // redis 过期时间和JWT的一致
-        this.redisUtils.set(name, token, expirationTime);
-        log.debug("redis => set account<{}> token : {}", name, token);
+        this.redisUtils.setValue(name, token, expireTime);
+        log.debug("==> Redis set Account<{}> token: {}", name, token);
         return token;
     }
 
@@ -180,28 +176,26 @@ public class JwtUtil {
      */
     private Jws<Claims> parseToken(final String token) {
         try {
-            // 加载公钥
-            final PublicKey publicKey = this.rsaUtils.loadPemPublicKey(this.jwtProperties.getPublicKey());
             return Jwts
                     .parser()
                     // 公钥解密
-                    .setSigningKey(publicKey)
-                    .parseClaimsJws(token.replace(this.jwtProperties.getTokenPrefix(), ""));
+                    .setSigningKey(this.rsaUtils.loadPublicKey())
+                    .parseClaimsJws(token.replace(this.jwtProperties.getTokenType(), ""));
         } catch (final SignatureException e) {
             // 签名异常
-            log.error("Invalid JWT signature");
+            log.debug("Invalid JWT signature");
         } catch (final MalformedJwtException e) {
             // 格式错误
-            log.error("Invalid JWT token");
+            log.debug("Invalid JWT token");
         } catch (final ExpiredJwtException e) {
             // 过期
-            log.error("Expired JWT token");
+            log.debug("Expired JWT token");
         } catch (final UnsupportedJwtException e) {
             // 不支持该JWT
-            log.error("Unsupported JWT token");
+            log.debug("Unsupported JWT token");
         } catch (final IllegalArgumentException e) {
             // 参数错误异常
-            log.error("JWT token compact of handler are invalid");
+            log.debug("JWT token compact of handler are invalid");
         }
         return null;
     }

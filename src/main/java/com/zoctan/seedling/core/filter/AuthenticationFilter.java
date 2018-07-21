@@ -34,7 +34,7 @@ public class AuthenticationFilter implements Filter {
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        log.debug("AuthenticationFilter init");
+        log.debug("==> AuthenticationFilter init");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AuthenticationFilter implements Filter {
         final String token = this.jwtUtil.getTokenFromRequest(request);
         if (!StringUtils.isEmpty(token)) {
             final String name = this.jwtUtil.getName(token);
-            log.debug("Account<{}> token => {}", name, token);
+            log.debug("==> Account<{}> token: {}", name, token);
 
             if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (this.jwtUtil.validateToken(token)) {
@@ -57,17 +57,18 @@ public class AuthenticationFilter implements Filter {
                     // 向 security 上下文中注入已认证的账户
                     // 之后可以直接在控制器 controller 的入参获得 Principal 或 Authentication
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.debug("Account<{}> is authorized, set security context", name);
+                    log.debug("==> Account<{}> is authorized, set security context", name);
                 }
             }
         } else {
-            log.debug("Anonymous<{}> request URL<{}>", IpUtils.getIpAddress(request), UrlUtils.getMappingUrl(request));
+            log.debug("==> IP<{}> Request: [{}] {}",
+                    IpUtils.getIpAddress(), request.getMethod(), UrlUtils.getMappingUrl(request));
         }
         filterChain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
-        log.debug("AuthenticationFilter destroy");
+        log.debug("==> AuthenticationFilter destroy");
     }
 }

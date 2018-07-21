@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2018/07/13
  */
 public class UrlUtils {
+    private UrlUtils() {
+
+    }
+
     /**
      * 请求的相对路径 /user/list
      *

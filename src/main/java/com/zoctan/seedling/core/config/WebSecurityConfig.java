@@ -82,11 +82,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**",
                         "/v2/**"
                 ).permitAll()
-                // 允许登录和注册
+                // 允许注册和登录
                 .antMatchers(
                         HttpMethod.POST,
-                        "/account/login",
-                        "/account"
+                        "/account",
+                        "/account/token"
                 ).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

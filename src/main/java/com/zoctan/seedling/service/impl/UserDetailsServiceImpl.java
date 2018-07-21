@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(final String name) throws UsernameNotFoundException {
         final AccountWithRoleDO account = this.accountService.findByNameWithRole(name);
         if (account == null) {
-            throw new UsernameNotFoundException("账户名不存在");
+            throw new UsernameNotFoundException("username dose not exist");
         }
         final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         for (final RoleDO roleDO : account.getRoles()) {

@@ -61,6 +61,8 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 
 ## 更新记录
 
+2018-07-21 增加 Jasypt 自定义配置和配置密码加密，Tomcat 打包，修改 RSA 工具和添加相应配置，部分小修改。
+
 2018-07-15 增加 DTO 层，避免 DO 层污染，若干小修改。
 
 2018-07-11 添加了可自定义缓存过期时间的注解，修改了数据表 user 为 account，还有其他细节。

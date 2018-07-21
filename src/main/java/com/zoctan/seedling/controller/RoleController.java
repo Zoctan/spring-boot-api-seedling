@@ -19,9 +19,9 @@ import java.util.List;
  * @author Zoctan
  * @date 2018/05/27
  */
+@PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping("/role")
-@PreAuthorize("hasAuthority('ADMIN')")
 public class RoleController {
     @Resource
     private RoleService roleService;

@@ -6,7 +6,8 @@
     <groupId>com.github.zoctan</groupId>
     <artifactId>spring-boot-api-seeding</artifactId>
     <version>1.1</version>
-    <packaging>jar</packaging>
+    <!-- 打包类型 -->
+    <packaging>war</packaging>
 
     <!-- Inherit defaults from Spring Boot -->
     <parent>
@@ -95,6 +96,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <!-- optional=true，依赖不会传递，该项目依赖devtools，之后依赖该项目的子项目要使用devtools，需重新引入 -->
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- redis -->
@@ -202,11 +208,22 @@
     </dependencies>
 
     <build>
+        <finalName>${artifactId}</finalName>
         <plugins>
             <!-- 打包插件 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.zoctan.seedling.Application</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

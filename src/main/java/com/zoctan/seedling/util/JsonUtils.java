@@ -2,6 +2,8 @@ package com.zoctan.seedling.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -12,6 +14,8 @@ import java.util.Arrays;
  * @date 2018/07/11
  */
 public class JsonUtils {
+    private final static Logger log = LoggerFactory.getLogger(JsonUtils.class);
+
     private JsonUtils() {
 
     }

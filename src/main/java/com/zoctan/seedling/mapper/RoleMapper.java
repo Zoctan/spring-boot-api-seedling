@@ -13,6 +13,7 @@ public interface RoleMapper extends MyMapper<RoleDO> {
      * 赋予默认角色给账户
      *
      * @param accountId 账户Id
+     * @return 影响行数
      */
     int insertDefaultAccountRole(@Param("accountId") Long accountId);
 }

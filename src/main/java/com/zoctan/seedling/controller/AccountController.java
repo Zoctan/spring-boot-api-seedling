@@ -32,9 +32,9 @@ import java.util.List;
  * @date 2018/07/15
  */
 @Api(value = "账户接口")
+@Validated
 @RestController
 @RequestMapping("/account")
-@Validated
 public class AccountController {
     private final static Logger log = LoggerFactory.getLogger(AccountController.class);
     @Resource
@@ -50,10 +50,6 @@ public class AccountController {
                            @ApiParam(required = true)
                            @RequestBody final AccountDTO accountDTO,
                            final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            final String msg = bindingResult.getFieldError() == null ? "不符合字段规则" : bindingResult.getFieldError().getDefaultMessage();
-            return ResultGenerator.genFailedResult(msg);
-        }
         // 账户持久化
         final AccountDO accountDO = accountDTO.convertToAccountDO();
         this.accountService.save(accountDO);
@@ -63,21 +59,18 @@ public class AccountController {
     }
 
     @ApiOperation(value = "账户登录")
-    @PostMapping("/login")
+    @PostMapping("/token")
     public Result login(@Valid
                         @ApiParam(required = true)
                         @RequestBody final AccountLoginDTO accountLoginDTO,
                         final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            final String msg = bindingResult.getFieldError() == null ? "不符合字段规则" : bindingResult.getFieldError().getDefaultMessage();
-            return ResultGenerator.genFailedResult(msg);
-        }
+        // {"name":"admin","password":"admin"}
         final String name = accountLoginDTO.getName();
         final String password = accountLoginDTO.getPassword();
         // 验证账户
         final UserDetails userDetails = this.userDetailsService.loadUserByUsername(name);
         if (!this.accountService.verifyPassword(password, userDetails.getPassword())) {
-            return ResultGenerator.genFailedResult("密码错误");
+            return ResultGenerator.genFailedResult("password error");
         }
         // 更新登录时间
         this.accountService.updateLoginTimeByName(name);
@@ -85,7 +78,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "账户注销")
-    @GetMapping("/logout")
+    @DeleteMapping("/token")
     public Result logout(final Principal principal) {
         this.jwtUtil.invalidRedisToken(principal.getName());
         return ResultGenerator.genOkResult();
@@ -101,7 +94,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "更新账户信息", notes = "根据账户信息更新")
-    @PutMapping
+    @PatchMapping
     public Result update(@ApiParam(required = true)
                          @RequestBody final AccountDTO accountDTO) {
         final AccountDO accountDO = accountDTO.convertToAccountDO();
@@ -127,7 +120,7 @@ public class AccountController {
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") final Integer page,
                        @RequestParam(defaultValue = "0") final Integer size) {
-        log.debug("no cache => find in database");
+        log.debug("==> No cache, find database");
         PageHelper.startPage(page, size);
         final List<AccountDO> list = this.accountService.findAll();
         final PageInfo<AccountDO> pageInfo = new PageInfo<>(list);

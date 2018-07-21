@@ -1,8 +1,7 @@
-package com.zoctan.seedling;
-
-import com.zoctan.seedling.util.RsaUtils;
+import com.zoctan.seedling.core.rsa.RsaUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.util.Base64Utils;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -15,7 +14,7 @@ import java.util.Base64;
  * @author Zoctan
  * @date 2018/05/27
  */
-public class RsaSignTest {
+public class RsaEncryptor {
     private final RsaUtils rsaUtil = new RsaUtils();
 
     /**
@@ -23,12 +22,21 @@ public class RsaSignTest {
      */
     @Test
     public void test1() throws Exception {
-        final PublicKey publicKey = this.rsaUtil.loadPemPublicKey("rsa/public-key.pem");
-        final PrivateKey privateKey = this.rsaUtil.loadPemPrivateKey("rsa/private-key.pem");
+        final PublicKey publicKey = this.rsaUtil.loadPublicKey();
+        final PrivateKey privateKey = this.rsaUtil.loadPrivateKey();
         Assert.assertNotNull(publicKey);
         Assert.assertNotNull(privateKey);
         System.out.println("公钥：" + publicKey);
         System.out.println("私钥：" + privateKey);
+
+        final String data = "zoctan";
+        // 公钥加密
+        final byte[] encrypted = this.rsaUtil.encrypt(data.getBytes());
+        System.out.println("加密后：" + Base64Utils.encodeToString(encrypted));
+
+        // 私钥解密
+        final byte[] decrypted = this.rsaUtil.decrypt(encrypted);
+        System.out.println("解密后：" + new String(decrypted));
     }
 
     /**
@@ -48,11 +56,11 @@ public class RsaSignTest {
         System.out.println("私钥：" + new String(Base64.getEncoder().encode(privateKey.getEncoded())));
 
         // 公钥加密
-        final byte[] encryptedBytes = this.rsaUtil.encrypt(data.getBytes(), publicKey);
-        System.out.println("加密后：" + new String(encryptedBytes));
+        final byte[] encrypted = this.rsaUtil.encrypt(data.getBytes(), publicKey);
+        System.out.println("加密后：" + new String(encrypted));
 
         // 私钥解密
-        final byte[] decryptedBytes = this.rsaUtil.decrypt(encryptedBytes, privateKey);
-        System.out.println("解密后：" + new String(decryptedBytes));
+        final byte[] decrypted = this.rsaUtil.decrypt(encrypted, privateKey);
+        System.out.println("解密后：" + new String(decrypted));
     }
 }

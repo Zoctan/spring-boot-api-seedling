@@ -47,7 +47,7 @@ public class AccountServiceImpl extends AbstractService<AccountDO> implements Ac
 
         accountToDB.setPassword(this.passwordEncoder.encode(accountDO.getPassword()));
         this.accountMapper.insertSelective(accountToDB);
-        log.debug("create account<{}> id<{}>", accountToDB.getName(), accountToDB.getId());
+        log.debug("==> Create Account<{}> Id<{}>", accountToDB.getName(), accountToDB.getId());
         // 新建账户默认角色
         return this.roleMapper.insertDefaultAccountRole(accountToDB.getId());
     }

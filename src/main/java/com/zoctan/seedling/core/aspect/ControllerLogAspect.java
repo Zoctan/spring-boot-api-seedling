@@ -2,7 +2,6 @@ package com.zoctan.seedling.core.aspect;
 
 import com.zoctan.seedling.util.IpUtils;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +10,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 /**
- * 控制器日志切面
+ * controller日志切面
  *
  * @author Zoctan
  * @date 2018/07/13
@@ -24,46 +25,51 @@ import java.util.Arrays;
 public class ControllerLogAspect {
     private final static Logger log = LoggerFactory.getLogger(ControllerLogAspect.class);
 
+    /**
+     * 开始时间
+     */
+    private LocalDateTime startTime;
+
     @Pointcut("execution(* com.zoctan.seedling.controller..*.*(..))")
-    public void controllerLog() {
+    public void controllers() {
+    }
+
+    @Before("controllers()")
+    public void deBefore(final JoinPoint joinPoint) {
+        // 接收到请求，记录请求内容
+        log.debug("===========================================================");
+        log.debug("================  Controller Log Start  ===================");
+        log.debug("===========================================================");
+        this.startTime = LocalDateTime.now();
+        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            final HttpServletRequest request = attributes.getRequest();
+            log.debug("==> Request: [{}]{}", request.getMethod(), request.getRequestURL());
+            log.debug("==> From IP: {}", IpUtils.getIpAddress());
+        }
+        log.debug("==>  Method: {}", joinPoint.getSignature().getDeclaringTypeName() + "#" + joinPoint.getSignature().getName());
+        log.debug("==>    Args: {}", Arrays.toString(joinPoint.getArgs()));
     }
 
     /**
-     * 环绕通知,环绕增强，相当于 MethodInterceptor
+     * 后置结果返回
+     *
+     * @param result 结果
      */
-    @Around("controllerLog()")
-    public Object around(final ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("[0] 方法环绕开始");
-        return joinPoint.proceed();
-    }
-
-    @Before("controllerLog()")
-    public void deBefore(final JoinPoint joinPoint) {
-        // 接收到请求，记录请求内容
-        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            return;
-        }
-        final HttpServletRequest request = attributes.getRequest();
-        // 记录下请求内容
-        log.debug("[1] URL => {}", request.getRequestURL());
-        log.debug("[2] 请求方法 => {}", request.getMethod());
-        log.debug("[3] IP => {}", IpUtils.getIpAddress(request));
-        log.debug("[4] 类方法 => {}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        log.debug("[5] 参数 => {}", Arrays.toString(joinPoint.getArgs()));
-    }
-
-    @AfterReturning(returning = "result", pointcut = "controllerLog()")
+    @AfterReturning(pointcut = "controllers()", returning = "result")
     public void doAfterReturning(final Object result) {
-        // 处理完请求，返回内容
-        log.debug("[6] 方法的返回值 => {}", result);
+        final long difference = ChronoUnit.MILLIS.between(this.startTime, LocalDateTime.now());
+        log.debug("==>   Spend: {}s", difference / 1000.0);
+        log.debug("==>  Return: {}", result);
+        log.debug("================  Controller Log End  =====================");
     }
 
     /**
      * 后置异常通知
      */
-    @AfterThrowing("controllerLog()")
-    public void afterThrows(final JoinPoint joinPoint) {
-        log.debug("[6] 方法异常");
+    @AfterThrowing(pointcut = "controllers()", throwing = "e")
+    public void doAfterThrowing(final Throwable e) {
+        log.debug("==> Exception: {}", e.getMessage());
+        log.debug("================  Controller Log End  =====================");
     }
 }

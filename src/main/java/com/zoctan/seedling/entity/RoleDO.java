@@ -24,6 +24,11 @@ public class RoleDO {
     @Column(name = "name")
     private String name;
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     public Long getId() {
         return this.id;
     }
