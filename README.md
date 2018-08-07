@@ -1,5 +1,8 @@
 # Spring Boot API Seedling
 
+![stars](https://img.shields.io/github/stars/Zoctan/spring-boot-api-seedling.svg?style=flat-square&label=Stars)
+![license](https://img.shields.io/github/license/Zoctan/spring-boot-api-seedling.svg?style=flat-square)
+
 ## 简介
 
 本项目修改自：[spring-boot-api-project-seed](https://github.com/lihengming/spring-boot-api-project-seed)
