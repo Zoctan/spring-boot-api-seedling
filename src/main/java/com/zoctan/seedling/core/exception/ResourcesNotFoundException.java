@@ -7,17 +7,17 @@ package com.zoctan.seedling.core.exception;
  * @date 2018/07/20
  */
 public class ResourcesNotFoundException extends RuntimeException {
-    private static final String DEFAULT_MESSAGE = "资源不存在";
+  private static final String DEFAULT_MESSAGE = "资源不存在";
 
-    public ResourcesNotFoundException() {
-        super(DEFAULT_MESSAGE);
-    }
+  public ResourcesNotFoundException() {
+    super(DEFAULT_MESSAGE);
+  }
 
-    public ResourcesNotFoundException(final String message) {
-        super(message);
-    }
+  public ResourcesNotFoundException(final String message) {
+    super(message);
+  }
 
-    public ResourcesNotFoundException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+  public ResourcesNotFoundException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
 }

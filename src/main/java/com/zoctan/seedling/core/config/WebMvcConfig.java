@@ -22,56 +22,52 @@ import java.util.List;
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
-    /**
-     * 使用阿里 FastJson 作为 JSON MessageConverter
-     */
-    @Override
-    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
-        final FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
-        final FastJsonConfig config = new FastJsonConfig();
-        converter.setSupportedMediaTypes(new ArrayList<MediaType>() {{
+  /** 使用阿里 FastJson 作为 JSON MessageConverter */
+  @Override
+  public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+    final FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+    final FastJsonConfig config = new FastJsonConfig();
+    converter.setSupportedMediaTypes(
+        new ArrayList<MediaType>() {
+          {
             this.add(MediaType.APPLICATION_JSON_UTF8);
             this.add(MediaType.APPLICATION_FORM_URLENCODED);
             this.add(MediaType.TEXT_HTML);
-        }});
-        config.setSerializerFeatures(
-                // 保留空的字段
-                //SerializerFeature.WriteMapNullValue,
-                // Number null -> 0
-                SerializerFeature.WriteNullNumberAsZero,
-                // 美化输出
-                SerializerFeature.PrettyFormat
-        );
-        converter.setFastJsonConfig(config);
-        converter.setDefaultCharset(Charset.forName("UTF-8"));
-        converters.add(converter);
-    }
+          }
+        });
+    config.setSerializerFeatures(
+        // 保留空的字段
+        // SerializerFeature.WriteMapNullValue,
+        // Number null -> 0
+        SerializerFeature.WriteNullNumberAsZero,
+        // 美化输出
+        SerializerFeature.PrettyFormat);
+    converter.setFastJsonConfig(config);
+    converter.setDefaultCharset(Charset.forName("UTF-8"));
+    converters.add(converter);
+  }
 
-    /**
-     * 视图控制器
-     */
-    @Override
-    public void addViewControllers(final ViewControllerRegistry registry) {
-        // solved swagger2
-        registry.addRedirectViewController("/v2/api-docs",
-                "/v2/api-docs?group=restful-api");
-        registry.addRedirectViewController("/swagger-resources/configuration/ui",
-                "/swagger-resources/configuration/ui");
-        registry.addRedirectViewController("/swagger-resources/configuration/security",
-                "/swagger-resources/configuration/security");
-        registry.addRedirectViewController("/swagger-resources",
-                "/swagger-resources");
-    }
+  /** 视图控制器 */
+  @Override
+  public void addViewControllers(final ViewControllerRegistry registry) {
+    // solved swagger2
+    registry.addRedirectViewController("/v2/api-docs", "/v2/api-docs?group=restful-api");
+    registry.addRedirectViewController(
+        "/swagger-resources/configuration/ui", "/swagger-resources/configuration/ui");
+    registry.addRedirectViewController(
+        "/swagger-resources/configuration/security", "/swagger-resources/configuration/security");
+    registry.addRedirectViewController("/swagger-resources", "/swagger-resources");
+  }
 
-    /**
-     * 资源控制器
-     */
-    @Override
-    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        // solved swagger2
-        registry.addResourceHandler("/swagger-ui.html**")
-                .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+  /** 资源控制器 */
+  @Override
+  public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+    // solved swagger2
+    registry
+        .addResourceHandler("/swagger-ui.html**")
+        .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
+    registry
+        .addResourceHandler("/webjars/**")
+        .addResourceLocations("classpath:/META-INF/resources/webjars/");
+  }
 }

@@ -1,7 +1,6 @@
 package com.zoctan.seedling.service.impl;
 
 import com.zoctan.seedling.entity.AccountWithRoleDO;
-import com.zoctan.seedling.entity.RoleDO;
 import com.zoctan.seedling.service.AccountService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,23 +20,19 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserDetailsServiceImpl implements UserDetailsService {
-    @Resource
-    private AccountService accountService;
+  @Resource private AccountService accountService;
 
-    @Override
-    public UserDetails loadUserByUsername(final String name) throws UsernameNotFoundException {
-        final AccountWithRoleDO account = this.accountService.findByNameWithRole(name);
-        if (account == null) {
-            throw new UsernameNotFoundException("username dose not exist");
-        }
-        final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (final RoleDO roleDO : account.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority(roleDO.getName()));
-        }
-        return new org.springframework.security.core.userdetails.User(
-                account.getName(),
-                account.getPassword(),
-                authorities
-        );
+  @Override
+  public UserDetails loadUserByUsername(final String name) throws UsernameNotFoundException {
+    final AccountWithRoleDO account = this.accountService.getByNameWithRole(name);
+    if (account == null) {
+      throw new UsernameNotFoundException("账户名不存在");
     }
+    final List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    account
+        .getRoles()
+        .forEach(roleDO -> authorities.add(new SimpleGrantedAuthority(roleDO.getName())));
+    return new org.springframework.security.core.userdetails.User(
+        account.getName(), account.getPassword(), authorities);
+  }
 }

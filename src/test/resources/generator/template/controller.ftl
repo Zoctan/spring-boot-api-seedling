@@ -53,7 +53,7 @@ ${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.fi
                        @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<${modelNameUpperCamel}> list = ${modelNameLowerCamel}Service.findAll();
-        PageInfo<${modelNameUpperCamel}> pageInfo = new PageInfo<>(list);
+        PageInfo<${modelNameUpperCamel}> pageInfo = PageInfo.of(list);
         return ResultGenerator.genOkResult(pageInfo);
     }
 }

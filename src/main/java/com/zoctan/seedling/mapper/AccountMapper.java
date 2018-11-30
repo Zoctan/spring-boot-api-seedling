@@ -12,19 +12,19 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface AccountMapper extends MyMapper<AccountDO> {
 
-    /**
-     * 按条件查询账户
-     *
-     * @param accountQuery 账户查询条件
-     * @return 账户
-     */
-    AccountWithRoleDO selectByQueryWithRole(AccountQuery accountQuery);
+  /**
+   * 按条件查询账户
+   *
+   * @param accountQuery 账户查询条件
+   * @return 账户
+   */
+  AccountWithRoleDO getByQueryWithRole(AccountQuery accountQuery);
 
-    /**
-     * 按账户名更新最后登陆时间
-     *
-     * @param name 账户名
-     * @return 影响行数
-     */
-    int updateLoginTimeByName(@Param("name") String name);
+  /**
+   * 按账户名更新最后登陆时间
+   *
+   * @param name 账户名
+   * @return 影响行数
+   */
+  int updateLoginTimeByName(@Param("name") String name);
 }

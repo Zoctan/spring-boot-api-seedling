@@ -27,8 +27,8 @@ CREATE TABLE `account_role` (
   `role_id` bigint(20) unsigned NOT NULL COMMENT '角色Id',
   PRIMARY KEY (`account_id`,`role_id`),
   KEY `fk_ref_role` (`role_id`),
-  CONSTRAINT `fk_ref_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `fk_ref_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
+  CONSTRAINT `fk_ref_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ref_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='账户角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

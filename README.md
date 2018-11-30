@@ -19,16 +19,18 @@
 - Jasypt：加密配置
 - 其他略
 
-代码规范参考阿里巴巴 Java 开发手册，Idea 安装 Alibaba Java Coding Guidelines 插件。
+代码规范参考阿里巴巴 Java 开发手册，安装 Alibaba Java Coding Guidelines 插件。
+风格规范使用 Google，安装 google-java-format 插件。
+注解工具：Lombok，安装同名 Idea 插件。
 
 目前仍在更新中，希望小伙伴们能提 issue。
 
 ## 版本
 
-依赖         | 版本
-------------|---------
-Java        | 1.8
-SpringBoot  | 2.0.0
+| 依赖         | 版本    |
+|:-----------:|--------:|
+| Java        | 1.8     |
+| SpringBoot  | 2.1.0   |
 
 ## 快速开始
 
@@ -63,6 +65,8 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 - [前端 Vue + 后端 Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
 
 ## 更新记录
+
+2018-11-27 更新依赖版本，配置改为 yml ，完善单元测试，若干小修改。
 
 2018-07-21 增加 Jasypt 自定义配置和配置密码加密，Tomcat 打包，修改 RSA 工具和添加相应配置，部分小修改。
 

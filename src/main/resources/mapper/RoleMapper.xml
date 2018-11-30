@@ -6,10 +6,8 @@
         <result column="name" jdbcType="VARCHAR" property="name"/>
     </resultMap>
 
-    <insert id="insertDefaultAccountRole" parameterType="java.lang.Long">
+    <insert id="saveAsDefaultRole" parameterType="java.lang.Long">
         INSERT INTO account_role (account_id, role_id)
-        VALUES (#{accountId}, (SELECT r.id
-                               FROM role r
-                               WHERE name = "USER"))
+        VALUES (#{accountId}, (SELECT r.id FROM role r WHERE name = "USER"))
     </insert>
 </mapper>

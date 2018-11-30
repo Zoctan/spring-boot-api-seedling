@@ -12,17 +12,16 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2018/07/20
  */
 public class ContextUtils {
-    private ContextUtils() {
+  private ContextUtils() {}
 
-    }
-
-    /**
-     * 获取 request
-     *
-     * @return request
-     */
-    public static HttpServletRequest getRequest() {
-        final ServletRequestAttributes attributes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
-        return attributes == null ? null : attributes.getRequest();
-    }
+  /**
+   * 获取 request
+   *
+   * @return request
+   */
+  public static HttpServletRequest getRequest() {
+    final ServletRequestAttributes attributes =
+        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+    return attributes == null ? null : attributes.getRequest();
+  }
 }

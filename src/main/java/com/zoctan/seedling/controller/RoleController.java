@@ -23,41 +23,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/role")
 public class RoleController {
-    @Resource
-    private RoleService roleService;
+  @Resource private RoleService roleService;
 
-    @PostMapping
-    public Result add(@RequestBody final RoleDTO roleDTO) {
-        final RoleDO role = roleDTO.convertToRoleDO();
-        this.roleService.save(role);
-        return ResultGenerator.genOkResult();
-    }
+  @PostMapping
+  public Result add(@RequestBody final RoleDTO roleDTO) {
+    this.roleService.save(roleDTO);
+    return ResultGenerator.genOkResult();
+  }
 
-    @DeleteMapping("/{id}")
-    public Result delete(@PathVariable final Long id) {
-        this.roleService.deleteById(id);
-        return ResultGenerator.genOkResult();
-    }
+  @DeleteMapping("/{id}")
+  public Result delete(@PathVariable final Long id) {
+    this.roleService.deleteById(id);
+    return ResultGenerator.genOkResult();
+  }
 
-    @PutMapping
-    public Result update(@RequestBody final RoleDTO roleDTO) {
-        final RoleDO role = roleDTO.convertToRoleDO();
-        this.roleService.update(role);
-        return ResultGenerator.genOkResult();
-    }
+  @PutMapping
+  public Result update(@RequestBody final RoleDTO roleDTO) {
+    this.roleService.update(roleDTO);
+    return ResultGenerator.genOkResult();
+  }
 
-    @GetMapping("/{id}")
-    public Result detail(@PathVariable final Long id) {
-        final RoleDO role = this.roleService.findById(id);
-        return ResultGenerator.genOkResult(role);
-    }
+  @GetMapping("/{id}")
+  public Result detail(@PathVariable final Long id) {
+    final RoleDO role = this.roleService.getById(id);
+    return ResultGenerator.genOkResult(role);
+  }
 
-    @GetMapping
-    public Result list(@RequestParam(defaultValue = "0") final Integer page,
-                       @RequestParam(defaultValue = "0") final Integer size) {
-        PageHelper.startPage(page, size);
-        final List<RoleDO> list = this.roleService.findAll();
-        final PageInfo<RoleDO> pageInfo = new PageInfo<>(list);
-        return ResultGenerator.genOkResult(pageInfo);
-    }
+  @GetMapping
+  public Result list(
+      @RequestParam(defaultValue = "0") final Integer page,
+      @RequestParam(defaultValue = "0") final Integer size) {
+    PageHelper.startPage(page, size);
+    final List<RoleDO> list = this.roleService.findAll();
+    final PageInfo<RoleDO> pageInfo = new PageInfo<>(list);
+    return ResultGenerator.genOkResult(pageInfo);
+  }
 }

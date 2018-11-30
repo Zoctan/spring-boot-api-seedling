@@ -1,0 +1,65 @@
+spring:
+  profiles:
+    # 激活的配置
+    active: dev
+  # 终端彩色输出信息
+  output.ansi.enabled: ALWAYS
+  resources:
+    # 不映射工程中的静态资源文件比如：html、css
+    # 如果某些情况需要映射
+    # 比如 swagger2，可以在 addResourceHandlers 和 addViewControllers 中特别添加，参考 WebMvcConfig
+    add-mappings: false
+  mvc:
+    # 当出现 404 错误时，直接抛出异常（默认是显示一个错误页面）
+    throw-exception-if-no-handler-found: true
+
+rsa:
+  # 私钥位置
+  private-key-path: rsa/private-key.pem
+  # 公钥位置
+  public-key-path: rsa/public-key.pem
+
+jasypt.encryptor:
+  # 密码
+  # 先用RSA 加密 password（乱码），然后Base64加密，最后在 MyStringEncryptor 中先解密后再使用
+  password: fnMa4sWpCFSG1Wl3+tkjSRKfdApiZBGms5NE75TqzudMq1/9py5uvKk7urU4dKnuV+3/Tq69Y2E4gohJlAD3cA==
+  # 自定义的加密器
+  bean: myStringEncryptor
+  # 自定义被加密值的发现器
+  property:
+    detector-bean: myEncryptablePropertyDetector
+
+mybatis:
+  # 存放实体的位置
+  type-aliases-package: com.zoctan.seedling.entity
+  # 存放 mapper 映射文件的位置
+  mapper-locations: classpath:mapper/*.xml
+
+mapper:
+  # 多个接口时逗号隔开
+  mappers: com.zoctan.seedling.core.mapper.MyMapper
+  # insert 和 update 中，判断字符串类型 != ''
+  not-empty: false
+  # 取回主键的方式
+  identity: MYSQL
+
+# 分页插件
+# https://github.com/pagehelper/Mybatis-PageHelper/blob/master/wikis/zh/HowToUse.md
+pagehelper:
+  # pageSize=0 时查出所有结果，相当于没分页
+  page-size-zero: true
+  # 数据库方言
+  helperDialect: mysql
+  # 分页合理化
+  # pageNum <= 0 时会查询第一页
+  # pageNum > pages（超过总数时），会查询最后一页
+  reasonable: true
+  # 支持通过 Mapper 接口参数来传递分页参数
+  supportMethodsArguments: true
+
+# 日志
+#logging:
+#  # 以文件方式记录日志
+#  file: seedling.log
+#  # 设置目录
+#  path: /var/log

@@ -1,9 +1,7 @@
 package com.zoctan.seedling.util;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -14,35 +12,38 @@ import java.util.Arrays;
  * @date 2018/07/11
  */
 public class JsonUtils {
-    private final static Logger log = LoggerFactory.getLogger(JsonUtils.class);
+  private JsonUtils() {}
 
-    private JsonUtils() {
+  /**
+   * 保留某些字段
+   *
+   * @param target 目标对象
+   * @param fields 字段
+   * @return 保留字段后的对象
+   */
+  public static <T> T keepFields(final Object target, final Class<T> clz, final String... fields) {
+    final SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
+    filter.getIncludes().addAll(Arrays.asList(fields));
+    return done(target, clz, filter);
+  }
 
-    }
+  /**
+   * 去除某些字段
+   *
+   * @param target 目标对象
+   * @param fields 字段
+   * @return 去除字段后的对象
+   */
+  public static <T> T deleteFields(
+      final Object target, final Class<T> clz, final String... fields) {
+    final SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
+    filter.getExcludes().addAll(Arrays.asList(fields));
+    return done(target, clz, filter);
+  }
 
-    /**
-     * 保留某些字段
-     *
-     * @param target 目标对象
-     * @param fields 字段
-     * @return 保留字段后的Json
-     */
-    public static String keepFields(final Object target, final String... fields) {
-        final SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
-        filter.getIncludes().addAll(Arrays.asList(fields));
-        return JSONObject.toJSONString(target, filter);
-    }
-
-    /**
-     * 去除某些字段
-     *
-     * @param target 目标对象
-     * @param fields 字段
-     * @return 去除字段后的Json
-     */
-    public static String deleteFields(final Object target, final String... fields) {
-        final SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
-        filter.getExcludes().addAll(Arrays.asList(fields));
-        return JSONObject.toJSONString(target, filter);
-    }
+  private static <T> T done(
+      final Object target, final Class<T> clz, final SimplePropertyPreFilter filter) {
+    final String jsonString = JSON.toJSONString(target, filter);
+    return JSON.parseObject(jsonString, clz);
+  }
 }

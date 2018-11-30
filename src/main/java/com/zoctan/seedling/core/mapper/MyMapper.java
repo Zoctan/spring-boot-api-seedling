@@ -12,10 +12,4 @@ import tk.mybatis.mapper.common.special.InsertListMapper;
  * @date 2018/05/27
  */
 public interface MyMapper<T>
-        extends
-        BaseMapper<T>,
-        ConditionMapper<T>,
-        IdsMapper<T>,
-        InsertListMapper<T> {
-
-}
+    extends BaseMapper<T>, ConditionMapper<T>, IdsMapper<T>, InsertListMapper<T> {}

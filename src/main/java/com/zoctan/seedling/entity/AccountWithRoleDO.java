@@ -1,5 +1,8 @@
 package com.zoctan.seedling.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
 /**
@@ -8,22 +11,9 @@ import java.util.List;
  * @author Zoctan
  * @date 2018/07/15
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class AccountWithRoleDO extends AccountDO {
-    /**
-     * 账户的角色列表
-     */
-    private List<RoleDO> roles;
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    public List<RoleDO> getRoles() {
-        return this.roles;
-    }
-
-    public void setRoles(final List<RoleDO> roles) {
-        this.roles = roles;
-    }
+  /** 账户的角色列表 */
+  private List<RoleDO> roles;
 }
