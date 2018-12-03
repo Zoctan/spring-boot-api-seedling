@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -24,12 +25,12 @@ public class RedisUtils {
    * 设置缓存失效时间
    *
    * @param key 键
-   * @param timeout 时间（秒）
+   * @param timeout 时间
    * @return {Boolean}
    */
-  public Boolean setExpire(@NotBlank final String key, @NotBlank final long timeout) {
-    if (timeout > 0) {
-      return this.redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
+  public Boolean setExpire(@NotBlank final String key, @NotBlank final Duration timeout) {
+    if (timeout.getSeconds() > 0) {
+      return this.redisTemplate.expire(key, timeout.getSeconds(), TimeUnit.SECONDS);
     }
     return false;
   }
@@ -91,11 +92,11 @@ public class RedisUtils {
    *
    * @param key 键
    * @param value 值
-   * @param timeout 时间（秒） 小于等于0时将设为无限期
+   * @param timeout 时间 小于等于0时将设为无限期
    */
   public void setValue(
-      @NotBlank final String key, @NotBlank final Object value, @NotBlank final long timeout) {
-    this.redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
+      @NotBlank final String key, @NotBlank final Object value, @NotBlank final Duration timeout) {
+    this.redisTemplate.opsForValue().set(key, value, timeout);
   }
 
   /**
@@ -164,12 +165,12 @@ public class RedisUtils {
    *
    * @param key 键
    * @param map 对应多个键值
-   * @param timeout 时间(秒)
+   * @param timeout 时间
    */
   public void putHash(
       @NotBlank final String key,
       @NotBlank final Map<String, Object> map,
-      @NotBlank final Long timeout) {
+      @NotBlank final Duration timeout) {
     this.redisTemplate.opsForHash().putAll(key, map);
     this.setExpire(key, timeout);
   }
@@ -192,13 +193,13 @@ public class RedisUtils {
    * @param key 键
    * @param item 项
    * @param value 值
-   * @param timeout 时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
+   * @param timeout 时间 注意:如果已存在的hash表有时间,这里将会替换原有的时间
    */
   public void putHash(
       @NotBlank final String key,
       @NotBlank final String item,
       @NotBlank final Object value,
-      @NotBlank final Long timeout) {
+      @NotBlank final Duration timeout) {
     this.redisTemplate.opsForHash().put(key, item, value);
     this.setExpire(key, timeout);
   }
@@ -288,12 +289,14 @@ public class RedisUtils {
    * 将set数据放入缓存
    *
    * @param key 键
-   * @param timeout 时间(秒)
+   * @param timeout 时间
    * @param values 值
    * @return 放入个数
    */
   public Long addSet(
-      @NotBlank final String key, @NotBlank final Long timeout, @NotBlank final Object... values) {
+      @NotBlank final String key,
+      @NotBlank final Duration timeout,
+      @NotBlank final Object... values) {
     final Long num = this.redisTemplate.opsForSet().add(key, values);
     this.setExpire(key, timeout);
     return num;
@@ -371,10 +374,10 @@ public class RedisUtils {
    *
    * @param key 键
    * @param value 值
-   * @param timeout 时间(秒)
+   * @param timeout 时间
    */
   public Long pushList(
-      @NotBlank final String key, @NotBlank final Object value, @NotBlank final Long timeout) {
+      @NotBlank final String key, @NotBlank final Object value, @NotBlank final Duration timeout) {
     final Long num = this.redisTemplate.opsForList().rightPush(key, value);
     this.setExpire(key, timeout);
     return num;
@@ -396,13 +399,13 @@ public class RedisUtils {
    *
    * @param key 键
    * @param value 值
-   * @param timeout 时间(秒)
+   * @param timeout 时间
    * @return 放入个数
    */
   public Long pushList(
       @NotBlank final String key,
       @NotBlank final List<Object> value,
-      @NotBlank final Long timeout) {
+      @NotBlank final Duration timeout) {
     final Long num = this.redisTemplate.opsForList().rightPushAll(key, value);
     this.setExpire(key, timeout);
     return num;

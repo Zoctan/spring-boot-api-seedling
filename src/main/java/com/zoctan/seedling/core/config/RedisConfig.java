@@ -32,7 +32,11 @@ public class RedisConfig {
     return new JedisConnectionFactory(poolConfig);
   }
 
-  /** 配置 RedisTemplate，配置 key 和 value 的序列化类 key 序列化使用 StringRedisSerializer, 不配置的话，key 会出现乱码 */
+  /**
+   * 配置 RedisTemplate，配置 key 和 value 的序列化类
+   *
+   * <p>key 序列化使用 StringRedisSerializer, 不配置的话，key 会出现乱码
+   */
   @Bean
   public RedisTemplate redisTemplate(
       @Qualifier(value = "jedisConnectionFactory") final JedisConnectionFactory factory) {

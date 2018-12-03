@@ -21,7 +21,7 @@ rsa:
 
 jasypt.encryptor:
   # 密码
-  # 先用RSA 加密 password（乱码），然后Base64加密，最后在 MyStringEncryptor 中先解密后再使用
+  # 先用 RSA 加密 password，然后Base64加密，最后在 MyStringEncryptor 中先解密后再使用
   password: fnMa4sWpCFSG1Wl3+tkjSRKfdApiZBGms5NE75TqzudMq1/9py5uvKk7urU4dKnuV+3/Tq69Y2E4gohJlAD3cA==
   # 自定义的加密器
   bean: myStringEncryptor

@@ -127,10 +127,9 @@ public class JwtUtil {
     log.debug("==> Account<{}> authorities: {}", name, authorities);
 
     // 过期时间
-    final long expireTime = this.jwtProperties.getExpireTime();
+    final Duration expireTime = this.jwtProperties.getExpireTime();
     // 当前时间 + 有效时长
-    final Date expireDate =
-        new Date(System.currentTimeMillis() + Duration.ofMinutes(expireTime).toMillis());
+    final Date expireDate = new Date(System.currentTimeMillis() + expireTime.toMillis());
     // 创建 token，比如 "Bearer abc1234"
     final String token =
         this.jwtProperties.getTokenType()

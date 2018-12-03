@@ -23,7 +23,7 @@ spring.datasource:
 # Json web token
 jwt:
   # 过期时间（分钟）
-  expireTime: 60
+  expireTime: 1m
   # claim 权限 key
   claimKeyAuth: auth
   # 请求头或请求参数的 key

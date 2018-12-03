@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 /**
  * Json web token 配置
  *
@@ -21,5 +23,5 @@ public class JwtConfigurationProperties {
   /** 请求头或请求参数的key */
   private String header;
   /** 有效期 */
-  private long expireTime;
+  private Duration expireTime;
 }
