@@ -1,6 +1,5 @@
 package com.zoctan.seedling.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.zoctan.seedling.core.dto.AbastractConverter;
 import com.zoctan.seedling.entity.AccountDO;
 import io.swagger.annotations.ApiModel;
@@ -36,7 +35,6 @@ public class AccountDTO extends AbastractConverter<AccountDTO, AccountDO> implem
   @ApiModelProperty(value = "密码", example = "admin")
   @NotEmpty(message = "密码不能为空")
   @Size(min = 5, message = "密码长度不能小于5")
-  @JSONField(serialize = false)
   private String password;
 
   @Override
