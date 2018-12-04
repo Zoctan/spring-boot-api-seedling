@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import javax.annotation.Resource;
 
@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @ConditionalOnProperty(name = "spring.redis.host")
 @EnableConfigurationProperties(RedisProperties.class)
 public class RedisCacheConfig extends CachingConfigurerSupport {
-  @Resource private JedisConnectionFactory jedisConnectionFactory;
+  @Resource private RedisConnectionFactory redisConnectionFactory;
 
   @Bean
   @Override
   public CacheManager cacheManager() {
     // 初始化一个 RedisCacheWriter
     final RedisCacheWriter redisCacheWriter =
-        RedisCacheWriter.nonLockingRedisCacheWriter(this.jedisConnectionFactory);
+        RedisCacheWriter.nonLockingRedisCacheWriter(this.redisConnectionFactory);
     final RedisCacheConfiguration defaultCacheConfig =
         RedisCacheConfiguration.defaultCacheConfig()
             // 不缓存 null 值

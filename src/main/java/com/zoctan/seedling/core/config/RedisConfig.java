@@ -6,10 +6,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.time.Duration;
 
 /**
  * Redis配置
@@ -27,9 +32,23 @@ public class RedisConfig {
 
   @Bean
   @ConfigurationProperties(prefix = "spring.redis")
-  public JedisConnectionFactory jedisConnectionFactory(
-      @Qualifier(value = "jedisPoolConfig") final JedisPoolConfig poolConfig) {
-    return new JedisConnectionFactory(poolConfig);
+  public RedisConnectionFactory redisConnectionFactory(
+      @Qualifier(value = "jedisPoolConfig") final JedisPoolConfig jedisPoolConfig) {
+    // 单机版 jedis
+    final RedisStandaloneConfiguration redisStandaloneConfiguration =
+        new RedisStandaloneConfiguration();
+    // 获得默认的连接池构造器
+    final JedisClientConfiguration.JedisPoolingClientConfigurationBuilder jpcb =
+        (JedisClientConfiguration.JedisPoolingClientConfigurationBuilder)
+            JedisClientConfiguration.builder();
+    // 指定 jedisPoolConifig 来修改默认的连接池构造器
+    jpcb.poolConfig(jedisPoolConfig);
+    // 连接超时
+    jpcb.and().connectTimeout(Duration.ofMillis(0));
+    // 通过构造器来构造 jedis 客户端配置
+    final JedisClientConfiguration jedisClientConfiguration = jpcb.build();
+    // 单机配置 + 客户端配置 = jedis 连接工厂
+    return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
   }
 
   /**
@@ -39,7 +58,7 @@ public class RedisConfig {
    */
   @Bean
   public RedisTemplate redisTemplate(
-      @Qualifier(value = "jedisConnectionFactory") final JedisConnectionFactory factory) {
+      @Qualifier(value = "redisConnectionFactory") final RedisConnectionFactory factory) {
     final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
     // 设置 key 的序列化器为字符串 serializer
