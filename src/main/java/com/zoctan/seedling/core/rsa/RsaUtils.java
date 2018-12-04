@@ -39,14 +39,12 @@ import java.security.spec.X509EncodedKeySpec;
 @Slf4j
 @Component
 public class RsaUtils {
-  @Resource private RsaConfigurationProperties rsaProperties;
   private static final String ALGORITHM = "RSA";
-
   private static final String publicKeyHead = "-----BEGIN PUBLIC KEY-----";
   private static final String publicKeyTail = "-----END PUBLIC KEY-----";
-
   private static final String privateKeyHead = "-----BEGIN PRIVATE KEY-----";
   private static final String privateKeyTail = "-----END PRIVATE KEY-----";
+  @Resource private RsaConfigurationProperties rsaProperties;
 
   public RsaUtils() {
     if (this.rsaProperties == null) {

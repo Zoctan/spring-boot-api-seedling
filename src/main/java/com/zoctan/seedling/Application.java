@@ -26,13 +26,13 @@ import static com.zoctan.seedling.core.constant.ProjectConstant.MAPPER_PACKAGE;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
+  public static void main(final String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+
   /** 容器启动配置 */
   @Override
   protected SpringApplicationBuilder configure(final SpringApplicationBuilder builder) {
     return builder.sources(Application.class);
-  }
-
-  public static void main(final String[] args) {
-    SpringApplication.run(Application.class, args);
   }
 }

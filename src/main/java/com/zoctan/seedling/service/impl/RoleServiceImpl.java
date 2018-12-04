@@ -22,16 +22,20 @@ public class RoleServiceImpl extends AbstractService<RoleDO> implements RoleServ
   @Resource private RoleMapper roleMapper;
 
   @Override
+  public void saveAsDefaultRole(final Long accountId) {
+    final boolean success = this.roleMapper.saveAsDefaultRole(accountId) == 1;
+    AssertUtils.asserts(success, ResultCode.SAVE_FAILED, "账户默认角色保存失败");
+  }
+
+  @Override
   public void save(final RoleDTO roleDTO) {
     final RoleDO role = roleDTO.convertToDO();
-    final boolean saveSuccuss = this.save(role);
-    AssertUtils.asserts(saveSuccuss, ResultCode.SAVE_FAILED, "角色持久化失败");
+    this.save(role);
   }
 
   @Override
   public void update(final RoleDTO roleDTO) {
     final RoleDO role = roleDTO.convertToDO();
-    final boolean updateSuccuss = this.update(role);
-    AssertUtils.asserts(updateSuccuss, ResultCode.UPDATE_FAILED, "角色更新失败");
+    this.update(role);
   }
 }

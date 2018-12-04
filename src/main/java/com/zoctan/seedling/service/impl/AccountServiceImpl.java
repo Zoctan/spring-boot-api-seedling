@@ -6,9 +6,9 @@ import com.zoctan.seedling.dto.AccountDTO;
 import com.zoctan.seedling.entity.AccountDO;
 import com.zoctan.seedling.entity.AccountWithRoleDO;
 import com.zoctan.seedling.mapper.AccountMapper;
-import com.zoctan.seedling.mapper.RoleMapper;
 import com.zoctan.seedling.query.AccountQuery;
 import com.zoctan.seedling.service.AccountService;
+import com.zoctan.seedling.service.RoleService;
 import com.zoctan.seedling.util.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ import javax.annotation.Resource;
 @Transactional(rollbackFor = Exception.class)
 public class AccountServiceImpl extends AbstractService<AccountDO> implements AccountService {
   @Resource private AccountMapper accountMapper;
-  @Resource private RoleMapper roleMapper;
+  @Resource private RoleService roleService;
   @Resource private PasswordEncoder passwordEncoder;
 
   /** 重写 save 方法，密码加密后再存，并且赋予默认角色 */
@@ -40,12 +40,10 @@ public class AccountServiceImpl extends AbstractService<AccountDO> implements Ac
     final AccountDO accountDO = accountDTO.convertToDO();
 
     accountDO.setPassword(this.passwordEncoder.encode(accountDTO.getPassword().trim()));
-    final boolean saveSuccuss = this.save(accountDO);
-    AssertUtils.asserts(saveSuccuss, ResultCode.SAVE_FAILED, "账户持久化失败");
+    this.save(accountDO);
     log.debug("==> Create Account<{}> Id<{}>", accountDO.getName(), accountDO.getId());
     // 新建账户默认角色
-    final boolean saveRoleSuccuss = this.roleMapper.saveAsDefaultRole(accountDO.getId()) == 1;
-    AssertUtils.asserts(saveRoleSuccuss, ResultCode.SAVE_FAILED, "账户角色持久化失败");
+    this.roleService.saveAsDefaultRole(accountDO.getId());
   }
 
   @Override
@@ -62,8 +60,7 @@ public class AccountServiceImpl extends AbstractService<AccountDO> implements Ac
     // 按 name 字段更新
     final Condition condition = new Condition(AccountDO.class);
     condition.createCriteria().andCondition("name = ", name);
-    final boolean updateSuccuss = this.updateByCondition(accountDO, condition);
-    AssertUtils.asserts(updateSuccuss, ResultCode.UPDATE_FAILED, "账户更新失败");
+    this.updateByCondition(accountDO, condition);
   }
 
   @Override
@@ -85,6 +82,10 @@ public class AccountServiceImpl extends AbstractService<AccountDO> implements Ac
 
   @Override
   public boolean updateLoginTimeByName(final String name) {
-    return this.accountMapper.updateLoginTimeByName(name) == 1;
+    final boolean success = this.accountMapper.updateLoginTimeByName(name) == 1;
+    if (!success) {
+      log.error("==> Update Account<{}> login time error", name);
+    }
+    return success;
   }
 }

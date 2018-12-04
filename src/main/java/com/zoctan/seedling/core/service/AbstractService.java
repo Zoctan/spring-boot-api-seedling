@@ -3,6 +3,8 @@ package com.zoctan.seedling.core.service;
 import com.zoctan.seedling.core.exception.ResourcesNotFoundException;
 import com.zoctan.seedling.core.exception.ServiceException;
 import com.zoctan.seedling.core.mapper.MyMapper;
+import com.zoctan.seedling.core.response.ResultCode;
+import com.zoctan.seedling.util.AssertUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
@@ -28,6 +30,26 @@ public abstract class AbstractService<T> implements Service<T> {
     final ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
     //noinspection unchecked
     this.entityClass = (Class<T>) pt.getActualTypeArguments()[0];
+  }
+
+  private void assertSave(final boolean statement) {
+    AssertUtils.asserts(statement, ResultCode.SAVE_FAILED);
+  }
+
+  private void assertDelete(final boolean statement) {
+    AssertUtils.asserts(statement, ResultCode.DELETE_FAILED);
+  }
+
+  private void assertUpdate(final boolean statement) {
+    AssertUtils.asserts(statement, ResultCode.UPDATE_FAILED);
+  }
+
+  private T getEntity(final String fieldName, final Object value) throws Exception {
+    final T entity = this.entityClass.getDeclaredConstructor().newInstance();
+    final Field field = this.entityClass.getDeclaredField(fieldName);
+    field.setAccessible(true);
+    field.set(entity, value);
+    return entity;
   }
 
   @Override
@@ -61,61 +83,52 @@ public abstract class AbstractService<T> implements Service<T> {
   }
 
   @Override
-  public boolean save(final T entity) {
-    return this.mapper.insertSelective(entity) == 1;
+  public void save(final T entity) {
+    this.assertSave(this.mapper.insertSelective(entity) == 1);
   }
 
   @Override
-  public boolean save(final List<T> entities) {
-    return this.mapper.insertList(entities) == entities.size();
+  public void save(final List<T> entities) {
+    this.assertSave(this.mapper.insertList(entities) == entities.size());
   }
 
   @Override
-  public boolean deleteById(final Object id) {
+  public void deleteById(final Object id) {
     this.assertById(id);
-    return this.mapper.deleteByPrimaryKey(id) == 1;
-  }
-
-  private T getEntity(final String fieldName, final Object value) throws Exception {
-    final T entity = this.entityClass.getDeclaredConstructor().newInstance();
-    final Field field = this.entityClass.getDeclaredField(fieldName);
-    field.setAccessible(true);
-    field.set(entity, value);
-    return entity;
+    this.assertDelete(this.mapper.deleteByPrimaryKey(id) == 1);
   }
 
   @Override
-  public boolean deleteBy(final String fieldName, final Object value)
-      throws TooManyResultsException {
+  public void deleteBy(final String fieldName, final Object value) throws TooManyResultsException {
     try {
       final T entity = this.getEntity(fieldName, value);
       this.assertBy(entity);
-      return this.mapper.delete(entity) == 1;
+      this.assertDelete(this.mapper.delete(entity) == 1);
     } catch (final Exception e) {
       throw new ServiceException(e.getMessage(), e);
     }
   }
 
   @Override
-  public boolean deleteByIds(final String ids) {
+  public void deleteByIds(final String ids) {
     this.assertByIds(ids);
-    return this.mapper.deleteByIds(ids) == ids.split(",").length;
+    this.assertDelete(this.mapper.deleteByIds(ids) == ids.split(",").length);
   }
 
   @Override
-  public boolean deleteByCondition(final Condition condition) {
+  public void deleteByCondition(final Condition condition) {
     final int count = this.countByCondition(condition);
-    return this.mapper.deleteByCondition(condition) == count;
+    this.assertDelete(this.mapper.deleteByCondition(condition) == count);
   }
 
   @Override
-  public boolean update(final T entity) {
-    return this.mapper.updateByPrimaryKeySelective(entity) == 1;
+  public void update(final T entity) {
+    this.assertUpdate(this.mapper.updateByPrimaryKeySelective(entity) == 1);
   }
 
   @Override
-  public boolean updateByCondition(final T entity, final Condition condition) {
-    return this.mapper.updateByConditionSelective(entity, condition) == 1;
+  public void updateByCondition(final T entity, final Condition condition) {
+    this.assertUpdate(this.mapper.updateByConditionSelective(entity, condition) == 1);
   }
 
   @Override

@@ -24,9 +24,17 @@ public class Result<T> {
     return JSON.toJSONString(this);
   }
 
+  public Integer getCode() {
+    return this.code;
+  }
+
   public Result<T> setCode(final Integer code) {
     this.code = code;
     return this;
+  }
+
+  public String getMessage() {
+    return this.message;
   }
 
   public Result<T> setMessage(final String message) {
@@ -34,20 +42,12 @@ public class Result<T> {
     return this;
   }
 
+  public T getData() {
+    return this.data;
+  }
+
   public Result<T> setData(final T data) {
     this.data = data;
     return this;
-  }
-
-  public Integer getCode() {
-    return this.code;
-  }
-
-  public String getMessage() {
-    return this.message;
-  }
-
-  public T getData() {
-    return this.data;
   }
 }

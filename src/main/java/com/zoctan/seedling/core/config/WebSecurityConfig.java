@@ -55,7 +55,13 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
-    http // 关闭 cors 验证
+    http
+        // 禁用页面缓存
+        .headers()
+        .cacheControl()
+        .and()
+        .and()
+        // 关闭 cors 验证
         .cors()
         .disable()
         // 关闭 csrf 验证
@@ -70,6 +76,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 因为 RESTFul 没有登录界面所以只能显示未登录
         .authenticationEntryPoint(this.myAuthenticationEntryPoint)
         .and()
+        // 身份过滤器
+        .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class)
         // 对所有的请求都做权限校验
         .authorizeRequests()
         // 允许匿名请求
@@ -81,10 +89,5 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 除上面外的所有请求全部需要鉴权认证
         .anyRequest()
         .authenticated();
-
-    http // 身份过滤器
-        .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    // 禁用页面缓存
-    http.headers().cacheControl();
   }
 }

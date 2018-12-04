@@ -1,8 +1,7 @@
 package com.zoctan.seedling.core.cache;
 
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
@@ -34,18 +33,11 @@ import java.util.concurrent.Callable;
  * @author Zoctan
  * @date 2018/07/11
  */
+@Slf4j
 public class MyRedisCacheManager extends RedisCacheManager
     implements ApplicationContextAware, InitializingBean {
-  private static final Logger log = LoggerFactory.getLogger(MyRedisCacheManager.class);
-
-  private ApplicationContext applicationContext;
-
-  private final Map<String, RedisCacheConfiguration> initialCacheConfiguration =
-      new LinkedHashMap<>();
-
   /** key serializer */
   public static final StringRedisSerializer STRING_SERIALIZER = new StringRedisSerializer();
-
   /**
    * value serializer
    *
@@ -54,13 +46,16 @@ public class MyRedisCacheManager extends RedisCacheManager
    */
   public static final GenericFastJsonRedisSerializer FASTJSON_SERIALIZER =
       new GenericFastJsonRedisSerializer();
-
   /** key serializer pair */
   public static final RedisSerializationContext.SerializationPair<String> STRING_PAIR =
       RedisSerializationContext.SerializationPair.fromSerializer(STRING_SERIALIZER);
   /** value serializer pair */
   public static final RedisSerializationContext.SerializationPair<Object> FASTJSON_PAIR =
       RedisSerializationContext.SerializationPair.fromSerializer(FASTJSON_SERIALIZER);
+
+  private final Map<String, RedisCacheConfiguration> initialCacheConfiguration =
+      new LinkedHashMap<>();
+  private ApplicationContext applicationContext;
 
   public MyRedisCacheManager(
       final RedisCacheWriter cacheWriter, final RedisCacheConfiguration defaultCacheConfiguration) {

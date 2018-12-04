@@ -31,16 +31,20 @@ public class JasyptConfig {
         Base64Utils.decodeFromString(this.passwordEncryptedByBase64AndRSA);
     final String password = new String(this.rsaUtils.decrypt(passwordEncryptedByRSA));
     // 配置
+    final SimpleStringPBEConfig config =
+        new SimpleStringPBEConfig() {
+          {
+            this.setPassword(password);
+            // 加密算法
+            this.setAlgorithm("PBEWithMD5AndDES");
+            this.setKeyObtentionIterations("1000");
+            this.setPoolSize("1");
+            this.setProviderName("SunJCE");
+            this.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+            this.setStringOutputType("base64");
+          }
+        };
     final PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-    final SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-    config.setPassword(password);
-    // 加密算法
-    config.setAlgorithm("PBEWithMD5AndDES");
-    config.setKeyObtentionIterations("1000");
-    config.setPoolSize("1");
-    config.setProviderName("SunJCE");
-    config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-    config.setStringOutputType("base64");
     encryptor.setConfig(config);
     return encryptor;
   }

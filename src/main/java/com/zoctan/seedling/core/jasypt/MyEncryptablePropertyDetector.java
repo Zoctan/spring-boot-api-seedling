@@ -1,6 +1,7 @@
 package com.zoctan.seedling.core.jasypt;
 
 import com.ulisesbocchio.jasyptspringboot.EncryptablePropertyDetector;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +19,7 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
 
   @Override
   public boolean isEncrypted(final String property) {
-    if (property == null) {
+    if (StringUtils.isBlank(property)) {
       return false;
     }
     final String trimmedProperty = property.trim();

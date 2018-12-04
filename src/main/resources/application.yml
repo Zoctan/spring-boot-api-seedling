@@ -20,8 +20,8 @@ rsa:
   public-key-path: rsa/public-key.pem
 
 jasypt.encryptor:
-  # 密码
-  # 先用 RSA 加密 password，然后Base64加密，最后在 MyStringEncryptor 中先解密后再使用
+  # 先 RSA + 后 Base64 加密的密码
+  # 在 JasyptConfig#myStringEncryptor 中先解密后再使用
   password: fnMa4sWpCFSG1Wl3+tkjSRKfdApiZBGms5NE75TqzudMq1/9py5uvKk7urU4dKnuV+3/Tq69Y2E4gohJlAD3cA==
   # 自定义的加密器
   bean: myStringEncryptor

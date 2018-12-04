@@ -55,43 +55,38 @@ public interface Service<T> {
    * 持久化
    *
    * @param entity 实体
-   * @return {boolean}
    */
-  boolean save(T entity);
+  void save(T entity);
 
   /**
    * 批量持久化
    *
    * @param entities 实体列表
-   * @return {boolean}
    */
-  boolean save(List<T> entities);
+  void save(List<T> entities);
 
   /**
    * 通过主鍵刪除
    *
    * @param id id
-   * @return {boolean}
    */
-  boolean deleteById(Object id);
+  void deleteById(Object id);
 
   /**
    * 通过实体中某个成员变量名称（非数据表中 column 的名称）刪除
    *
    * @param fieldName 字段名
    * @param value 字段值
-   * @return {boolean}
    * @throws TooManyResultsException 多条结果异常
    */
-  boolean deleteBy(String fieldName, Object value) throws TooManyResultsException;
+  void deleteBy(String fieldName, Object value) throws TooManyResultsException;
 
   /**
    * 批量刪除 ids -> “1,2,3,4”
    *
    * @param ids ids
-   * @return {boolean}
    */
-  boolean deleteByIds(String ids);
+  void deleteByIds(String ids);
 
   //
 
@@ -100,24 +95,22 @@ public interface Service<T> {
    *
    * @param condition 条件
    */
-  boolean deleteByCondition(Condition condition);
+  void deleteByCondition(Condition condition);
 
   /**
    * 按组件更新
    *
    * @param entity 实体
-   * @return 影响行数
    */
-  boolean update(T entity);
+  void update(T entity);
 
   /**
    * 按条件更新
    *
    * @param entity 实体
    * @param condition 条件
-   * @return 影响行数
    */
-  boolean updateByCondition(T entity, Condition condition);
+  void updateByCondition(T entity, Condition condition);
 
   /**
    * 通过 id 查找
