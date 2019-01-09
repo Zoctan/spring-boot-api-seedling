@@ -25,6 +25,9 @@ public final class ProjectConstant {
   /** Mapper 所在包 */
   public static final String MAPPER_PACKAGE = BASE_PACKAGE + ".mapper";
 
+  /** Filter 所在包 */
+  public static final String FILTER_PACKAGE = BASE_PACKAGE + ".filter";
+
   /** Service 所在包 */
   public static final String SERVICE_PACKAGE = BASE_PACKAGE + ".service";
 

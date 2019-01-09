@@ -19,8 +19,8 @@ spring:
   cache:
     # 缓存类型
     type: redis
-    # key 前缀
     redis:
+      # key 前缀
       key-prefix: seedlingDev
       # 过期时间
       time-to-live: 60s
@@ -42,6 +42,7 @@ spring:
       max-idle: 8
       # 连接池中的最小空闲连接
       min-idle: 0
+
 
 logging:
   # 日志级别

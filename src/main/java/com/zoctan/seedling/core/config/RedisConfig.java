@@ -3,6 +3,7 @@ package com.zoctan.seedling.core.config;
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import com.zoctan.seedling.core.cache.MyRedisCacheManager;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 
 /**
@@ -24,6 +26,8 @@ import java.time.Duration;
  */
 @Configuration
 public class RedisConfig {
+  @Resource private RedisProperties redisProperties;
+
   @Bean
   @ConfigurationProperties(prefix = "spring.redis.jedis.pool")
   public JedisPoolConfig jedisPoolConfig() {
@@ -34,9 +38,16 @@ public class RedisConfig {
   @ConfigurationProperties(prefix = "spring.redis")
   public RedisConnectionFactory redisConnectionFactory(
       @Qualifier(value = "jedisPoolConfig") final JedisPoolConfig jedisPoolConfig) {
+    // 方法上的 @ConfigurationProperties 不生效
+    // 未知 bug，暂时这样手动设置
+    // fixme
     // 单机版 jedis
     final RedisStandaloneConfiguration redisStandaloneConfiguration =
-        new RedisStandaloneConfiguration();
+        new RedisStandaloneConfiguration(
+            this.redisProperties.getHost(), this.redisProperties.getPort());
+    redisStandaloneConfiguration.setDatabase(this.redisProperties.getDatabase());
+    redisStandaloneConfiguration.setPassword(this.redisProperties.getPassword());
+
     // 获得默认的连接池构造器
     final JedisClientConfiguration.JedisPoolingClientConfigurationBuilder jpcb =
         (JedisClientConfiguration.JedisPoolingClientConfigurationBuilder)
@@ -44,7 +55,7 @@ public class RedisConfig {
     // 指定 jedisPoolConifig 来修改默认的连接池构造器
     jpcb.poolConfig(jedisPoolConfig);
     // 连接超时
-    jpcb.and().connectTimeout(Duration.ofMillis(0));
+    jpcb.and().connectTimeout(Duration.ofSeconds(10));
     // 通过构造器来构造 jedis 客户端配置
     final JedisClientConfiguration jedisClientConfiguration = jpcb.build();
     // 单机配置 + 客户端配置 = jedis 连接工厂

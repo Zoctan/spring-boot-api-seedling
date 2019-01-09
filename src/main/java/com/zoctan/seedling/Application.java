@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tk.mybatis.spring.annotation.MapperScan;
 
+import static com.zoctan.seedling.core.constant.ProjectConstant.FILTER_PACKAGE;
 import static com.zoctan.seedling.core.constant.ProjectConstant.MAPPER_PACKAGE;
 
 /**
@@ -19,11 +20,11 @@ import static com.zoctan.seedling.core.constant.ProjectConstant.MAPPER_PACKAGE;
  * @date 2018/05/27
  */
 @EnableCaching
-@ServletComponentScan
+@SpringBootApplication
 @EnableEncryptableProperties
 @EnableTransactionManagement
 @MapperScan(basePackages = MAPPER_PACKAGE)
-@SpringBootApplication
+@ServletComponentScan(basePackages = FILTER_PACKAGE)
 public class Application extends SpringBootServletInitializer {
 
   public static void main(final String[] args) {

@@ -2,14 +2,11 @@ package com.zoctan.seedling.core.rsa;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.crypto.Cipher;
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -39,12 +36,8 @@ import java.security.spec.X509EncodedKeySpec;
 @Slf4j
 @Component
 public class RsaUtils {
-  private static final String ALGORITHM = "RSA";
-  private static final String publicKeyHead = "-----BEGIN PUBLIC KEY-----";
-  private static final String publicKeyTail = "-----END PUBLIC KEY-----";
-  private static final String privateKeyHead = "-----BEGIN PRIVATE KEY-----";
-  private static final String privateKeyTail = "-----END PRIVATE KEY-----";
   @Resource private RsaConfigurationProperties rsaProperties;
+  private static final String ALGORITHM = "RSA";
 
   public RsaUtils() {
     if (this.rsaProperties == null) {
@@ -122,7 +115,14 @@ public class RsaUtils {
    */
   public PublicKey loadPublicKey(final String pem) {
     try {
-      final byte[] decoded = this.replaceAndBase64Decode(pem, publicKeyHead, publicKeyTail);
+      final byte[] decoded;
+      if (this.rsaProperties.isUseFile()) {
+        decoded =
+            this.replaceAndBase64Decode(
+                pem, this.rsaProperties.getPublicKeyHead(), this.rsaProperties.getPublicKeyTail());
+      } else {
+        decoded = Base64.decodeBase64(this.rsaProperties.getPublicKey());
+      }
       final X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
       final KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
       return keyFactory.generatePublic(spec);
@@ -149,7 +149,16 @@ public class RsaUtils {
    */
   public PrivateKey loadPrivateKey(final String pem) {
     try {
-      final byte[] decoded = this.replaceAndBase64Decode(pem, privateKeyHead, privateKeyTail);
+      final byte[] decoded;
+      if (this.rsaProperties.isUseFile()) {
+        decoded =
+            this.replaceAndBase64Decode(
+                pem,
+                this.rsaProperties.getPrivateKeyHead(),
+                this.rsaProperties.getPrivateKeyTail());
+      } else {
+        decoded = Base64.decodeBase64(this.rsaProperties.getPrivateKey());
+      }
       final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
       final KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
       return keyFactory.generatePrivate(spec);
@@ -168,16 +177,22 @@ public class RsaUtils {
     return this.loadPrivateKey(this.rsaProperties.getPrivateKeyPath());
   }
 
+  /**
+   * 加载文件后替换头和尾并解密
+   *
+   * @return 文件字节
+   */
   private byte[] replaceAndBase64Decode(
-      final String file, final String headReplace, final String tailReplace) throws Exception {
+      final String filePath, final String headReplace, final String tailReplace) throws Exception {
     // 从 classpath:resources/ 中加载资源
-    final ResourceLoader loader = new DefaultResourceLoader();
-    final File f = loader.getResource(file).getFile();
-    final FileInputStream fis = new FileInputStream(f);
-    final DataInputStream dis = new DataInputStream(fis);
-    final byte[] keyBytes = new byte[(int) f.length()];
-    dis.readFully(keyBytes);
-    dis.close();
+    final ClassPathResource resource = new ClassPathResource(filePath);
+    if (!resource.exists()) {
+      throw new Exception("公私钥文件找不到");
+    }
+    final byte[] keyBytes = new byte[(int) resource.getFile().length()];
+    final FileInputStream in = new FileInputStream(resource.getFile());
+    in.read(keyBytes);
+    in.close();
 
     final String keyPEM =
         new String(keyBytes).replace(headReplace, "").trim().replace(tailReplace, "").trim();

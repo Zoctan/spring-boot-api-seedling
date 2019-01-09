@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class JwtUtil {
+  @Resource private JwtConfigurationProperties jwtProperties;
   @Resource private RedisUtils redisUtils;
   @Resource private RsaUtils rsaUtils;
-  @Resource private JwtConfigurationProperties jwtProperties;
 
   private Claims getClaims(final String token) {
     final Jws<Claims> jws = this.parseToken(token);
