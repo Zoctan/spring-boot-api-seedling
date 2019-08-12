@@ -12,7 +12,7 @@ import org.springframework.util.Base64Utils;
 import javax.annotation.Resource;
 
 /**
- * Jasypt 配置
+ * Jasypt 配置（2.1.1可以配置非对称加密，但是测试还有问题，等解决再更新）
  *
  * @author Zoctan
  * @date 2018/07/21
@@ -20,16 +20,16 @@ import javax.annotation.Resource;
 @Configuration
 public class JasyptConfig {
   @Value("${jasypt.encryptor.password}")
-  private String passwordEncryptedByBase64AndRSA;
+  private String passwordEncryptedByBase64AndRsa;
 
   @Resource private RsaUtils rsaUtils;
 
   @Bean
   public StringEncryptor myStringEncryptor() throws Exception {
-    // Base64 + RSA 加密的密码
-    final byte[] passwordEncryptedByRSA =
-        Base64Utils.decodeFromString(this.passwordEncryptedByBase64AndRSA);
-    final String password = new String(this.rsaUtils.decrypt(passwordEncryptedByRSA));
+    // 先 Base64，后 RSA 加密的密码
+    final byte[] passwordEncryptedByRsa =
+        Base64Utils.decodeFromString(this.passwordEncryptedByBase64AndRsa);
+    final String password = new String(this.rsaUtils.decrypt(passwordEncryptedByRsa));
     // 配置
     final SimpleStringPBEConfig config =
         new SimpleStringPBEConfig() {

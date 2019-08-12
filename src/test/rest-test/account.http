@@ -1,0 +1,14 @@
+// https://blog.csdn.net/weixin_42286273/article/details/89644375
+// https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html
+POST http://0.0.0.0:8080/spring-boot-api-seeding/account/token
+Accept: application/json;charset=UTF-8
+Cache-Control: no-cache
+Content-Type: application/json;charset=UTF-8
+
+{
+  "name": "admin",
+  "password": "admin"
+}
+
+###
+

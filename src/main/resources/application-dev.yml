@@ -15,7 +15,7 @@ spring:
     # 密码 root
     password: MyEnc({eCOS8Sk9b/kWt2FK0QFA9g==})
     # 驱动类
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: MyEnc({0COuoMacyjuWsmPnBUH9Zr5yWx1i1lZa+B/N0uwIJVyKwI7lpV1emg==})
   cache:
     # 缓存类型
     type: redis

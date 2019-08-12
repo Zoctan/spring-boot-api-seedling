@@ -17,23 +17,19 @@ spring:
     checkTemplateLocation: false
 
 rsa:
-  # 私钥位置
-  # private-key-path: rsa/private-key.pem
-  # 公钥位置
-  # public-key-path: rsa/public-key.pem
-  use-file: false
   private-key: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEArD4P1yMYRsS4YSEbB7V3LQs/+6MrTbAdnlF8CdangeD89gRrp9sz8MutI1s2xOPnpavSv8HeB3VpwE1Iw1WK2QIDAQABAkB4wFWolJD7ZASDC4uAnwZ6zK1Bg8XjA/nvuN6Fozfxw5s40HSPyild32CX47fCOYlt94shRrNaIHIN78N8+ioVAiEA4hWDEnzyqT1mkrLCdgVNnH36aow3/jonp0trQpSagKcCIQDDCLEDfjcPUovDkp9XQZ3LlYU8+zPGJ9Nccck0YtGIfwIhAOGGcgScTXhTfqGx3lfavGvyIz3r9+MLYgj5K9rz4BebAiB4CAtZSP598aGO1dg3DW0d9IGxzDBLDguo42afVQn75QIgBy9s8n1ZyWyLloCBb4+Wf0iTOUJC7II9Xq1LUF2QJGo=
   public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKw+D9cjGEbEuGEhGwe1dy0LP/ujK02wHZ5RfAnWp4Hg/PYEa6fbM/DLrSNbNsTj56Wr0r/B3gd1acBNSMNVitkCAwEAAQ==
 
-jasypt.encryptor:
-  # 先 RSA + 后 Base64 加密的密码
-  # 在 JasyptConfig#myStringEncryptor 中先解密后再使用
-  password: fnMa4sWpCFSG1Wl3+tkjSRKfdApiZBGms5NE75TqzudMq1/9py5uvKk7urU4dKnuV+3/Tq69Y2E4gohJlAD3cA==
-  # 自定义的加密器
-  bean: myStringEncryptor
-  # 自定义被加密值的发现器
-  property:
-    detector-bean: myEncryptablePropertyDetector
+jasypt:
+  encryptor:
+    # 自定义的加密器
+    bean: myStringEncryptor
+    # 自定义被加密值的发现器
+    property:
+      detector-bean: myEncryptablePropertyDetector
+    # 先 RSA，后 Base64 加密的密码
+    # 在 JasyptConfig#myStringEncryptor 中先解密后再使用
+    password: fnMa4sWpCFSG1Wl3+tkjSRKfdApiZBGms5NE75TqzudMq1/9py5uvKk7urU4dKnuV+3/Tq69Y2E4gohJlAD3cA==
 
 mybatis:
   # 存放实体的位置

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.security.PublicKey;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Supplier;
@@ -120,11 +121,10 @@ public class JwtUtil {
       final String name, final Collection<? extends GrantedAuthority> grantedAuthorities) {
     // 获取账户的角色字符串，如 USER,ADMIN
     final String authorities =
-        grantedAuthorities
-            .stream()
+        grantedAuthorities.stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
-    log.debug("==> Account<{}> authorities: {}", name, authorities);
+    JwtUtil.log.debug("==> Account<{}> authorities: {}", name, authorities);
 
     // 过期时间
     final Duration expireTime = this.jwtProperties.getExpireTime();
@@ -153,32 +153,33 @@ public class JwtUtil {
     this.redisUtils.setValue(token, true, expireTime);
     // redis 过期时间和 JWT 的一致
     this.redisUtils.setValue(name, token, expireTime);
-    log.debug("==> Redis set Account<{}> token: {}", name, token);
+    JwtUtil.log.debug("==> Redis set Account<{}> token: {}", name, token);
     return token;
   }
 
   /** 解析 token */
   private Jws<Claims> parseToken(final String token) {
     try {
+      final PublicKey publicKey = this.rsaUtils.loadPublicKey();
       return Jwts.parser()
           // 公钥解密
-          .setSigningKey(this.rsaUtils.loadPublicKey())
+          .setSigningKey(publicKey)
           .parseClaimsJws(token.replace(this.jwtProperties.getTokenType(), ""));
     } catch (final SignatureException e) {
       // 签名异常
-      log.debug("Invalid JWT signature");
+      JwtUtil.log.debug("Invalid JWT signature");
     } catch (final MalformedJwtException e) {
       // 格式错误
-      log.debug("Invalid JWT token");
+      JwtUtil.log.debug("Invalid JWT token");
     } catch (final ExpiredJwtException e) {
       // 过期
-      log.debug("Expired JWT token");
+      JwtUtil.log.debug("Expired JWT token");
     } catch (final UnsupportedJwtException e) {
       // 不支持该JWT
-      log.debug("Unsupported JWT token");
+      JwtUtil.log.debug("Unsupported JWT token");
     } catch (final IllegalArgumentException e) {
       // 参数错误异常
-      log.debug("JWT token compact of handler are invalid");
+      JwtUtil.log.debug("JWT token compact of handler are invalid");
     }
     return null;
   }

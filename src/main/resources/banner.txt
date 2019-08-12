@@ -8,7 +8,6 @@
 //               iiittittttiii;i;;                           //
 //                iiiiittjiiii;;i;,                          //
 //                 iitiitttti;;;i;;                          //
-//                 tiitiiitjii;;;;;                          //
 //                 tiiitiiitji;;i;,                          //
 //                :,.iiiiiiiii;;i;;                          //
 //             ,iiiii;iitiiiiii;ii                           //
@@ -32,7 +31,6 @@
 //                             DL                            //
 //                             GL                            //
 //                             GG                            //
-//                             LG                            //
 //                                                           //
 //            Great oaks from little acorns grow.            //
 //                                                           //

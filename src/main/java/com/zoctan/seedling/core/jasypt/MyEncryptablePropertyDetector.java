@@ -7,6 +7,16 @@ import org.springframework.stereotype.Component;
 /**
  * 自定义被加密值的发现器 默认：ENC(abc) 自定义：MyEnc({abc})
  *
+ * <p>https://github.com/ulisesbocchio/jasypt-spring-boot#provide-a-custom-encryptablepropertydetector
+ *
+ * 如果只是单纯想让前后缀不同，可以直接配置前后缀属性：
+ *
+ * https://github.com/ulisesbocchio/jasypt-spring-boot#provide-a-custom-encrypted-property-prefix-and-suffix
+ *
+ * <p>jasypt.encryptor.property.prefix=TEST(
+ *
+ * <p>jasypt.encryptor.property.suffix=)
+ *
  * @author Zoctan
  * @date 2018/07/20
  */
