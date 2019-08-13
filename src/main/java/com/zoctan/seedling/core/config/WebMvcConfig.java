@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +27,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
   public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
     final FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
     final FastJsonConfig config = new FastJsonConfig();
-    converter.setSupportedMediaTypes(
-        new ArrayList<MediaType>() {
-          {
-            this.add(MediaType.APPLICATION_JSON_UTF8);
-            this.add(MediaType.APPLICATION_FORM_URLENCODED);
-            this.add(MediaType.TEXT_HTML);
-          }
-        });
+    // 支持的输出类型
+    final List<MediaType> supportedMediaTypes = new ArrayList<>();
+    supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+    supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+    supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+    supportedMediaTypes.add(MediaType.TEXT_HTML);
+    converter.setSupportedMediaTypes(supportedMediaTypes);
     config.setSerializerFeatures(
         // 保留空的字段
         // SerializerFeature.WriteMapNullValue,
@@ -43,7 +42,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         // 美化输出
         SerializerFeature.PrettyFormat);
     converter.setFastJsonConfig(config);
-    converter.setDefaultCharset(Charset.forName("UTF-8"));
+    converter.setDefaultCharset(StandardCharsets.UTF_8);
     converters.add(converter);
   }
 

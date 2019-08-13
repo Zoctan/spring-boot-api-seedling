@@ -73,20 +73,24 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         // 异常处理
         .exceptionHandling()
-        // 因为 RESTFul 没有登录界面所以只能显示未登录
+        // 因为 RESTFul 没有登录界面所以只显示未登录 Json
         .authenticationEntryPoint(this.myAuthenticationEntryPoint)
         .and()
         // 身份过滤器
         .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        // 对所有的请求都做权限校验
+        // 认证访问
         .authorizeRequests()
         // 允许匿名请求
+        // swagger 文档
         .antMatchers("/swagger-ui.html**", "/swagger-resources**", "/webjars/**", "/v2/**")
         .permitAll()
-        // 允许注册和登录
+        // 注册和登录
         .antMatchers(HttpMethod.POST, "/account", "/account/token")
         .permitAll()
-        // 除上面外的所有请求全部需要鉴权认证
+        // 预请求
+        .antMatchers(HttpMethod.OPTIONS)
+        .permitAll()
+        // 对除上面特别请求外所有都鉴权认证
         .anyRequest()
         .authenticated();
   }

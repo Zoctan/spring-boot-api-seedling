@@ -13,7 +13,6 @@ import java.util.List;
  * @date 2018/05/27
  */
 public interface Service<T> {
-
   /**
    * 确保实体存在
    *
@@ -88,8 +87,6 @@ public interface Service<T> {
    */
   void deleteByIds(String ids);
 
-  //
-
   /**
    * 根据条件刪除
    *
@@ -151,5 +148,5 @@ public interface Service<T> {
    *
    * @return 实体列表
    */
-  List<T> findAll();
+  List<T> listAll();
 }

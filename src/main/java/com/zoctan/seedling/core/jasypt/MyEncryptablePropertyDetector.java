@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
  *
  * <p>https://github.com/ulisesbocchio/jasypt-spring-boot#provide-a-custom-encryptablepropertydetector
  *
- * 如果只是单纯想让前后缀不同，可以直接配置前后缀属性：
+ * <p>如果只是单纯想让前后缀不同，可以直接配置前后缀属性：
  *
- * https://github.com/ulisesbocchio/jasypt-spring-boot#provide-a-custom-encrypted-property-prefix-and-suffix
+ * <p>https://github.com/ulisesbocchio/jasypt-spring-boot#provide-a-custom-encrypted-property-prefix-and-suffix
  *
  * <p>jasypt.encryptor.property.prefix=TEST(
  *
@@ -34,11 +34,11 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
     }
     final String trimmedProperty = property.trim();
 
-    return trimmedProperty.startsWith(PREFIX) && trimmedProperty.endsWith(SUFFIX);
+    return trimmedProperty.startsWith(MyEncryptablePropertyDetector.PREFIX) && trimmedProperty.endsWith(MyEncryptablePropertyDetector.SUFFIX);
   }
 
   @Override
   public String unwrapEncryptedValue(final String property) {
-    return property.substring(PREFIX.length(), property.length() - SUFFIX.length());
+    return property.substring(MyEncryptablePropertyDetector.PREFIX.length(), property.length() - MyEncryptablePropertyDetector.SUFFIX.length());
   }
 }

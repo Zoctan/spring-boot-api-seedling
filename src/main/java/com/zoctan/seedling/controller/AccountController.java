@@ -127,9 +127,9 @@ public class AccountController {
   public Result list(
       @RequestParam(defaultValue = "0") final Integer page,
       @RequestParam(defaultValue = "0") final Integer size) {
-    log.debug("==> No cache, find database");
+    AccountController.log.debug("==> No cache, find database");
     PageHelper.startPage(page, size);
-    final List<AccountDO> list = this.accountService.findAll();
+    final List<AccountDO> list = this.accountService.listAll();
     final PageInfo<AccountDO> pageInfo = PageInfo.of(list);
     // 不显示 password 字段
     final PageInfo<JSONObject> objectPageInfo =

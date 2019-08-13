@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 @Builder
 public class AccountQuery implements Serializable {
+  private static final long serialVersionUID = 4063412382769589319L;
+
   /** 账户Id */
   private final Long id;
 

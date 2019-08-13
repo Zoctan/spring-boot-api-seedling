@@ -54,7 +54,7 @@ public class RoleController {
       @RequestParam(defaultValue = "0") final Integer page,
       @RequestParam(defaultValue = "0") final Integer size) {
     PageHelper.startPage(page, size);
-    final List<RoleDO> list = this.roleService.findAll();
+    final List<RoleDO> list = this.roleService.listAll();
     final PageInfo<RoleDO> pageInfo = new PageInfo<>(list);
     return ResultGenerator.genOkResult(pageInfo);
   }

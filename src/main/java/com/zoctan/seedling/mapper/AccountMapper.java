@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Param;
  * @date 2018/05/27
  */
 public interface AccountMapper extends MyMapper<AccountDO> {
-
   /**
    * 按条件查询账户
    *

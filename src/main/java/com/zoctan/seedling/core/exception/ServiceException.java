@@ -9,6 +9,8 @@ import com.zoctan.seedling.core.response.ResultCode;
  * @date 2018/05/27
  */
 public class ServiceException extends RuntimeException {
+  private static final long serialVersionUID = 770293933438435163L;
+
   private ResultCode resultCode;
 
   public ServiceException(final String message) {

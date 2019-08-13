@@ -16,7 +16,17 @@ public interface RoleService extends Service<RoleDO> {
    */
   void saveAsDefaultRole(Long accountId);
 
+  /**
+   * 保存角色
+   *
+   * @param roleDTO 角色传输实体
+   */
   void save(RoleDTO roleDTO);
 
+  /**
+   * 更新角色
+   *
+   * @param roleDTO 角色传输实体
+   */
   void update(RoleDTO roleDTO);
 }

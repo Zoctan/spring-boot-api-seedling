@@ -6,6 +6,10 @@ spring:
     restart:
       # 修改代码后自动重启
       enabled: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
   # 数据源（应该全部加密）
   datasource:
     # 连接，注意各个配置，尤其是要一次性执行多条 SQL 时，要 allowMultiQueries=true
@@ -58,3 +62,8 @@ jwt:
   header: Authorization
   # token 类型
   token-type: Bearer
+
+upload:
+  local-path: /tmp/
+  min: 1KB
+  max: 10MB

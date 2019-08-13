@@ -7,10 +7,12 @@ package com.zoctan.seedling.core.exception;
  * @date 2018/07/20
  */
 public class ResourcesNotFoundException extends RuntimeException {
+  private static final long serialVersionUID = -4770095291206546216L;
+
   private static final String DEFAULT_MESSAGE = "资源不存在";
 
   public ResourcesNotFoundException() {
-    super(DEFAULT_MESSAGE);
+    super(ResourcesNotFoundException.DEFAULT_MESSAGE);
   }
 
   public ResourcesNotFoundException(final String message) {

@@ -32,15 +32,15 @@ public abstract class AbstractService<T> implements Service<T> {
     this.entityClass = (Class<T>) pt.getActualTypeArguments()[0];
   }
 
-  private void assertSave(final boolean statement) {
+  private static void assertSave(final boolean statement) {
     AssertUtils.asserts(statement, ResultCode.SAVE_FAILED);
   }
 
-  private void assertDelete(final boolean statement) {
+  private static void assertDelete(final boolean statement) {
     AssertUtils.asserts(statement, ResultCode.DELETE_FAILED);
   }
 
-  private void assertUpdate(final boolean statement) {
+  private static void assertUpdate(final boolean statement) {
     AssertUtils.asserts(statement, ResultCode.UPDATE_FAILED);
   }
 
@@ -84,18 +84,18 @@ public abstract class AbstractService<T> implements Service<T> {
 
   @Override
   public void save(final T entity) {
-    this.assertSave(this.mapper.insertSelective(entity) == 1);
+    AbstractService.assertSave(this.mapper.insertSelective(entity) == 1);
   }
 
   @Override
   public void save(final List<T> entities) {
-    this.assertSave(this.mapper.insertList(entities) == entities.size());
+    AbstractService.assertSave(this.mapper.insertList(entities) == entities.size());
   }
 
   @Override
   public void deleteById(final Object id) {
     this.assertById(id);
-    this.assertDelete(this.mapper.deleteByPrimaryKey(id) == 1);
+    AbstractService.assertDelete(this.mapper.deleteByPrimaryKey(id) == 1);
   }
 
   @Override
@@ -103,7 +103,7 @@ public abstract class AbstractService<T> implements Service<T> {
     try {
       final T entity = this.getEntity(fieldName, value);
       this.assertBy(entity);
-      this.assertDelete(this.mapper.delete(entity) == 1);
+      AbstractService.assertDelete(this.mapper.delete(entity) == 1);
     } catch (final Exception e) {
       throw new ServiceException(e.getMessage(), e);
     }
@@ -112,23 +112,23 @@ public abstract class AbstractService<T> implements Service<T> {
   @Override
   public void deleteByIds(final String ids) {
     this.assertByIds(ids);
-    this.assertDelete(this.mapper.deleteByIds(ids) == ids.split(",").length);
+    AbstractService.assertDelete(this.mapper.deleteByIds(ids) == ids.split(",").length);
   }
 
   @Override
   public void deleteByCondition(final Condition condition) {
     final int count = this.countByCondition(condition);
-    this.assertDelete(this.mapper.deleteByCondition(condition) == count);
+    AbstractService.assertDelete(this.mapper.deleteByCondition(condition) == count);
   }
 
   @Override
   public void update(final T entity) {
-    this.assertUpdate(this.mapper.updateByPrimaryKeySelective(entity) == 1);
+    AbstractService.assertUpdate(this.mapper.updateByPrimaryKeySelective(entity) == 1);
   }
 
   @Override
   public void updateByCondition(final T entity, final Condition condition) {
-    this.assertUpdate(this.mapper.updateByConditionSelective(entity, condition) == 1);
+    AbstractService.assertUpdate(this.mapper.updateByConditionSelective(entity, condition) == 1);
   }
 
   @Override
@@ -157,7 +157,7 @@ public abstract class AbstractService<T> implements Service<T> {
   }
 
   @Override
-  public List<T> findAll() {
+  public List<T> listAll() {
     return this.mapper.selectAll();
   }
 }

@@ -25,7 +25,7 @@ public class ResultGenerator {
    * @return 响应结果
    */
   public static <T> Result<T> genOkResult() {
-    return genOkResult(null);
+    return ResultGenerator.genOkResult(null);
   }
 
   /**
@@ -35,19 +35,9 @@ public class ResultGenerator {
    * @param message 消息
    * @return 响应结果
    */
-  public static <T> Result<T> genFailedResult(final int code, final String message) {
-    return new Result<T>().setCode(code).setMessage(message);
-  }
-
-  /**
-   * 失败响应结果
-   *
-   * @param resultCode 状态码枚举
-   * @param message 消息
-   * @return 响应结果
-   */
-  public static <T> Result<T> genFailedResult(final ResultCode resultCode, final String message) {
-    return genFailedResult(resultCode.getValue(), message);
+  public static <T> Result<T> genFailedResult(
+      final int code, final String message, final Object... objects) {
+    return new Result<T>().setCode(code).setMessage(String.format(message, objects));
   }
 
   /**
@@ -57,7 +47,19 @@ public class ResultGenerator {
    * @return 响应结果
    */
   public static <T> Result<T> genFailedResult(final ResultCode resultCode) {
-    return genFailedResult(resultCode.getValue(), resultCode.getReason());
+    return ResultGenerator.genFailedResult(resultCode.getValue(), resultCode.getReason());
+  }
+
+  /**
+   * 失败响应结果
+   *
+   * @param resultCode 状态码枚举
+   * @param message 消息
+   * @return 响应结果
+   */
+  public static <T> Result<T> genFailedResult(
+      final ResultCode resultCode, final String message, final Object... objects) {
+    return ResultGenerator.genFailedResult(resultCode.getValue(), message, objects);
   }
 
   /**
@@ -66,8 +68,9 @@ public class ResultGenerator {
    * @param message 消息
    * @return 响应结果
    */
-  public static <T> Result<T> genFailedResult(final String message) {
-    return genFailedResult(ResultCode.SUCCEED_REQUEST_FAILED_RESULT.getValue(), message);
+  public static <T> Result<T> genFailedResult(final String message, final Object... objects) {
+    return ResultGenerator.genFailedResult(
+        ResultCode.SUCCEED_REQUEST_FAILED_RESULT.getValue(), message, objects);
   }
 
   /**
@@ -76,6 +79,6 @@ public class ResultGenerator {
    * @return 响应结果
    */
   public static <T> Result<T> genFailedResult() {
-    return genFailedResult(ResultCode.SUCCEED_REQUEST_FAILED_RESULT);
+    return ResultGenerator.genFailedResult(ResultCode.SUCCEED_REQUEST_FAILED_RESULT);
   }
 }

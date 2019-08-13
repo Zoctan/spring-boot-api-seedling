@@ -10,11 +10,10 @@ import com.zoctan.seedling.entity.AccountWithRoleDO;
  * @date 2018/05/27
  */
 public interface AccountService extends Service<AccountDO> {
-
   /**
    * 保存账户
    *
-   * @param accountDTO 账户
+   * @param accountDTO 账户传输实体
    */
   void save(AccountDTO accountDTO);
 
@@ -37,7 +36,7 @@ public interface AccountService extends Service<AccountDO> {
   /**
    * 更新账户
    *
-   * @param accountDTO 账户
+   * @param accountDTO 账户传输实体
    */
   void updateByName(AccountDTO accountDTO);
 

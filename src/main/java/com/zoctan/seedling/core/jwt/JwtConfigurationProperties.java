@@ -18,10 +18,13 @@ import java.time.Duration;
 public class JwtConfigurationProperties {
   /** claim authorities key */
   private String claimKeyAuth;
+
   /** token 前缀 */
   private String tokenType;
+
   /** 请求头或请求参数的key */
   private String header;
+
   /** 有效期 */
   private Duration expireTime;
 }
