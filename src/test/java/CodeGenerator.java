@@ -20,6 +20,7 @@ import static com.zoctan.seedling.core.constant.ProjectConstant.*;
  * @date 2018/05/27
  */
 class CodeGenerator {
+  private static final String DATABASE = "mysql";
   // JDBC配置，请修改为你项目的实际配置
   private static final String JDBC_URL =
       "jdbc:mysql://localhost:3306/seedling_dev"
@@ -31,17 +32,20 @@ class CodeGenerator {
   private static final String PROJECT_PATH = System.getProperty("user.dir");
   // 模板位置
   private static final String TEMPLATE_FILE_PATH =
-      PROJECT_PATH + "/src/test/resources/generator/template";
+      CodeGenerator.PROJECT_PATH + "/src/test/resources/generator/template";
   // java文件路径
   private static final String JAVA_PATH = "/src/main/java";
   // 资源文件路径
   private static final String RESOURCES_PATH = "/src/main/resources";
   // 生成的Service存放路径
-  private static final String PACKAGE_PATH_SERVICE = packageConvertPath(SERVICE_PACKAGE);
+  private static final String PACKAGE_PATH_SERVICE =
+      CodeGenerator.packageConvertPath(SERVICE_PACKAGE);
   // 生成的Service实现存放路径
-  private static final String PACKAGE_PATH_SERVICE_IMPL = packageConvertPath(SERVICE_IMPL_PACKAGE);
+  private static final String PACKAGE_PATH_SERVICE_IMPL =
+      CodeGenerator.packageConvertPath(SERVICE_IMPL_PACKAGE);
   // 生成的Controller存放路径
-  private static final String PACKAGE_PATH_CONTROLLER = packageConvertPath(CONTROLLER_PACKAGE);
+  private static final String PACKAGE_PATH_CONTROLLER =
+      CodeGenerator.packageConvertPath(CONTROLLER_PACKAGE);
 
   // @author
   private static final String AUTHOR = "Zoctan";
@@ -55,7 +59,7 @@ class CodeGenerator {
     if (!scanner.next().equals("y")) {
       return;
     }
-    genCode("");
+    CodeGenerator.genCode("");
     // genCodeByCustomModelName("输入表名","输入自定义Model名称");
   }
 
@@ -67,7 +71,7 @@ class CodeGenerator {
    */
   private static void genCode(final String... tableNames) {
     for (final String tableName : tableNames) {
-      genCodeByCustomModelName(tableName, null);
+      CodeGenerator.genCodeByCustomModelName(tableName, null);
     }
   }
 
@@ -79,9 +83,9 @@ class CodeGenerator {
    * @param modelName 自定义的 Model 名称
    */
   private static void genCodeByCustomModelName(final String tableName, final String modelName) {
-    genModelAndMapper(tableName, modelName);
-    genService(tableName, modelName);
-    genController(tableName, modelName);
+    CodeGenerator.genModelAndMapper(tableName, modelName);
+    CodeGenerator.genService(tableName, modelName);
+    CodeGenerator.genController(tableName, modelName);
   }
 
   private static void genModelAndMapper(final String tableName, String modelName) {
@@ -93,10 +97,10 @@ class CodeGenerator {
 
     final JDBCConnectionConfiguration jdbcConnectionConfiguration =
         new JDBCConnectionConfiguration();
-    jdbcConnectionConfiguration.setConnectionURL(JDBC_URL);
-    jdbcConnectionConfiguration.setUserId(JDBC_USERNAME);
-    jdbcConnectionConfiguration.setPassword(JDBC_PASSWORD);
-    jdbcConnectionConfiguration.setDriverClass(JDBC_DIVER_CLASS_NAME);
+    jdbcConnectionConfiguration.setConnectionURL(CodeGenerator.JDBC_URL);
+    jdbcConnectionConfiguration.setUserId(CodeGenerator.JDBC_USERNAME);
+    jdbcConnectionConfiguration.setPassword(CodeGenerator.JDBC_PASSWORD);
+    jdbcConnectionConfiguration.setDriverClass(CodeGenerator.JDBC_DIVER_CLASS_NAME);
     context.setJdbcConnectionConfiguration(jdbcConnectionConfiguration);
 
     final PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -106,19 +110,22 @@ class CodeGenerator {
 
     final JavaModelGeneratorConfiguration javaModelGeneratorConfiguration =
         new JavaModelGeneratorConfiguration();
-    javaModelGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
+    javaModelGeneratorConfiguration.setTargetProject(
+        CodeGenerator.PROJECT_PATH + CodeGenerator.JAVA_PATH);
     javaModelGeneratorConfiguration.setTargetPackage(ENTITY_PACKAGE);
     context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
     final SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration =
         new SqlMapGeneratorConfiguration();
-    sqlMapGeneratorConfiguration.setTargetProject(PROJECT_PATH + RESOURCES_PATH);
+    sqlMapGeneratorConfiguration.setTargetProject(
+        CodeGenerator.PROJECT_PATH + CodeGenerator.RESOURCES_PATH);
     sqlMapGeneratorConfiguration.setTargetPackage("mapper");
     context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
     final JavaClientGeneratorConfiguration javaClientGeneratorConfiguration =
         new JavaClientGeneratorConfiguration();
-    javaClientGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
+    javaClientGeneratorConfiguration.setTargetProject(
+        CodeGenerator.PROJECT_PATH + CodeGenerator.JAVA_PATH);
     javaClientGeneratorConfiguration.setTargetPackage(MAPPER_PACKAGE);
     javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
     context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
@@ -128,7 +135,13 @@ class CodeGenerator {
     if (StringUtils.isNotEmpty(modelName)) {
       tableConfiguration.setDomainObjectName(modelName);
     }
-    tableConfiguration.setGeneratedKey(new GeneratedKey("id", "Mysql", true, null));
+    final GeneratedKey generatedKey;
+    if ("oracle".equalsIgnoreCase(CodeGenerator.DATABASE)) {
+      generatedKey = new GeneratedKey("id", "SELECT SEQ_{1}.NEXTVAL FROM DUAL", false, "pre");
+    } else {
+      generatedKey = new GeneratedKey("id", "MYSQL", true, null);
+    }
+    tableConfiguration.setGeneratedKey(generatedKey);
     context.addTableConfiguration(tableConfiguration);
 
     final List<String> warnings;
@@ -150,7 +163,7 @@ class CodeGenerator {
       throw new RuntimeException("生成 Model 和 Mapper 失败：" + warnings);
     }
     if (StringUtils.isEmpty(modelName)) {
-      modelName = tableNameConvertUpperCamel(tableName);
+      modelName = CodeGenerator.tableNameConvertUpperCamel(tableName);
     }
     System.out.println(modelName + ".java 生成成功");
     System.out.println(modelName + "MyMapper.java 生成成功");
@@ -159,32 +172,34 @@ class CodeGenerator {
 
   private static void genService(final String tableName, final String modelName) {
     try {
-      final freemarker.template.Configuration cfg = getConfiguration();
+      final freemarker.template.Configuration cfg = CodeGenerator.getConfiguration();
 
       final Map<String, Object> data = new HashMap<>();
-      data.put("date", DATE);
-      data.put("author", AUTHOR);
+      data.put("date", CodeGenerator.DATE);
+      data.put("author", CodeGenerator.AUTHOR);
       final String modelNameUpperCamel =
-          StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
+          StringUtils.isEmpty(modelName)
+              ? CodeGenerator.tableNameConvertUpperCamel(tableName)
+              : modelName;
       data.put("modelNameUpperCamel", modelNameUpperCamel);
-      data.put("modelNameLowerCamel", tableNameConvertLowerCamel(tableName));
+      data.put("modelNameLowerCamel", CodeGenerator.tableNameConvertLowerCamel(tableName));
       data.put("basePackage", BASE_PACKAGE);
 
       final File file =
-          createFileDir(
-              PROJECT_PATH
-                  + JAVA_PATH
-                  + PACKAGE_PATH_SERVICE
+          CodeGenerator.createFileDir(
+              CodeGenerator.PROJECT_PATH
+                  + CodeGenerator.JAVA_PATH
+                  + CodeGenerator.PACKAGE_PATH_SERVICE
                   + modelNameUpperCamel
                   + "Service.java");
       cfg.getTemplate("service.ftl").process(data, new FileWriter(file));
       System.out.println(modelNameUpperCamel + "Service.java 生成成功");
 
       final File file1 =
-          createFileDir(
-              PROJECT_PATH
-                  + JAVA_PATH
-                  + PACKAGE_PATH_SERVICE_IMPL
+          CodeGenerator.createFileDir(
+              CodeGenerator.PROJECT_PATH
+                  + CodeGenerator.JAVA_PATH
+                  + CodeGenerator.PACKAGE_PATH_SERVICE_IMPL
                   + modelNameUpperCamel
                   + "ServiceImpl.java");
       cfg.getTemplate("service-impl.ftl").process(data, new FileWriter(file1));
@@ -207,14 +222,17 @@ class CodeGenerator {
 
   private static void genController(final String tableName, final String modelName) {
     try {
-      final freemarker.template.Configuration cfg = getConfiguration();
+      final freemarker.template.Configuration cfg = CodeGenerator.getConfiguration();
 
       final Map<String, Object> data = new HashMap<>();
-      data.put("date", DATE);
-      data.put("author", AUTHOR);
+      data.put("date", CodeGenerator.DATE);
+      data.put("author", CodeGenerator.AUTHOR);
       final String modelNameUpperCamel =
-          StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
-      data.put("baseRequestMapping", modelNameConvertMappingPath(modelNameUpperCamel));
+          StringUtils.isEmpty(modelName)
+              ? CodeGenerator.tableNameConvertUpperCamel(tableName)
+              : modelName;
+      data.put(
+          "baseRequestMapping", CodeGenerator.modelNameConvertMappingPath(modelNameUpperCamel));
       data.put("modelNameUpperCamel", modelNameUpperCamel);
       data.put(
           "modelNameLowerCamel",
@@ -222,14 +240,14 @@ class CodeGenerator {
       data.put("basePackage", BASE_PACKAGE);
 
       final File file =
-          createFileDir(
-              PROJECT_PATH
-                  + JAVA_PATH
-                  + PACKAGE_PATH_CONTROLLER
+          CodeGenerator.createFileDir(
+              CodeGenerator.PROJECT_PATH
+                  + CodeGenerator.JAVA_PATH
+                  + CodeGenerator.PACKAGE_PATH_CONTROLLER
                   + modelNameUpperCamel
                   + "Controller.java");
 
-      if (isRestful) {
+      if (CodeGenerator.isRestful) {
         cfg.getTemplate("controller-restful.ftl").process(data, new FileWriter(file));
       } else {
         cfg.getTemplate("controller.ftl").process(data, new FileWriter(file));
@@ -243,7 +261,7 @@ class CodeGenerator {
   private static freemarker.template.Configuration getConfiguration() throws IOException {
     final freemarker.template.Configuration cfg =
         new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-    cfg.setDirectoryForTemplateLoading(new File(TEMPLATE_FILE_PATH));
+    cfg.setDirectoryForTemplateLoading(new File(CodeGenerator.TEMPLATE_FILE_PATH));
     cfg.setDefaultEncoding("UTF-8");
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
     return cfg;
@@ -264,7 +282,7 @@ class CodeGenerator {
 
   private static String modelNameConvertMappingPath(final String modelName) {
     final String tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, modelName);
-    return tableNameConvertMappingPath(tableName);
+    return CodeGenerator.tableNameConvertMappingPath(tableName);
   }
 
   private static String packageConvertPath(final String packageName) {
