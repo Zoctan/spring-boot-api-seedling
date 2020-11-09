@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,6 +29,18 @@ import javax.annotation.Resource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+  private static final String[] SWAGGER_LIST = {
+    "/swagger-ui/",
+    "/swagger-ui/index.html",
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v2/api-docs",
+    "/v3/api-docs",
+    "/swagger-resources",
+    "/swagger-resources/**",
+    "/webjars/**",
+  };
+
   @Resource private MyAuthenticationEntryPoint myAuthenticationEntryPoint;
   @Resource private AuthenticationFilter authenticationFilter;
 
@@ -81,8 +94,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 认证访问
         .authorizeRequests()
         // 允许匿名请求
-        // swagger 文档
-        .antMatchers("/swagger-ui.html**", "/swagger-resources**", "/webjars/**", "/v2/**")
+        .antMatchers(SWAGGER_LIST)
         .permitAll()
         // 注册和登录
         .antMatchers(HttpMethod.POST, "/account", "/account/token")

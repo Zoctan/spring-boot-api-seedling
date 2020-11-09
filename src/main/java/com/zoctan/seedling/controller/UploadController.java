@@ -3,8 +3,10 @@ package com.zoctan.seedling.controller;
 import com.zoctan.seedling.core.response.Result;
 import com.zoctan.seedling.core.response.ResultGenerator;
 import com.zoctan.seedling.core.upload.UploadConfigurationProperties;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,13 +27,14 @@ import java.nio.file.Paths;
  * @author Zoctan
  * @date 2019/08/13
  */
+@Tag(name = "上传接口")
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
   @Resource private UploadConfigurationProperties uploadProperties;
 
-  @ApiOperation(value = "上传文件")
-  @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
+  @Operation(description = "上传文件")
+  @Parameter(name = "file", description = "文件", required = true, in = ParameterIn.QUERY)
   @PostMapping
   public Result uploadImage(@RequestParam("file") final MultipartFile file) {
     if (file.isEmpty()) {
@@ -65,8 +68,8 @@ public class UploadController {
    * @param name 图片名称
    * @return 返回本地图片
    */
-  @ApiOperation(value = "获取文件")
-  @ApiImplicitParam(name = "name", value = "文件名", required = true, dataType = "String")
+  @Operation(description = "获取文件")
+  @Parameter(name = "name", description = "文件名", required = true, in = ParameterIn.PATH)
   @GetMapping("/{name:.+}")
   public Result getImage(
       @PathVariable final String name, final HttpServletResponse httpServletResponse) {
@@ -87,8 +90,8 @@ public class UploadController {
     }
   }
 
-  @ApiOperation(value = "删除文件")
-  @ApiImplicitParam(name = "name", value = "文件名", required = true, dataType = "String")
+  @Operation(description = "删除文件")
+  @Parameter(name = "name", description = "文件名", required = true)
   @DeleteMapping("/{name:.+}")
   public Result removeImage(@PathVariable final String name) {
     final String localPath = this.uploadProperties.getLocalPath();

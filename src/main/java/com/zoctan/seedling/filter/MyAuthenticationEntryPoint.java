@@ -28,7 +28,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint, Ser
       final AuthenticationException authException)
       throws IOException {
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    response.setHeader("Content-type", MediaType.APPLICATION_JSON_UTF8_VALUE);
+    response.setHeader("Content-type", MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
     response
         .getWriter()

@@ -16,7 +16,7 @@ import java.io.IOException;
 import static com.zoctan.seedling.core.constant.ProjectConstant.SPRING_PROFILE_PRODUCTION;
 
 /**
- * 跨越过滤器
+ * 跨域过滤器
  *
  * @author Zoctan
  * @date 2018/06/04

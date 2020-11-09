@@ -60,7 +60,7 @@ public abstract class BaseControllerTest {
       throws Exception {
     final MockHttpServletRequestBuilder builders =
         MockMvcRequestBuilders.request(method, targetUrl)
-            .contentType(MediaType.APPLICATION_JSON_UTF8);
+            .contentType(MediaType.APPLICATION_JSON);
     if (args != null) {
       builders.content(JSON.toJSONString(args));
     }

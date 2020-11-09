@@ -14,7 +14,13 @@ import com.zoctan.seedling.entity.AccountWithRoleDO;
 import com.zoctan.seedling.service.AccountService;
 import com.zoctan.seedling.service.impl.UserDetailsServiceImpl;
 import com.zoctan.seedling.util.JsonUtils;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +40,7 @@ import java.util.List;
  * @date 2018/07/15
  */
 @Slf4j
-@Api(value = "账户接口")
+@Tag(name = "账户接口", description = "账户接口")
 @Validated
 @RestController
 @RequestMapping("/account")
@@ -43,10 +49,14 @@ public class AccountController {
   @Resource private UserDetailsServiceImpl userDetailsService;
   @Resource private JwtUtil jwtUtil;
 
-  @ApiOperation(value = "账户注册", notes = "根据账户信息注册")
+  @Operation(summary = "账户注册", description = "注册账户，签发token")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "OK"),
+    @ApiResponse(responseCode = "2004", description = "账户名重复")
+  })
   @PostMapping
   public Result register(
-      @ApiParam(required = true) @RequestBody @Valid final AccountDTO accountDTO,
+      @Parameter(required = true) @RequestBody @Valid final AccountDTO accountDTO,
       final BindingResult bindingResult) {
     // 账户持久化
     this.accountService.save(accountDTO);
@@ -57,10 +67,14 @@ public class AccountController {
     return ResultGenerator.genOkResult(token);
   }
 
-  @ApiOperation(value = "账户登录")
+  @Operation(summary = "账户登录", description = "账户登录，签发token")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "OK"),
+    @ApiResponse(responseCode = "1000", description = "密码错误")
+  })
   @PostMapping("/token")
   public Result login(
-      @ApiParam(required = true) @RequestBody @Valid final AccountLoginDTO accountLoginDTO,
+      @Parameter(required = true) @RequestBody @Valid final AccountLoginDTO accountLoginDTO,
       final BindingResult bindingResult) {
     // {"name":"admin","password":"admin"}
     final String name = accountLoginDTO.getName();
@@ -76,7 +90,8 @@ public class AccountController {
     return ResultGenerator.genOkResult(token);
   }
 
-  @ApiOperation(value = "账户注销")
+  @Operation(summary = "账户注销", description = "账户注销，使token失效")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
   @DeleteMapping("/token")
   public Result logout(@AuthenticationPrincipal final UsernamePasswordAuthenticationToken user) {
     this.jwtUtil.invalidRedisToken(user.getName());
@@ -84,42 +99,48 @@ public class AccountController {
   }
 
   @PreAuthorize("#accountDTO.name == authentication.name or hasAuthority('ADMIN')")
-  @ApiOperation(value = "更新账户信息", notes = "根据账户信息更新")
+  @Operation(summary = "更新账户", description = "更新账户信息")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
   @PatchMapping
-  public Result update(@ApiParam(required = true) @RequestBody final AccountDTO accountDTO) {
+  public Result update(@Parameter(required = true) @RequestBody final AccountDTO accountDTO) {
     this.accountService.updateByName(accountDTO);
     return ResultGenerator.genOkResult();
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ApiOperation(
-      value = "删除账户",
-      notes = "根据 URL 上的 id 删除指定对象",
-      authorizations = @Authorization(value = "ADMIN"))
-  @ApiImplicitParam(
+  @Operation(summary = "删除账户", description = "删除账户信息")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
+  @Parameter(
       name = "id",
-      value = "账户Id",
+      description = "账户Id",
       required = true,
-      dataType = "Long",
-      paramType = "query")
+      in = ParameterIn.QUERY,
+      example = "1")
   @DeleteMapping("/{id}")
   public Result delete(@PathVariable final Long id) {
     this.accountService.deleteById(id);
     return ResultGenerator.genOkResult();
   }
 
-  @ApiOperation(value = "获取账户信息")
-  @ApiImplicitParam(name = "id", value = "账户Id", required = true, dataType = "Long")
+  @Operation(summary = "获取单个账户", description = "获取单个账户信息")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
+  @Parameter(
+      name = "id",
+      description = "账户Id",
+      required = true,
+      in = ParameterIn.PATH,
+      example = "1")
   @GetMapping("/{id}")
   public Result detail(@PathVariable final Long id) {
     final AccountWithRoleDO account = this.accountService.getByIdWithRole(id);
     return ResultGenerator.genOkResult(account);
   }
 
-  @ApiOperation(value = "获取账户列表")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "page", value = "页号", dataType = "Integer", example = "1"),
-    @ApiImplicitParam(name = "size", value = "页大小", dataType = "Integer", example = "10")
+  @Operation(summary = "获取账户列表", description = "获取多个账户信息")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
+  @Parameters({
+    @Parameter(name = "page", description = "页号", in = ParameterIn.QUERY, example = "1"),
+    @Parameter(name = "size", description = "页大小", in = ParameterIn.QUERY, example = "10")
   })
   @Cacheable(value = "account.list", unless = "#result == null or #result.code != 200")
   @CacheExpire(expire = 60)

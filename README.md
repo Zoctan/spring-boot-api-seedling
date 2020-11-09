@@ -14,7 +14,7 @@
 添加的内容包括：
 - Spring Cache：缓存
 - Redis：缓存中间件
-- Swagger2：API 文档展示
+- Swagger3：API 文档展示
 - Spring Security + JWT：对调用方签名认证
 - Jasypt：加密配置
 - 其他略
@@ -30,7 +30,7 @@
 | 依赖         | 版本    |
 |:-----------:|--------:|
 | Java        | 1.8     |
-| SpringBoot  | 2.1.7   |
+| SpringBoot  | 2.3.5   |
 
 ## 快速开始
 
@@ -65,6 +65,8 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 - [前端 Vue + 后端 Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
 
 ## 更新记录
+
+2020-11-09 更新 Swagger2 至 Swagger3，更新其他依赖版本。
 
 2019-08-13 更新依赖版本，更换 Tomcat 容器为 Jetty，修复 RSA 密钥文件无法读取问题，添加文件上传控制器。
 

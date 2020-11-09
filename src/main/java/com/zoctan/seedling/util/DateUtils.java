@@ -236,7 +236,7 @@ public class DateUtils {
    *
    * @param dateString 时间字符串
    * @param dateTimeFormatString 时间格式字符串
-   * @return 增加后的时间
+   * @return Boolean
    */
   public static Boolean isLeapYear(final String dateString, final String dateTimeFormatString) {
     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatString);

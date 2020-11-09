@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.7.RELEASE</version>
+        <version>2.3.5.RELEASE</version>
     </parent>
 
     <properties>
@@ -22,37 +22,33 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 依赖版本 -->
-        <spring-security-test.version>5.1.6.RELEASE</spring-security-test.version>
-        <swagger2.version>2.9.2</swagger2.version>
+        <spring-security-test.version>5.3.5.RELEASE</spring-security-test.version>
+        <swagger3.version>3.0.0</swagger3.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <jedis.version>3.1.0</jedis.version>
-        <commons-codec.version>1.13</commons-codec.version>
-        <commons-lang3.version>3.9</commons-lang3.version>
+        <jedis.version>3.3.0</jedis.version>
+        <commons-codec.version>1.15</commons-codec.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <guava.version>28.0-jre</guava.version>
-        <mybatis.version>1.3.5</mybatis.version>
-        <mybatis-generator.version>1.3.7</mybatis-generator.version>
+        <guava.version>30.0-jre</guava.version>
+        <mybatis.version>2.1.3</mybatis.version>
+        <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mapper.version>4.1.5</mapper.version>
         <mapper-starter.version>2.1.5</mapper-starter.version>
-        <pagehelper.version>1.2.12</pagehelper.version>
-        <fastjson.version>1.2.59</fastjson.version>
-        <druid.version>1.1.18</druid.version>
-        <jasypt.version>2.1.0</jasypt.version>
-        <freemarker.version>2.3.29</freemarker.version>
-        <lombok.version>1.18.8</lombok.version>
+        <pagehelper.version>1.3.0</pagehelper.version>
+        <fastjson.version>1.2.74</fastjson.version>
+        <druid.version>1.2.2</druid.version>
+        <jasypt.version>3.0.3</jasypt.version>
+        <freemarker.version>2.3.30</freemarker.version>
+        <lombok.version>1.18.16</lombok.version>
+        <hibernate.version>6.0.9.Final</hibernate.version>
     </properties>
 
     <dependencies>
-        <!-- swagger2 -->
+        <!-- swagger3 -->
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger2.version}</version>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${swagger3.version}</version>
         </dependency>
         <!-- spring security + json web token -->
         <dependency>
@@ -219,6 +215,12 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -249,7 +251,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <repositories>
         <repository>

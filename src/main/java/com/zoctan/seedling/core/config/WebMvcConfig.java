@@ -29,7 +29,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     final FastJsonConfig config = new FastJsonConfig();
     // 支持的输出类型
     final List<MediaType> supportedMediaTypes = new ArrayList<>();
-    supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+    supportedMediaTypes.add(MediaType.APPLICATION_JSON);
     supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
     supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
     supportedMediaTypes.add(MediaType.TEXT_HTML);
@@ -46,27 +46,28 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     converters.add(converter);
   }
 
-  /** 视图控制器 */
-  @Override
-  public void addViewControllers(final ViewControllerRegistry registry) {
-    // solved swagger2
-    registry.addRedirectViewController("/v2/api-docs", "/v2/api-docs?group=restful-api");
-    registry.addRedirectViewController(
-        "/swagger-resources/configuration/ui", "/swagger-resources/configuration/ui");
-    registry.addRedirectViewController(
-        "/swagger-resources/configuration/security", "/swagger-resources/configuration/security");
-    registry.addRedirectViewController("/swagger-resources", "/swagger-resources");
-  }
-
   /** 资源控制器 */
   @Override
   public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-    // solved swagger2
-    registry
-        .addResourceHandler("/swagger-ui.html**")
-        .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
-    registry
-        .addResourceHandler("/webjars/**")
-        .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    if (!registry.hasMappingForPattern("/webjars/**")) {
+      registry
+          .addResourceHandler("/webjars/**")
+          .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    if (!registry.hasMappingForPattern("/swagger-ui/**")) {
+      // It is recommended by Springfox 3.x to disable caching of the static Swagger page content
+      registry
+          .addResourceHandler("/swagger-ui/**")
+          .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+          .resourceChain(false);
+    }
+  }
+
+  @Override
+  public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addRedirectViewController("/swagger-ui.html", "/swagger-ui/index.html");
+    registry.addRedirectViewController("/swagger-ui", "/swagger-ui/index.html");
+    registry.addRedirectViewController("/swagger-ui/", "/swagger-ui/index.html");
   }
 }

@@ -34,11 +34,14 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
     }
     final String trimmedProperty = property.trim();
 
-    return trimmedProperty.startsWith(MyEncryptablePropertyDetector.PREFIX) && trimmedProperty.endsWith(MyEncryptablePropertyDetector.SUFFIX);
+    return trimmedProperty.startsWith(MyEncryptablePropertyDetector.PREFIX)
+        && trimmedProperty.endsWith(MyEncryptablePropertyDetector.SUFFIX);
   }
 
   @Override
   public String unwrapEncryptedValue(final String property) {
-    return property.substring(MyEncryptablePropertyDetector.PREFIX.length(), property.length() - MyEncryptablePropertyDetector.SUFFIX.length());
+    return property.substring(
+        MyEncryptablePropertyDetector.PREFIX.length(),
+        property.length() - MyEncryptablePropertyDetector.SUFFIX.length());
   }
 }
