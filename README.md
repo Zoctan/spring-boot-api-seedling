@@ -43,8 +43,7 @@ git clone https://github.com/Zoctan/spring-boot-api-seedling.git
 
 \# Configure code generator
 
-configure package test/java/.../CodeGenerator
-import directory test/resources/sql/dev/*.sql file
+configure package test/java/.../CodeGenerator, import directory test/resources/sql/dev/*.sql file
 
 \# Generate code from database schema
 
