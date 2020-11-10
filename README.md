@@ -52,7 +52,9 @@ input table name, run CodeGenerator.main() method to generate basic code (watch 
 
 \# Last
 
-Configure the development environment configuration file application-dev.properties and start the project, Have Fun Too：)
+configure the development environment configuration file application-dev.properties and start the project.
+
+Have Fun Too：)
 
 ## Related project
 
