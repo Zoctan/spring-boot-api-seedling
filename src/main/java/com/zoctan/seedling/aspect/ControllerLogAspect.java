@@ -13,8 +13,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
+import static com.zoctan.seedling.core.constant.ProjectConstant.CONTROLLER_PACKAGE;
+
 /**
- * controller日志切面
+ * Controller log aspect
  *
  * @author Zoctan
  * @date 2018/07/13
@@ -23,15 +25,18 @@ import java.util.Arrays;
 @Slf4j
 @Component
 public class ControllerLogAspect {
-  /** 开始时间 */
   private LocalDateTime startTime;
 
-  @Pointcut("execution(* com.zoctan.seedling.controller..*.*(..))")
+  @Pointcut("execution(* " + CONTROLLER_PACKAGE + "..*.*(..))")
   public void controllers() {}
 
+  /**
+   * before controller handling, log something
+   *
+   * @param joinPoint controller join point
+   */
   @Before("controllers()")
-  public void deBefore(final JoinPoint joinPoint) {
-    // 接收到请求，记录请求内容
+  public void doBefore(final JoinPoint joinPoint) {
     log.debug("===========================================================");
     log.debug("================  Controller Log Start  ===================");
     log.debug("===========================================================");
@@ -50,9 +55,9 @@ public class ControllerLogAspect {
   }
 
   /**
-   * 后置结果返回
+   * after controller handling, return result
    *
-   * @param result 结果
+   * @param result origin result
    */
   @AfterReturning(pointcut = "controllers()", returning = "result")
   public void doAfterReturning(final Object result) {
@@ -63,7 +68,11 @@ public class ControllerLogAspect {
     log.debug("================  Controller Log End  =====================");
   }
 
-  /** 后置异常通知 */
+  /**
+   * log when throwing error
+   *
+   * @param e error
+   */
   @AfterThrowing(pointcut = "controllers()", throwing = "e")
   public void doAfterThrowing(final Throwable e) {
     log.debug("==> Exception: {}", e.toString());
