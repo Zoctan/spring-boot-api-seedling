@@ -16,6 +16,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * 身份认证过滤器
@@ -45,13 +46,15 @@ public class AuthenticationFilter implements Filter {
 
     final String token = this.jwtUtil.getTokenFromRequest(request);
     if (!StringUtils.isEmpty(token)) {
-      final String name = this.jwtUtil.getName(token);
-      log.debug("==> Account<{}> token: {}", name, token);
+      final Optional<String> name = this.jwtUtil.getName(token);
+      log.debug("==> Account<{}> token: {}", name.orElse(""), token);
 
-      if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+      if (name.isPresent()
+          && !Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+              .isPresent()) {
         if (this.jwtUtil.validateToken(token)) {
           final UsernamePasswordAuthenticationToken authentication =
-              this.jwtUtil.getAuthentication(name, token);
+              this.jwtUtil.getAuthentication(name.get(), token);
 
           authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

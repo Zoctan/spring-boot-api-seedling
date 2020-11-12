@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * @author Zoctan
@@ -34,8 +35,9 @@ public class AccountServiceImpl extends AbstractService<AccountDO> implements Ac
   /** 重写 save 方法，密码加密后再存，并且赋予默认角色 */
   @Override
   public void save(final AccountDTO accountDTO) {
-    final boolean accountNotExist = this.getBy("name", accountDTO.getName()) == null;
-    AssertUtils.asserts(accountNotExist, ResultCode.DUPLICATE_NAME);
+    AssertUtils.asserts(
+        !Optional.ofNullable(this.getBy("name", accountDTO.getName())).isPresent(),
+        ResultCode.DUPLICATE_NAME);
 
     final AccountDO accountDO = accountDTO.convertToDO();
 

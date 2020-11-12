@@ -19,6 +19,7 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * Redis缓存配置
@@ -79,7 +80,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         String comma = "";
         for (final Object param : params) {
           sb.append(comma);
-          if (param == null) {
+          if (!Optional.ofNullable(param).isPresent()) {
             sb.append("NULL");
           } else {
             sb.append(param.toString());
@@ -99,35 +100,35 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
       @Override
       public void handleCacheGetError(
           final RuntimeException e, final Cache cache, final Object key) {
-        log.error("==> cache: {}", cache);
-        log.error("==>   key: {}", key);
-        log.error("==> error: {}", e.getMessage());
+        RedisCacheConfig.log.error("==> cache: {}", cache);
+        RedisCacheConfig.log.error("==>   key: {}", key);
+        RedisCacheConfig.log.error("==> error: {}", e.getMessage());
         super.handleCacheGetError(e, cache, key);
       }
 
       @Override
       public void handleCachePutError(
           final RuntimeException e, final Cache cache, final Object key, final Object value) {
-        log.error("==> cache: {}", cache);
-        log.error("==>   key: {}", key);
-        log.error("==> value: {}", value);
-        log.error("==> error: {}", e.getMessage());
+        RedisCacheConfig.log.error("==> cache: {}", cache);
+        RedisCacheConfig.log.error("==>   key: {}", key);
+        RedisCacheConfig.log.error("==> value: {}", value);
+        RedisCacheConfig.log.error("==> error: {}", e.getMessage());
         super.handleCachePutError(e, cache, key, value);
       }
 
       @Override
       public void handleCacheEvictError(
           final RuntimeException e, final Cache cache, final Object key) {
-        log.error("==> cache: {}", cache);
-        log.error("==>   key: {}", key);
-        log.error("==> error: {}", e.getMessage());
+        RedisCacheConfig.log.error("==> cache: {}", cache);
+        RedisCacheConfig.log.error("==>   key: {}", key);
+        RedisCacheConfig.log.error("==> error: {}", e.getMessage());
         super.handleCacheEvictError(e, cache, key);
       }
 
       @Override
       public void handleCacheClearError(final RuntimeException e, final Cache cache) {
-        log.error("==> cache: {}", cache);
-        log.error("==> error: {}", e.getMessage());
+        RedisCacheConfig.log.error("==> cache: {}", cache);
+        RedisCacheConfig.log.error("==> error: {}", e.getMessage());
         super.handleCacheClearError(e, cache);
       }
     };

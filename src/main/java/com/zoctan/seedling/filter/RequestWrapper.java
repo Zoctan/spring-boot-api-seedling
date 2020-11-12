@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 /**
  * 请求装饰器，用于多次读取请求流
@@ -23,7 +24,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     this.body = new StringBuilder();
     final BufferedReader bufferedReader = request.getReader();
     String line;
-    while ((line = bufferedReader.readLine()) != null) {
+    while (Optional.ofNullable(line = bufferedReader.readLine()).isPresent()) {
       this.body.append(line);
     }
   }

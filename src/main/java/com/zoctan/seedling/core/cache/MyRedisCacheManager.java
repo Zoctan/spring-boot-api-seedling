@@ -108,20 +108,20 @@ public class MyRedisCacheManager extends RedisCacheManager
         method -> {
           ReflectionUtils.makeAccessible(method);
           final CacheExpire cacheExpire = AnnotationUtils.findAnnotation(method, CacheExpire.class);
-          if (cacheExpire == null) {
+          if (!Optional.ofNullable(cacheExpire).isPresent()) {
             return;
           }
           final Cacheable cacheable = AnnotationUtils.findAnnotation(method, Cacheable.class);
-          if (cacheable != null) {
+          if (Optional.ofNullable(cacheable).isPresent()) {
             this.add(cacheable.cacheNames(), cacheExpire);
             return;
           }
           final Caching caching = AnnotationUtils.findAnnotation(method, Caching.class);
-          if (caching != null) {
+          if (Optional.ofNullable(caching).isPresent()) {
             final Cacheable[] cs = caching.cacheable();
             if (cs.length > 0) {
               for (final Cacheable c : cs) {
-                if (c != null) {
+                if (Optional.ofNullable(c).isPresent()) {
                   this.add(c.cacheNames(), cacheExpire);
                 }
               }
@@ -129,7 +129,7 @@ public class MyRedisCacheManager extends RedisCacheManager
           } else {
             final CacheConfig cacheConfig =
                 AnnotationUtils.findAnnotation(clazz, CacheConfig.class);
-            if (cacheConfig != null) {
+            if (Optional.ofNullable(cacheConfig).isPresent()) {
               this.add(cacheConfig.cacheNames(), cacheExpire);
             }
           }
@@ -139,7 +139,7 @@ public class MyRedisCacheManager extends RedisCacheManager
 
   private void add(final String[] cacheNames, final CacheExpire cacheExpire) {
     for (final String cacheName : cacheNames) {
-      if (cacheName == null || "".equals(cacheName.trim())) {
+      if (!Optional.ofNullable(cacheName).isPresent() || "".equals(cacheName.trim())) {
         continue;
       }
       final long expire = cacheExpire.expire();
@@ -169,97 +169,97 @@ public class MyRedisCacheManager extends RedisCacheManager
 
     @Override
     public String getName() {
-      log.debug("get name: {}", this.cache.getName());
+      MyRedisCacheManager.log.debug("get name: {}", this.cache.getName());
       try {
         return this.cache.getName();
       } catch (final Exception e) {
-        log.error("get name => {}", e.getMessage());
+        MyRedisCacheManager.log.error("get name => {}", e.getMessage());
         return null;
       }
     }
 
     @Override
     public Object getNativeCache() {
-      log.debug("native cache: {}", this.cache.getNativeCache());
+      MyRedisCacheManager.log.debug("native cache: {}", this.cache.getNativeCache());
       try {
         return this.cache.getNativeCache();
       } catch (final Exception e) {
-        log.error("get native cache => {}", e.getMessage());
+        MyRedisCacheManager.log.error("get native cache => {}", e.getMessage());
         return null;
       }
     }
 
     @Override
     public ValueWrapper get(@NonNull final Object o) {
-      log.debug("get => o: {}", o);
+      MyRedisCacheManager.log.debug("get => o: {}", o);
       try {
         return this.cache.get(o);
       } catch (final Exception e) {
-        log.error("get => o: {}, error: {}", o, e.getMessage());
+        MyRedisCacheManager.log.error("get => o: {}, error: {}", o, e.getMessage());
         return null;
       }
     }
 
     @Override
     public <T> T get(@NonNull final Object o, final Class<T> aClass) {
-      log.debug("get => o: {}, clazz: {}", o, aClass);
+      MyRedisCacheManager.log.debug("get => o: {}, clazz: {}", o, aClass);
       try {
         return this.cache.get(o, aClass);
       } catch (final Exception e) {
-        log.error("get => o: {}, clazz: {}, error: {}", o, aClass, e.getMessage());
+        MyRedisCacheManager.log.error("get => o: {}, clazz: {}, error: {}", o, aClass, e.getMessage());
         return null;
       }
     }
 
     @Override
     public <T> T get(@NonNull final Object o, @NonNull final Callable<T> callable) {
-      log.debug("get => o: {}", o);
+      MyRedisCacheManager.log.debug("get => o: {}", o);
       try {
         return this.cache.get(o, callable);
       } catch (final Exception e) {
-        log.error("get => o: {}, error: {}", o, e.getMessage());
+        MyRedisCacheManager.log.error("get => o: {}, error: {}", o, e.getMessage());
         return null;
       }
     }
 
     @Override
     public void put(@NonNull final Object o, final Object o1) {
-      log.debug("put => o: {}, o1: {}", o, o1);
+      MyRedisCacheManager.log.debug("put => o: {}, o1: {}", o, o1);
       try {
         this.cache.put(o, o1);
       } catch (final Exception e) {
-        log.error("put => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
+        MyRedisCacheManager.log.error("put => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
       }
     }
 
     @Override
     public ValueWrapper putIfAbsent(@NonNull final Object o, final Object o1) {
-      log.debug("put if absent => o: {}, o1: {}", o, o1);
+      MyRedisCacheManager.log.debug("put if absent => o: {}, o1: {}", o, o1);
       try {
         return this.cache.putIfAbsent(o, o1);
       } catch (final Exception e) {
-        log.error("put if absent => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
+        MyRedisCacheManager.log.error("put if absent => o: {}, o1: {}, error: {}", o, o1, e.getMessage());
         return null;
       }
     }
 
     @Override
     public void evict(@NonNull final Object o) {
-      log.debug("evict => o: {}", o);
+      MyRedisCacheManager.log.debug("evict => o: {}", o);
       try {
         this.cache.evict(o);
       } catch (final Exception e) {
-        log.error("evict => o: {}, error: {}", o, e.getMessage());
+        MyRedisCacheManager.log.error("evict => o: {}, error: {}", o, e.getMessage());
       }
     }
 
     @Override
     public void clear() {
-      log.debug("clear");
+      MyRedisCacheManager.log.debug("clear");
       try {
         this.cache.clear();
       } catch (final Exception e) {
-        log.error("clear => error: {}", e.getMessage());
+        MyRedisCacheManager.log.error("clear => error: {}", e.getMessage());
       }
     }
   }

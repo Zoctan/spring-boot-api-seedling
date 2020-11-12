@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.zoctan.seedling.core.constant.ProjectConstant.CONTROLLER_PACKAGE;
 
@@ -43,7 +44,7 @@ public class ControllerLogAspect {
     this.startTime = LocalDateTime.now();
     final ServletRequestAttributes attributes =
         (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-    if (attributes != null) {
+    if (Optional.ofNullable(attributes).isPresent()) {
       final HttpServletRequest request = attributes.getRequest();
       log.debug("==> Request: [{}]{}", request.getMethod(), request.getRequestURL());
       log.debug("==> From IP: {}", IpUtils.getIpAddress());
@@ -74,7 +75,7 @@ public class ControllerLogAspect {
    * @param e error
    */
   @AfterThrowing(pointcut = "controllers()", throwing = "e")
-  public void doAfterThrowing(final Throwable e) {
+  public static void doAfterThrowing(final Throwable e) {
     log.debug("==> Exception: {}", e.toString());
     e.printStackTrace();
     log.debug("================  Controller Log End  =====================");

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * 统一异常处理
  *
- * <p>对于业务异常：返回头 Http 状态码一律使用500，避免浏览器缓存，在响应 Result 中指明异常的状态码 code
+ * 对于业务异常：返回头 Http 状态码一律使用500，避免浏览器缓存，在响应 Result 中指明异常的状态码 code
  *
  * @author Zoctan
  * @date 2018/06/09

@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Optional;
 
 /**
  * IP工具
@@ -39,7 +40,7 @@ public class IpUtils {
    */
   public static String getIpAddress(final HttpServletRequest request) {
     String ip = LOCALHOST_IPV4;
-    if (request != null) {
+    if (Optional.ofNullable(request).isPresent()) {
       ip = request.getHeader("x-forwarded-for");
       if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
         ip = request.getHeader("Proxy-Client-IP");
@@ -96,7 +97,7 @@ public class IpUtils {
       final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
       final StringBuilder buffer = new StringBuilder();
       String line = bufferedReader.readLine();
-      while (line != null) {
+      while (Optional.ofNullable(line).isPresent()) {
         buffer.append(line).append("\r\n");
         line = bufferedReader.readLine();
       }

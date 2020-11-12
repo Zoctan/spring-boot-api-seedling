@@ -41,12 +41,12 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class RsaUtils {
-  @javax.annotation.Resource private RsaConfigurationProperties rsaProperties;
   private static final String ALGORITHM = "RSA";
   private final ResourceLoader resourceLoader = new DefaultResourceLoader();
+  @javax.annotation.Resource private RsaConfigurationProperties rsaProperties;
 
   public RsaUtils() {
-    if (this.rsaProperties == null) {
+    if (!Optional.ofNullable(this.rsaProperties).isPresent()) {
       this.rsaProperties = new RsaConfigurationProperties();
     }
   }
@@ -79,17 +79,6 @@ public class RsaUtils {
   }
 
   /**
-   * 公钥加密
-   *
-   * @param content 待加密数据
-   * @return 加密内容
-   * @throws Exception e
-   */
-  public byte[] encrypt(final byte[] content) throws Exception {
-    return RsaUtils.encrypt(content, this.loadPublicKey());
-  }
-
-  /**
    * 私钥解密
    *
    * @param content 加密数据
@@ -101,6 +90,17 @@ public class RsaUtils {
     final Cipher cipher = Cipher.getInstance(RsaUtils.ALGORITHM);
     cipher.init(Cipher.DECRYPT_MODE, privateKey);
     return cipher.doFinal(content);
+  }
+
+  /**
+   * 公钥加密
+   *
+   * @param content 待加密数据
+   * @return 加密内容
+   * @throws Exception e
+   */
+  public byte[] encrypt(final byte[] content) throws Exception {
+    return RsaUtils.encrypt(content, this.loadPublicKey());
   }
 
   /**

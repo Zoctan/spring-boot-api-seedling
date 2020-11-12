@@ -15,7 +15,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.security.PublicKey;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -32,15 +35,10 @@ public class JwtUtil {
   @Resource private RedisUtils redisUtils;
   @Resource private RsaUtils rsaUtils;
 
-  private Claims getClaims(final String token) {
-    final Jws<Claims> jws = this.parseToken(token);
-    return jws == null ? null : jws.getBody();
-  }
-
   /** 根据 token 得到账户名 */
-  public String getName(final String token) {
-    final Claims claims = this.getClaims(token);
-    return claims == null ? null : claims.getSubject();
+  public Optional<String> getName(final String token) {
+    final Optional<Claims> claims = this.parseToken(token);
+    return claims.map(Claims::getSubject);
   }
 
   /**
@@ -90,15 +88,14 @@ public class JwtUtil {
   public UsernamePasswordAuthenticationToken getAuthentication(
       final String name, final String token) {
     // 解析 token 的 payload
-    final Claims claims = this.getClaims(token);
-    // 因为 JwtAuthenticationFilter 拦截器已经检查过 token 有效，所以可以忽略 get 空指针提示
-    assert claims != null;
+    final Optional<Claims> claims = this.parseToken(token);
     final String claimKeyAuth = this.jwtProperties.getClaimKeyAuth();
     // 账户角色列表
-    final List<String> authList = Arrays.asList(claims.get(claimKeyAuth).toString().split(","));
+    final String[] auths =
+        claims.map(c -> c.get(claimKeyAuth).toString().split(",")).orElse(new String[0]);
     // 将元素转换为 GrantedAuthority 接口集合
     final Collection<? extends GrantedAuthority> authorities =
-        authList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        Arrays.stream(auths).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     final User user = new User(name, "", authorities);
     return new UsernamePasswordAuthenticationToken(user, null, authorities);
   }
@@ -113,7 +110,7 @@ public class JwtUtil {
       isValidate = (boolean) redisTokenValidate;
     }
     // 能正确解析 token，并且 redis 中缓存的 token 也是有效的
-    return this.parseToken(token) != null && isValidate;
+    return this.parseToken(token).isPresent() && isValidate;
   }
 
   /** 生成 token */
@@ -158,13 +155,17 @@ public class JwtUtil {
   }
 
   /** 解析 token */
-  private Jws<Claims> parseToken(final String token) {
+  private Optional<Claims> parseToken(final String token) {
+    Optional<Claims> claims = Optional.empty();
     try {
       final PublicKey publicKey = this.rsaUtils.loadPublicKey();
-      return Jwts.parser()
-          // 公钥解密
-          .setSigningKey(publicKey)
-          .parseClaimsJws(token.replace(this.jwtProperties.getTokenType(), ""));
+      claims =
+          Optional.of(
+              Jwts.parser()
+                  // 公钥解密
+                  .setSigningKey(publicKey)
+                  .parseClaimsJws(token.replace(this.jwtProperties.getTokenType(), ""))
+                  .getBody());
     } catch (final SignatureException e) {
       // 签名异常
       JwtUtil.log.debug("Invalid JWT signature");
@@ -181,6 +182,6 @@ public class JwtUtil {
       // 参数错误异常
       JwtUtil.log.debug("JWT token compact of handler are invalid");
     }
-    return null;
+    return claims;
   }
 }

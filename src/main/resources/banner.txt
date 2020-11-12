@@ -1,37 +1,20 @@
-///////////////////////////////////////////////////////////////
-//                                                           //
-//                   ::                                      //
-//                 ttttii;;,                                 //
-//                itttttii;i;,                               //
-//              tttttjttii;i;;:                              //
-//               tiiittjtiiii;;;;                            //
-//               iiittittttiii;i;;                           //
-//                iiiiittjiiii;;i;,                          //
-//                 iitiitttti;;;i;;                          //
-//                 tiiitiiitji;;i;,                          //
-//                :,.iiiiiiiii;;i;;                          //
-//             ,iiiii;iitiiiiii;ii                           //
-//            iiiiti;;;;;iiiiiiti        ijtttt              //
-//           iitiiti;i;;;iiiii f        jjjjtttti,           //
-//         iiiiiiiiiiiiii;;.   ,      .fjfjjjttttii          //
-//        iiiiiiiiiiiiii;;;;    i   iitttttttjttttii         //
-//       :iiiiiiiii;iiiiii;;t   t   iitttiittttttttii        //
-//       iiiiiiiiiiiiiiiiitttitit   ;ttitiitiitjjttii        //
-//       iiiiiiiiiiittiiiiiiitt. j   L,tiitiiiittttiii       //
-//      ;iitiiiiiiiittiiiitt;j   f  L     tiiitiitttti       //
-//            ,;iiiiiiii      j  G G         iiiitttii       //
-//                            f  GE            :iiitii       //
-//                             j GL               iiii       //
-//                             fDG                 iii       //
-//                              DG                  ti:      //
-//                              DG                   ti      //
-//                              D                     ;      //
-//                             LG:                           //
-//                             Gf                            //
-//                             DL                            //
-//                             GL                            //
-//                             GG                            //
-//                                                           //
-//            Great oaks from little acorns grow.            //
-//                                                           //
-///////////////////////////////////////////////////////////////
+////////////////////////////////////////
+//                                    //
+//         ::                         //
+//         ttttii;;,                  //
+//         itttttii;i;,               //
+//         tiiitiiitji;;i;,           //
+//        :,.iiiiiiiii;;i;;           //
+//      iiitiiii f   jjjjtttti,       //
+//     ,;iiiiii j  G G  iiiittii      //
+//        iiii   f  GE    :iiitii     //
+//         ii     DG          ti:     //
+//          ;     DG          ti      //
+//                D            ;      //
+//                DL                  //
+//                GL                  //
+//                GG                  //
+//  Great oaks                        //
+//        from little acorns grow.    //
+//                                    //
+////////////////////////////////////////
