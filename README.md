@@ -58,6 +58,7 @@ Have Fun Too：)
 ## Related project
 
 - [前端 Vue + 后端 Spring Boot 完全分离的用户角色管理模板](https://github.com/Zoctan/spring-boot-vue-admin)
+- [前端 Vue antd admin + 后端 Spring Boot CRM客户资源管理模板](https://github.com/moshuying/project-3-crm)
 
 ## Update log
 
