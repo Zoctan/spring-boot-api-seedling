@@ -1,12 +1,16 @@
 import com.zoctan.seedling.core.rsa.RsaUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Base64Utils;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * RSA工具测试
@@ -19,11 +23,12 @@ public class RsaEncryptor {
 
   /** 加载公私钥pem格式文件测试 */
   @Test
-  public void test1() throws Exception {
+  @Order(1)
+  public void loadPem() throws Exception {
     final PublicKey publicKey = this.rsaUtil.loadPublicKey();
     final PrivateKey privateKey = this.rsaUtil.loadPrivateKey();
-    Assert.assertNotNull(publicKey);
-    Assert.assertNotNull(privateKey);
+    assertNotNull(publicKey);
+    assertNotNull(privateKey);
     System.out.println("公钥：" + publicKey);
     System.out.println("私钥：" + privateKey);
 
@@ -39,7 +44,8 @@ public class RsaEncryptor {
 
   /** 生成RSA密钥对并进行加解密测试 */
   @Test
-  public void test2() throws Exception {
+  @Order(2)
+  public void genKeyAndUsing() throws Exception {
     final String data = "hello word";
     final KeyPair keyPair = RsaUtils.genKeyPair(512);
 

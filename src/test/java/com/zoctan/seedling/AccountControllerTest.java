@@ -2,9 +2,9 @@ package com.zoctan.seedling;
 
 import com.zoctan.seedling.dto.AccountDTO;
 import com.zoctan.seedling.dto.AccountLoginDTO;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.*;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 账户接口测试
@@ -12,14 +12,15 @@ import org.junit.runners.MethodSorters;
  * @author Zoctan
  * @date 2018/11/29
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerTest extends BaseControllerTest {
 
   private final String resource = "/account";
 
-  /** register */
-  @Test(timeout = 5000)
-  public void test1() throws Exception {
+  @Test
+  @Order(1)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
+  public void register() throws Exception {
     final String targetUrl = this.resource;
     final AccountDTO account = new AccountDTO();
     account.setEmail("12345@qq.com");
@@ -28,9 +29,10 @@ public class AccountControllerTest extends BaseControllerTest {
     this.post(targetUrl, account, null);
   }
 
-  /** login */
-  @Test(timeout = 5000)
-  public void test2() throws Exception {
+  @Test
+  @Order(2)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
+  public void login() throws Exception {
     final String targetUrl = this.resource + "/token";
     final AccountLoginDTO accountLogin = new AccountLoginDTO();
     accountLogin.setName("xxxxx");
@@ -38,9 +40,10 @@ public class AccountControllerTest extends BaseControllerTest {
     this.post(targetUrl, accountLogin, null);
   }
 
-  /** logout */
-  @Test(timeout = 5000)
-  public void test3() throws Exception {
+  @Test
+  @Order(3)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
+  public void logout() throws Exception {
     final String targetUrl = this.resource + "/token";
     final AccountLoginDTO accountLogin = new AccountLoginDTO();
     accountLogin.setName("admin");
@@ -50,10 +53,11 @@ public class AccountControllerTest extends BaseControllerTest {
     this.delete(targetUrl, null, token);
   }
 
-  /** update */
-  @Test(timeout = 5000)
+  @Test
+  @Order(4)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   @WithCustomUser(name = "user")
-  public void test4() throws Exception {
+  public void update() throws Exception {
     final String targetUrl = this.resource;
     final AccountDTO accountDTO = new AccountDTO();
     accountDTO.setName("user");
@@ -61,26 +65,29 @@ public class AccountControllerTest extends BaseControllerTest {
     this.patch(targetUrl, accountDTO, null);
   }
 
-  /** detail */
-  @Test(timeout = 5000)
+  @Test
+  @Order(5)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   @WithCustomUser(name = "xxxxx")
-  public void test5() throws Exception {
+  public void detail() throws Exception {
     final String targetUrl = this.resource + "/3";
     this.get(targetUrl, null, null);
   }
 
-  /** list */
-  @Test(timeout = 5000)
+  @Test
+  @Order(6)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   @WithCustomUser(name = "user")
-  public void test6() throws Exception {
+  public void list() throws Exception {
     final String targetUrl = this.resource + "?page=1&size=3";
     this.get(targetUrl, null, null);
   }
 
-  /** delete */
-  @Test(timeout = 5000)
+  @Test
+  @Order(7)
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   @WithCustomUser(name = "admin")
-  public void test7() throws Exception {
+  public void delete() throws Exception {
     final String targetUrl = this.resource + "/3";
     this.delete(targetUrl, null, null);
   }

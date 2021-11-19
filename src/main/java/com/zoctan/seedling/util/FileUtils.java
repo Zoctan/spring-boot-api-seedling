@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileUtils {
-  /** 常见文件头信息 */
+  /**
+   * 常见文件头信息
+   */
   public static final Map<String, String> FILE_TYPE_MAP =
       new HashMap<String, String>() {
         private static final long serialVersionUID = 2413557023486330089L;
@@ -50,7 +52,8 @@ public class FileUtils {
         }
       };
 
-  private FileUtils() {}
+  private FileUtils() {
+  }
 
   /**
    * 获取文件类型
@@ -103,5 +106,10 @@ public class FileUtils {
       stringBuilder.append(hv);
     }
     return stringBuilder.toString();
+  }
+
+  public static Boolean exist(String filename) {
+    File file = new File(filename);
+    return file.exists();
   }
 }

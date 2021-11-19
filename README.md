@@ -62,6 +62,8 @@ Have Fun Too：)
 
 ## Update log
 
+2021-11-19 Update Test Junit4 -> Junit5, update other dependencies version.
+
 2020-11-09 Update Swagger2 to Swagger3, update other dependencies version.
 
 2019-08-13 Modify Tomcat to Jetty, read RSA file error have been fixed, add file upload controller, update dependencies version.

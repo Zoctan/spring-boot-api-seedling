@@ -1,4 +1,5 @@
 import com.google.common.base.CaseFormat;
+import com.zoctan.seedling.util.FileUtils;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
@@ -55,24 +56,38 @@ class CodeGenerator {
 
   public static void main(final String[] args) {
     final Scanner scanner = new Scanner(System.in);
-    System.out.print("可能已存在相关文件，请尽可能确保无误。y/n:");
-    if (!scanner.next().equals("y")) {
-      return;
-    }
-    CodeGenerator.genCode("");
-    // genCodeByCustomModelName("输入表名","输入自定义Model名称");
+    do {
+      System.out.print("请输入表名：");
+      String tableName = scanner.nextLine();
+      System.out.print("请输入自定义的 Model 名称（为空则默认以表名创建）：");
+      String modelName = scanner.nextLine();
+
+      if (existService(tableName, modelName)) {
+        System.out.print("已存在相关文件，是否覆盖？y/n：:");
+        if (scanner.nextLine().equals("n")) {
+          break;
+        }
+      }
+      genCodeByCustomModelName(tableName, modelName);
+    } while (scanner.hasNextLine());
   }
 
   /**
-   * 通过数据表名称生成代码，Model 名称通过解析数据表名称获得，下划线转大驼峰的形式。 如输入表名称 "t_user_detail" 将生成
-   * TUserDetail、TUserDetailMapper、TUserDetailService ...
+   * 检查 XXService 文件是否已存在
    *
-   * @param tableNames 数据表名称...
+   * @param tableName 数据表名称
+   * @param modelName 自定义的 Model 名称
    */
-  private static void genCode(final String... tableNames) {
-    for (final String tableName : tableNames) {
-      CodeGenerator.genCodeByCustomModelName(tableName, null);
-    }
+  private static Boolean existService(final String tableName, final String modelName) {
+    final String modelNameUpperCamel =
+        StringUtils.isEmpty(modelName)
+            ? CodeGenerator.tableNameConvertUpperCamel(tableName)
+            : modelName;
+    return FileUtils.exist(CodeGenerator.PROJECT_PATH
+        + CodeGenerator.JAVA_PATH
+        + CodeGenerator.PACKAGE_PATH_SERVICE_IMPL
+        + modelNameUpperCamel
+        + "ServiceImpl.java");
   }
 
   /**
@@ -165,22 +180,22 @@ class CodeGenerator {
     if (StringUtils.isEmpty(modelName)) {
       modelName = CodeGenerator.tableNameConvertUpperCamel(tableName);
     }
-    System.out.println(modelName + ".java 生成成功");
-    System.out.println(modelName + "MyMapper.java 生成成功");
-    System.out.println(modelName + "MyMapper.xml 生成成功");
+    System.out.println(modelName + "Model.java 生成成功");
+    System.out.println(modelName + "Mapper.xml 生成成功");
   }
 
   private static void genService(final String tableName, final String modelName) {
     try {
       final freemarker.template.Configuration cfg = CodeGenerator.getConfiguration();
 
-      final Map<String, Object> data = new HashMap<>();
-      data.put("date", CodeGenerator.DATE);
-      data.put("author", CodeGenerator.AUTHOR);
       final String modelNameUpperCamel =
           StringUtils.isEmpty(modelName)
               ? CodeGenerator.tableNameConvertUpperCamel(tableName)
               : modelName;
+
+      final Map<String, Object> data = new HashMap<>();
+      data.put("date", CodeGenerator.DATE);
+      data.put("author", CodeGenerator.AUTHOR);
       data.put("modelNameUpperCamel", modelNameUpperCamel);
       data.put("modelNameLowerCamel", CodeGenerator.tableNameConvertLowerCamel(tableName));
       data.put("basePackage", BASE_PACKAGE);

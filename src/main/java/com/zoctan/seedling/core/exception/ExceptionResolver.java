@@ -4,6 +4,8 @@ import com.zoctan.seedling.core.response.Result;
 import com.zoctan.seedling.core.response.ResultCode;
 import com.zoctan.seedling.core.response.ResultGenerator;
 import com.zoctan.seedling.util.UrlUtils;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 

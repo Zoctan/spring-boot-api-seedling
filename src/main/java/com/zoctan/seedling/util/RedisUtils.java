@@ -1,10 +1,10 @@
 package com.zoctan.seedling.util;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;

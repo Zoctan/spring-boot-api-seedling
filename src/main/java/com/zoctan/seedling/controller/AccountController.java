@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +33,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -45,14 +45,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-  @Resource private AccountService accountService;
-  @Resource private UserDetailsServiceImpl userDetailsService;
-  @Resource private JwtUtil jwtUtil;
+  @Resource
+  private AccountService accountService;
+  @Resource
+  private UserDetailsServiceImpl userDetailsService;
+  @Resource
+  private JwtUtil jwtUtil;
 
   @Operation(summary = "账户注册", description = "注册账户，签发token")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "OK"),
-    @ApiResponse(responseCode = "2004", description = "账户名重复")
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "2004", description = "账户名重复")
   })
   @PostMapping
   public Result register(
@@ -69,8 +72,8 @@ public class AccountController {
 
   @Operation(summary = "账户登录", description = "账户登录，签发token")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "OK"),
-    @ApiResponse(responseCode = "1000", description = "密码错误")
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "1000", description = "密码错误")
   })
   @PostMapping("/token")
   public Result login(
@@ -139,8 +142,8 @@ public class AccountController {
   @Operation(summary = "获取账户列表", description = "获取多个账户信息")
   @ApiResponses({@ApiResponse(responseCode = "200", description = "OK")})
   @Parameters({
-    @Parameter(name = "page", description = "页号", in = ParameterIn.QUERY, example = "1"),
-    @Parameter(name = "size", description = "页大小", in = ParameterIn.QUERY, example = "10")
+      @Parameter(name = "page", description = "页号", in = ParameterIn.QUERY, example = "1"),
+      @Parameter(name = "size", description = "页大小", in = ParameterIn.QUERY, example = "10")
   })
   @Cacheable(value = "account.list", unless = "#result == null or #result.code != 200")
   @CacheExpire(expire = 60)

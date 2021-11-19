@@ -5,15 +5,15 @@ import com.zoctan.seedling.core.response.Result;
 import com.zoctan.seedling.filter.AuthenticationFilter;
 import com.zoctan.seedling.filter.CorsFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -36,16 +36,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback(value = false)
 @Transactional
 @AutoConfigureMockMvc
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Application.class})
 public abstract class BaseControllerTest {
-  @Autowired protected WebApplicationContext context;
-  @Autowired protected CorsFilter corsFilter;
-  @Autowired protected AuthenticationFilter authenticationFilter;
+  @Autowired
+  protected WebApplicationContext context;
+  @Autowired
+  protected CorsFilter corsFilter;
+  @Autowired
+  protected AuthenticationFilter authenticationFilter;
 
   protected MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockMvc =
         MockMvcBuilders.webAppContextSetup(this.context)

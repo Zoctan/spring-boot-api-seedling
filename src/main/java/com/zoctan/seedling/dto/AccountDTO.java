@@ -3,12 +3,12 @@ package com.zoctan.seedling.dto;
 import com.zoctan.seedling.core.dto.AbstractConverter;
 import com.zoctan.seedling.entity.AccountDO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**

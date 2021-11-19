@@ -1,11 +1,9 @@
 import com.zoctan.seedling.Application;
 import org.jasypt.encryption.StringEncryptor;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * jasypt 用于加密配置文件 https://github.com/ulisesbocchio/jasypt-spring-boot
@@ -13,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Zoctan
  * @date 2018/05/27
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 public class JasyptStringEncryptor {
 

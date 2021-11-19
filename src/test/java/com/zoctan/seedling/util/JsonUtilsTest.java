@@ -2,7 +2,7 @@ package com.zoctan.seedling.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zoctan.seedling.entity.AccountDO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
