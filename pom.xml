@@ -29,7 +29,7 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <mybatis.version>2.2.0</mybatis.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mapper.version>4.1.5</mapper.version>
